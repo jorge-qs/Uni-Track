@@ -13,22 +13,17 @@ class Matricula(Base):
     Modelo de Matrícula
     Almacena el registro histórico de matrículas de estudiantes en cursos
     """
-    __tablename__ = "matriculas"
+    __tablename__ = "matricula"
 
-    # Composite Primary Key
-    per_matricula = Column(String(10), primary_key=True, nullable=False)  # ej: 2024-1
-    cod_persona = Column(String(10), ForeignKey("estudiantes.cod_persona"), primary_key=True, nullable=False)
-    cod_curso = Column(String(10), ForeignKey("cursos.cod_curso"), primary_key=True, nullable=False)
+    # columns: COD_PERSONA,COD_CURSO,PER_MATRICULA,NOTA,HRS_INASISTENCIA
+    # ejemplo de tuplas: 33277,MA100,2017-01,20.0,0
 
-    # Información académica
-    nota = Column(Float, nullable=True)  # Calificación final
-    hrs_inasistencia = Column(Integer, default=0)  # Horas de inasistencia
-    estado = Column(String(20), nullable=True)  # Aprobado / Desaprobado / Retirado
-    tipo_de_ciclo = Column(String(20), nullable=True)  # Regular / Verano / Extraordinario
-
-    # Relaciones
-    estudiante = relationship("Estudiante", backref="matriculas")
-    curso = relationship("Curso", backref="matriculas")
+    # Primary Key compuesta
+    cod_persona = Column(String(10), ForeignKey("alumno.cod_persona"), primary_key=True, index=True, nullable=False)
+    cod_curso = Column(String(10), ForeignKey("curso.cod_curso"), primary_key=True, index=True, nullable=False)
+    per_matricula = Column(String(7), primary_key=True, index=True, nullable=False)  # Formato: AAAA-MM
+    nota = Column(Float, nullable=True)  # Nota final del curso
+    hrs_inasistencia = Column(Integer, nullable=True)  # Horas de inasistencia
 
     def __repr__(self):
         return f"<Matricula(periodo='{self.per_matricula}', estudiante='{self.cod_persona}', curso='{self.cod_curso}')>"

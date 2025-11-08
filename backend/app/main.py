@@ -7,7 +7,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import settings
-from app.routes import auth, estudiantes, cursos, matriculas
+from app.routes import auth, modelo
+from app.db.database import init_db, engine
+from app.db.csv_import import import_csv_tables
 
 # Crear instancia de FastAPI
 app = FastAPI(
@@ -29,10 +31,7 @@ app.add_middleware(
 
 # Registrar rutas
 app.include_router(auth.router, prefix="/api/v1/auth", tags=["Autenticación"])
-app.include_router(estudiantes.router, prefix="/api/v1/estudiantes", tags=["Estudiantes"])
-app.include_router(cursos.router, prefix="/api/v1/cursos", tags=["Cursos"])
-app.include_router(matriculas.router, prefix="/api/v1/matricula", tags=["Matrícula"])
-
+app.include_router(modelo.router, prefix="/api/v1/modelo", tags=["Modelo Predictivo"])
 
 @app.get("/", tags=["Health"])
 async def root():
@@ -49,6 +48,26 @@ async def root():
 async def health_check():
     """Endpoint de health check"""
     return {"status": "healthy"}
+
+
+@app.on_event("startup")
+async def startup_load_data():
+    """Al iniciar: crear tablas ORM y cargar CSVs como tablas nuevas.
+
+    - ORM: crea tablas definidas en modelos (si no existen)
+    - CSVs: crea/actualiza tablas "curso", "alumno", "matricula" y carga datos
+    """
+    try:
+        init_db()
+    except Exception:
+        # Continuar aunque falle la creación ORM para intentar carga CSV
+        pass
+
+    try:
+        import_csv_tables(engine)
+    except Exception:
+        # Evitar tumbar la app si la carga CSV falla
+        pass
 
 
 if __name__ == "__main__":

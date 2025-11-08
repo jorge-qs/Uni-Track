@@ -16,4 +16,8 @@ class LoginResponse(BaseModel):
     success: bool
     message: str
     cod_persona: str | None = None
-    estudiante: dict | None = None
+    alumno: dict | None = None
+    # Campos adicionales solicitados
+    alumno_info: dict | None = None
+    cursos_info: list[dict] | None = None
+    matricula_info: dict | None = None

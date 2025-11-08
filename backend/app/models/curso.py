@@ -12,7 +12,7 @@ class Curso(Base):
     Modelo de Curso
     Almacena información de los cursos de la malla curricular
     """
-    __tablename__ = "cursos"
+    __tablename__ = "curso"
 
     # Primary Key
     cod_curso = Column(String(10), primary_key=True, index=True, nullable=False)
@@ -20,13 +20,15 @@ class Curso(Base):
     # Información del curso
     curso = Column(String(100), nullable=False)  # Nombre del curso
     creditos = Column(Integer, nullable=False)  # Créditos académicos
-    tipo_curso = Column(String(20), nullable=True)  # Obligatorio / Electivo
-    hrs_curso = Column(Integer, nullable=True)  # Horas semanales
 
     # Clasificación
-    familia = Column(String(50), nullable=True)  # Agrupación temática
-    cluster = Column(String(50), nullable=True)  # Nivel de dificultad / categoría
+    familia = Column(String(2), nullable=True)  # Agrupación temática
     nivel_curso = Column(Integer, nullable=True)  # Nivel académico o ciclo sugerido
+    tipo = Column(String(3), nullable=False) # O -> obligatorio, EH -> electivo humanidades, EP -> electivo de carrera
+    
+    horas = Column(Integer, nullable=True)  # Horas semanales
+    # opción simple: almacenar la lista como texto separador por comas
+    prerequisito = Column(String(200), nullable=True)  # guarda "CALCULO I,MATEMATICA II"
 
     def __repr__(self):
         return f"<Curso(cod_curso='{self.cod_curso}', nombre='{self.curso}')>"
