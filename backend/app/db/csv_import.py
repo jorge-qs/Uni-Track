@@ -153,20 +153,22 @@ def import_csv_tables(engine: Engine) -> None:
     - df_curso_final.csv  -> curso
     - df_estudiante_final.csv    -> alumno
     - df_matricula.csv     -> matricula
+    - unitrack-secciones.csv -> seccion
     """
     base_path = Path(__file__).resolve().parents[2] / "data"
     mapping = {
-        "df_curso_final.csv": "curso",
+        "df_curso_final_con_recursos.csv": "curso",
         "df_estudiante_final.csv": "alumno",
         "df_matricula.csv": "matricula",
+        "unitrack-secciones.csv": "seccion",
     }
-
+    
     for fname, tname in mapping.items():
         csv_path = base_path / fname
         if not csv_path.exists():
             # Si falta un CSV, continuar con los demás
             raise FileNotFoundError(f"Archivo CSV no encontrado: {csv_path}")
-            continue
+        
 
         headers, preview = _read_csv_preview(csv_path)
         if not headers:

@@ -1,0 +1,541 @@
+cod_curso,curso,Seccion,Grupo,Modalidad,Horario,Frecuencia,Ubicacion,Vacantes,Matriculados,Docente,Correo
+CS210,ALGORITMOS Y ESTRUCTURAS DE DATOS,1,TEORÍA 1,Presencial,Lun. 11:00 - 13:00,Semana General,UTEC-BA A901(42),30,30,"Nina Choquehuayta, Wilder ",wnina@utec.edu.pe
+CS210,ALGORITMOS Y ESTRUCTURAS DE DATOS,1,LABORATORIO 1.01,Presencial,Jue. 07:00 - 09:00,Semana General,UTEC-BA M604(30),30,30,"Nina Choquehuayta, Wilder ",wnina@utec.edu.pe
+CS210,ALGORITMOS Y ESTRUCTURAS DE DATOS,1,LABORATORIO 1.01,Presencial,Vie. 10:00 - 12:00,Semana General,UTEC-BA M604(30),30,30,"Nina Choquehuayta, Wilder ",wnina@utec.edu.pe
+CS210,ALGORITMOS Y ESTRUCTURAS DE DATOS,2,TEORÍA 2,Presencial,Mar. 18:00 - 20:00,Semana General,UTEC-BA A903(46),45,45,"Sanchez Enriquez, Heider Ysaias",hsanchez@utec.edu.pe
+CS210,ALGORITMOS Y ESTRUCTURAS DE DATOS,2,LABORATORIO 2.01,Presencial,Mie. 18:00 - 20:00,Semana General,UTEC-BA M803(45),45,45,"Sanchez Enriquez, Heider Ysaias",hsanchez@utec.edu.pe
+CS210,ALGORITMOS Y ESTRUCTURAS DE DATOS,2,LABORATORIO 2.01,Presencial,Jue. 18:00 - 20:00,Semana General,UTEC-BA M302(60),45,45,"Sanchez Enriquez, Heider Ysaias",hsanchez@utec.edu.pe
+CS210,ALGORITMOS Y ESTRUCTURAS DE DATOS,3,TEORÍA 3,Presencial,Mar. 11:00 - 13:00,Semana General,UTEC-BA M302(60),30,30,"Ojeda Rios, Brenner Humberto ",bojeda@utec.edu.pe
+CS210,ALGORITMOS Y ESTRUCTURAS DE DATOS,3,LABORATORIO 3.01,Presencial,Jue. 12:00 - 14:00,Semana General,UTEC-BA M601(30),30,30,"Ojeda Rios, Brenner Humberto ",bojeda@utec.edu.pe
+CS210,ALGORITMOS Y ESTRUCTURAS DE DATOS,3,LABORATORIO 3.01,Presencial,Vie. 10:00 - 12:00,Semana General,UTEC-BA M602(30),30,30,"Ojeda Rios, Brenner Humberto ",bojeda@utec.edu.pe
+FG107,ANTROPOLOGIA FILOSOFICA Y TEOLOGICA,1,TEORÍA 1,Presencial,Mar. 16:00 - 18:00,Semana General,UTEC-BA A707(44),44,39,"Millán Falconí, Armando ",amillan@utec.edu.pe
+FG107,ANTROPOLOGIA FILOSOFICA Y TEOLOGICA,1,LABORATORIO VIRTUAL 1.01,Sincronico,Jue. 16:00 - 18:00,Semana General,UTEC-BA Virtual,44,39,"Millán Falconí, Armando ",amillan@utec.edu.pe
+FG107,ANTROPOLOGIA FILOSOFICA Y TEOLOGICA,2,TEORÍA 2,Presencial,Mar. 14:00 - 16:00,Semana General,UTEC-BA A707(44),40,22,"Millán Falconí, Armando ",amillan@utec.edu.pe
+FG107,ANTROPOLOGIA FILOSOFICA Y TEOLOGICA,2,LABORATORIO VIRTUAL 2.01,Sincronico,Vie. 18:00 - 20:00,Semana General,UTEC-BA Virtual 104,40,22,"Millán Falconí, Armando ",amillan@utec.edu.pe
+CS212,ANALISIS Y DISENO DE ALGORITMOS,1,TEORÍA 1,Presencial,Lun. 09:00 - 11:00,Semana General,UTEC-BA A904(44),44,44,"Napa Bernuy, Angel Gerardo ",anapa@utec.edu.pe
+CS212,ANALISIS Y DISENO DE ALGORITMOS,1,LABORATORIO 1.01,Presencial,Mie. 09:00 - 11:00,Semana General,UTEC-BA A908(48),44,44,"Napa Bernuy, Angel Gerardo ",anapa@utec.edu.pe
+CS212,ANALISIS Y DISENO DE ALGORITMOS,1,LABORATORIO 1.01,Presencial,Vie. 08:00 - 10:00,Semana General,UTEC-BA A908(48),44,44,"Napa Bernuy, Angel Gerardo ",anapa@utec.edu.pe
+CS212,ANALISIS Y DISENO DE ALGORITMOS,2,TEORÍA 2,Presencial,Lun. 09:00 - 11:00,Semana General,UTEC-BA A908(48),44,30,"Gutierrez Alva, Julio ",jgalva@utec.edu.pe
+CS212,ANALISIS Y DISENO DE ALGORITMOS,2,LABORATORIO 2.01,Presencial,Mie. 10:00 - 12:00,Semana General,UTEC-BA A804(45),44,30,"Gutierrez Alva, Julio ",jgalva@utec.edu.pe
+CS212,ANALISIS Y DISENO DE ALGORITMOS,2,LABORATORIO 2.01,Presencial,Vie. 09:00 - 11:00,Semana General,UTEC-BA A906(44),44,30,"Gutierrez Alva, Julio ",jgalva@utec.edu.pe
+CS212,ANALISIS Y DISENO DE ALGORITMOS,3,TEORÍA 3,Presencial,Mar. 14:00 - 16:00,Semana General,UTEC-BA M301(30),30,8,"Gutierrez Alva, Juan Gabriel",jgutierreza@utec.edu.pe
+CS212,ANALISIS Y DISENO DE ALGORITMOS,3,LABORATORIO 3.01,Presencial,Jue. 14:00 - 16:00,Semana General,UTEC-BA A102(36),30,8,"Gutierrez Alva, Juan Gabriel",jgutierreza@utec.edu.pe
+CS212,ANALISIS Y DISENO DE ALGORITMOS,3,LABORATORIO 3.01,Presencial,Vie. 14:00 - 16:00,Semana General,UTEC-BA A102(36),30,8,"Gutierrez Alva, Juan Gabriel",jgutierreza@utec.edu.pe
+CS212,ANALISIS Y DISENO DE ALGORITMOS,4,TEORÍA 4,Presencial,Lun. 11:00 - 13:00,Semana General,UTEC-BA A802(45),45,39,"Gutierrez Alva, Julio ",jgalva@utec.edu.pe
+CS212,ANALISIS Y DISENO DE ALGORITMOS,4,LABORATORIO 4.01,Presencial,Jue. 11:00 - 13:00,Semana General,UTEC-BA A802(45),45,39,"Gutierrez Alva, Julio ",jgalva@utec.edu.pe
+CS212,ANALISIS Y DISENO DE ALGORITMOS,4,LABORATORIO 4.01,Presencial,Vie. 11:00 - 13:00,Semana General,UTEC-BA A804(45),45,39,"Gutierrez Alva, Julio ",jgalva@utec.edu.pe
+CS221,ARQUITECTURA DE COMPUTADORES,1,TEORÍA 1,Presencial,Mar. 16:00 - 18:00,Semana General,UTEC-BA A801(45),30,30,"Gonzalez Reaño, Jorge Luis",jgonzalez@utec.edu.pe
+CS221,ARQUITECTURA DE COMPUTADORES,1,LABORATORIO 1.01,Presencial,Mie. 16:00 - 18:00,Semana General,UTEC-BA M301(30),30,30,"Williams Valencia, Carlos Eduardo ",cwilliams@utec.edu.pe
+CS221,ARQUITECTURA DE COMPUTADORES,1,LABORATORIO 1.01,Presencial,Vie. 12:00 - 14:00,Semana General,UTEC-BA M604(30),30,30,"Williams Valencia, Carlos Eduardo ",cwilliams@utec.edu.pe
+CS221,ARQUITECTURA DE COMPUTADORES,3,TEORÍA 3,Presencial,Lun. 16:00 - 18:00,Semana General,UTEC-BA A708(44),30,30,"Adanaque Infante, Luz Antuanet",ladanaque@utec.edu.pe
+CS221,ARQUITECTURA DE COMPUTADORES,3,LABORATORIO 3.01,Presencial,Mar. 16:00 - 18:00,Semana General,UTEC-BA M301(30),30,30,"Williams Valencia, Carlos Eduardo ",cwilliams@utec.edu.pe
+CS221,ARQUITECTURA DE COMPUTADORES,3,LABORATORIO 3.01,Presencial,Mie. 14:00 - 16:00,Semana General,UTEC-BA M301(30),30,30,"Williams Valencia, Carlos Eduardo ",cwilliams@utec.edu.pe
+CS221,ARQUITECTURA DE COMPUTADORES,5,TEORÍA 5,Presencial,Mie. 16:00 - 18:00,Semana General,UTEC-BA A803(45),30,30,"Gonzalez Reaño, Jorge Luis",jgonzalez@utec.edu.pe
+CS221,ARQUITECTURA DE COMPUTADORES,5,LABORATORIO 5.01,Presencial,Jue. 14:00 - 16:00,Semana General,UTEC-BA M603(30),30,30,"Williams Valencia, Carlos Eduardo ",cwilliams@utec.edu.pe
+CS221,ARQUITECTURA DE COMPUTADORES,5,LABORATORIO 5.01,Presencial,Vie. 16:00 - 18:00,Semana General,UTEC-BA M604(30),30,30,"Williams Valencia, Carlos Eduardo ",cwilliams@utec.edu.pe
+CS292,INGENIERIA DE SOFTWARE II,1,TEORÍA 1,Presencial,Mar. 08:00 - 10:00,Semana General,UTEC-BA A501(30),30,13,"Balbuena Palacios, Carlos ",cbalbuena@utec.edu.pe
+CS292,INGENIERIA DE SOFTWARE II,1,LABORATORIO 1.01,Presencial,Mie. 19:00 - 21:00,Semana General,UTEC-BA M604(30),30,13,"Balbuena Palacios, Carlos ",cbalbuena@utec.edu.pe
+CS292,INGENIERIA DE SOFTWARE II,1,LABORATORIO 1.01,Presencial,Jue. 19:00 - 21:00,Semana General,UTEC-BA M602(30),30,13,"Balbuena Palacios, Carlos ",cbalbuena@utec.edu.pe
+FG105,APRECIACION MUSICAL,1,TEORÍA 1,Presencial,Lun. 19:00 - 20:00,Semana General,UTEC-BA A705(44),44,37,"Hopkins Barriga, Aranzazu Marcela ",ahopkins@utec.edu.pe
+FG105,APRECIACION MUSICAL,1,TEORÍA 1,Presencial,Sab. 09:00 - 11:00,Semana General,UTEC-BA A706(44),44,37,"Hopkins Barriga, Aranzazu Marcela ",ahopkins@utec.edu.pe
+FG105,APRECIACION MUSICAL,2,TEORÍA 2,Presencial,Mar. 15:00 - 16:00,Semana General,UTEC-BA A906(44),44,44,"Alayza Prager, Cristina ",calayza@utec.edu.pe
+FG105,APRECIACION MUSICAL,2,TEORÍA 2,Presencial,Mie. 15:00 - 17:00,Semana General,UTEC-BA A905(44),44,44,"Alayza Prager, Cristina ",calayza@utec.edu.pe
+FG105,APRECIACION MUSICAL,3,TEORÍA 3,Presencial,Lun. 11:00 - 13:00,Semana General,UTEC-BA A708(44),44,44,"Reaño Donair, Violeta Stephanie",vreano@utec.edu.pe
+FG105,APRECIACION MUSICAL,3,TEORÍA 3,Presencial,Mie. 13:00 - 14:00,Semana General,UTEC-BA A907(44),44,44,"Reaño Donair, Violeta Stephanie",vreano@utec.edu.pe
+FG105,APRECIACION MUSICAL,4,TEORÍA 4,Presencial,Lun. 15:00 - 16:00,Semana General,UTEC-BA A803(45),45,45,"Collado Saavedra, Ximena ",xcollado@utec.edu.pe
+FG105,APRECIACION MUSICAL,4,TEORÍA 4,Presencial,Vie. 14:00 - 16:00,Semana General,UTEC-BA A803(45),45,45,"Collado Saavedra, Ximena ",xcollado@utec.edu.pe
+FG105,APRECIACION MUSICAL,6,TEORÍA 6,Presencial,Jue. 07:00 - 08:00,Semana General,UTEC-BA A904(44),44,44,"Castillo Cerf, Diana ",dcastillo@utec.edu.pe
+FG105,APRECIACION MUSICAL,6,TEORÍA 6,Presencial,Vie. 16:00 - 18:00,Semana General,UTEC-BA A905(44),44,44,"Castillo Cerf, Diana ",dcastillo@utec.edu.pe
+FG105,APRECIACION MUSICAL,7,TEORÍA 7,Presencial,Mie. 14:00 - 15:00,Semana General,UTEC-BA A803(45),45,45,"De La Flor Basterrechea, Antuané ",adelaflor@utec.edu.pe
+FG105,APRECIACION MUSICAL,7,TEORÍA 7,Presencial,Jue. 15:00 - 17:00,Semana General,UTEC-BA A803(45),45,45,"De La Flor Basterrechea, Antuané ",adelaflor@utec.edu.pe
+FG105,APRECIACION MUSICAL,8,TEORÍA 8,Presencial,Mie. 15:00 - 17:00,Semana General,UTEC-BA A902(42),42,42,"De La Flor Basterrechea, Antuané ",adelaflor@utec.edu.pe
+FG105,APRECIACION MUSICAL,8,TEORÍA 8,Presencial,Jue. 14:00 - 15:00,Semana General,UTEC-BA A902(42),42,42,"De La Flor Basterrechea, Antuané ",adelaflor@utec.edu.pe
+FG105,APRECIACION MUSICAL,9,TEORÍA 9,Presencial,Jue. 14:00 - 16:00,Semana General,UTEC-BA A707(44),44,44,"Castillo Cerf, Diana ",dcastillo@utec.edu.pe
+FG105,APRECIACION MUSICAL,9,TEORÍA 9,Presencial,Vie. 15:00 - 16:00,Semana General,UTEC-BA A704(44),44,44,"Castillo Cerf, Diana ",dcastillo@utec.edu.pe
+CS271,BASES DE DATOS I,1,TEORÍA 1,Presencial,Lun. 16:00 - 18:00,Semana General,UTEC-BA A1001(45),45,19,"Nina Choquehuayta, Wilder ",wnina@utec.edu.pe
+CS271,BASES DE DATOS I,1,LABORATORIO 1.01,Presencial,Mie. 20:00 - 22:00,Semana General,UTEC-BA M803(45),45,19,"Nina Choquehuayta, Wilder ",wnina@utec.edu.pe
+CS271,BASES DE DATOS I,1,LABORATORIO 1.01,Presencial,Vie. 20:00 - 22:00,Semana General,UTEC-BA M803(45),45,19,"Nina Choquehuayta, Wilder ",wnina@utec.edu.pe
+CS271,BASES DE DATOS I,2,TEORÍA 2,Presencial,Lun. 16:00 - 18:00,Semana General,UTEC-BA A1002(44),44,33,"Ojeda Rios, Brenner Humberto ",bojeda@utec.edu.pe
+CS271,BASES DE DATOS I,2,LABORATORIO 2.01,Presencial,Mar. 09:00 - 11:00,Semana General,UTEC-BA M302(60),44,33,"Ojeda Rios, Brenner Humberto ",bojeda@utec.edu.pe
+CS271,BASES DE DATOS I,2,LABORATORIO 2.01,Presencial,Jue. 09:00 - 11:00,Semana General,UTEC-BA M302(60),44,33,"Ojeda Rios, Brenner Humberto ",bojeda@utec.edu.pe
+CS271,BASES DE DATOS I,3,TEORÍA 3,Presencial,Lun. 14:00 - 16:00,Semana General,UTEC-BA A804(45),45,38,"Nina Choquehuayta, Wilder ",wnina@utec.edu.pe
+CS271,BASES DE DATOS I,3,LABORATORIO 3.01,Presencial,Mar. 14:00 - 16:00,Semana General,UTEC-BA M803(45),45,38,"Nina Choquehuayta, Wilder ",wnina@utec.edu.pe
+CS271,BASES DE DATOS I,3,LABORATORIO 3.01,Presencial,Vie. 16:00 - 18:00,Semana General,UTEC-BA M802(45),45,38,"Nina Choquehuayta, Wilder ",wnina@utec.edu.pe
+CS271,BASES DE DATOS I,4,TEORÍA 4,Presencial,Lun. 14:00 - 16:00,Semana General,UTEC-BA A1001(45),30,29,"Ojeda Rios, Brenner Humberto ",bojeda@utec.edu.pe
+CS271,BASES DE DATOS I,4,LABORATORIO 4.01,Presencial,Mar. 14:00 - 16:00,Semana General,UTEC-BA M601(30),30,29,"Ojeda Rios, Brenner Humberto ",bojeda@utec.edu.pe
+CS271,BASES DE DATOS I,4,LABORATORIO 4.01,Presencial,Mie. 14:00 - 16:00,Semana General,UTEC-BA M602(30),30,29,"Ojeda Rios, Brenner Humberto ",bojeda@utec.edu.pe
+CS272,BASES DE DATOS II,1,TEORÍA 1,Presencial,Mar. 16:00 - 17:00,Semana General,UTEC-BA A701(44),44,32,"Sanchez Enriquez, Heider Ysaias",hsanchez@utec.edu.pe
+CS272,BASES DE DATOS II,1,LABORATORIO 1.01,Presencial,Mie. 16:00 - 18:00,Semana General,UTEC-BA M801(45),44,32,"Sanchez Enriquez, Heider Ysaias",hsanchez@utec.edu.pe
+CS272,BASES DE DATOS II,1,LABORATORIO 1.01,Presencial,Vie. 18:00 - 20:00,Semana General,UTEC-BA M803(45),44,32,"Sanchez Enriquez, Heider Ysaias",hsanchez@utec.edu.pe
+CS272,BASES DE DATOS II,3,TEORÍA 3,Presencial,Mar. 17:00 - 18:00,Semana General,UTEC-BA A705(44),30,13,"Sanchez Enriquez, Heider Ysaias",hsanchez@utec.edu.pe
+CS272,BASES DE DATOS II,3,LABORATORIO 3.01,Presencial,Jue. 16:00 - 18:00,Semana General,UTEC-BA M604(30),30,13,"Sanchez Enriquez, Heider Ysaias",hsanchez@utec.edu.pe
+CS272,BASES DE DATOS II,3,LABORATORIO 3.01,Presencial,Vie. 16:00 - 18:00,Semana General,UTEC-BA M301(30),30,13,"Sanchez Enriquez, Heider Ysaias",hsanchez@utec.edu.pe
+CS272,BASES DE DATOS II,4,TEORÍA 4,Presencial,Mar. 20:00 - 21:00,Semana General,UTEC-BA A703(44),30,26,"Sanchez Enriquez, Heider Ysaias",hsanchez@utec.edu.pe
+CS272,BASES DE DATOS II,4,LABORATORIO 4.01,Presencial,Jue. 20:00 - 22:00,Semana General,UTEC-BA M603(30),30,26,"Sanchez Enriquez, Heider Ysaias",hsanchez@utec.edu.pe
+CS272,BASES DE DATOS II,4,LABORATORIO 4.01,Presencial,Vie. 20:00 - 22:00,Semana General,UTEC-BA M301(30),30,26,"Sanchez Enriquez, Heider Ysaias",hsanchez@utec.edu.pe
+CS370,BIG DATA,1,TEORÍA 1,Presencial,Lun. 19:00 - 21:00,Semana General,UTEC-BA M302(60),45,21,"LEZAMA BENAVIDES, ALDO MARTIN ",alezama@utec.edu.pe
+CS370,BIG DATA,1,LABORATORIO 1.01,Presencial,Vie. 20:00 - 22:00,Semana General,UTEC-BA M302(60),45,21,"LEZAMA BENAVIDES, ALDO MARTIN ",alezama@utec.edu.pe
+CS370,BIG DATA,1,LABORATORIO 1.01,Presencial,Sab. 13:00 - 15:00,Semana General,UTEC-BA M302(60),45,21,"LEZAMA BENAVIDES, ALDO MARTIN ",alezama@utec.edu.pe
+CB309,COMPUTACION MOLECULAR BIOLOGICA,1,TEORÍA 1,Presencial,Mar. 11:00 - 13:00,Semana General,UTEC-BA A102(36),36,36,"Ratti Parandelli, Alejandra ",aratti@utec.edu.pe
+CB309,COMPUTACION MOLECULAR BIOLOGICA,1,LABORATORIO 1.01,Presencial,Mie. 07:00 - 11:00,Semana A,UTEC-BA L405,18,18,"Cueva Tavara, Mario ",mcueva@utec.edu.pe
+CB309,COMPUTACION MOLECULAR BIOLOGICA,1,LABORATORIO 1.02,Presencial,Mie. 07:00 - 11:00,Semana B,UTEC-BA L405,18,18,"Cueva Tavara, Mario ",mcueva@utec.edu.pe
+FG221,HISTORIA DE LA CIENCIA Y TECNOLOGIA,1,TEORÍA 1,Presencial,Lun. 09:00 - 11:00,Semana General,UTEC-BA A905(44),30,18,"Flores Luyo, Luis Ernesto ",lfloresl@utec.edu.pe
+FG221,HISTORIA DE LA CIENCIA Y TECNOLOGIA,1,TEORÍA 1,Presencial,Jue. 08:00 - 10:00,Semana General,UTEC-BA A804(45),30,18,"Flores Luyo, Luis Ernesto ",lfloresl@utec.edu.pe
+FG221,HISTORIA DE LA CIENCIA Y TECNOLOGIA,2,TEORÍA 2,Presencial,Mie. 08:00 - 10:00,Semana General,UTEC-BA A904(44),44,37,"Flores Luyo, Luis Ernesto ",lfloresl@utec.edu.pe
+FG221,HISTORIA DE LA CIENCIA Y TECNOLOGIA,2,TEORÍA 2,Presencial,Vie. 07:00 - 09:00,Semana General,UTEC-BA A904(44),44,37,"Flores Luyo, Luis Ernesto ",lfloresl@utec.edu.pe
+CS3P2,CLOUD COMPUTING,1,TEORÍA 1,Presencial,Lun. 07:00 - 08:00,Semana General,UTEC-BA AULA MAGNA,120,98,"Colchado Ruíz, Geraldo ",gcolchado@utec.edu.pe
+CS3P2,CLOUD COMPUTING,1,LABORATORIO 1.01,Presencial,Mar. 20:00 - 22:00,Semana General,UTEC-BA M803(45),45,45,"Colchado Ruíz, Geraldo ",gcolchado@utec.edu.pe
+CS3P2,CLOUD COMPUTING,1,LABORATORIO 1.01,Presencial,Jue. 20:00 - 22:00,Semana General,UTEC-BA M802(45),45,45,"Colchado Ruíz, Geraldo ",gcolchado@utec.edu.pe
+CS3P2,CLOUD COMPUTING,1,LABORATORIO 1.02,Presencial,Mie. 07:00 - 09:00,Semana General,UTEC-BA M601(30),30,29,"Colchado Ruíz, Geraldo ",gcolchado@utec.edu.pe
+CS3P2,CLOUD COMPUTING,1,LABORATORIO 1.02,Presencial,Jue. 07:00 - 09:00,Semana General,UTEC-BA M602(30),30,29,"Colchado Ruíz, Geraldo ",gcolchado@utec.edu.pe
+CS3P2,CLOUD COMPUTING,1,LABORATORIO 1.03,Presencial,Mie. 07:00 - 09:00,Semana General,UTEC-BA M801(45),45,24,"Mejia Fernandez, Oscar Rodolfo ",omejia@utec.edu.pe
+CS3P2,CLOUD COMPUTING,1,LABORATORIO 1.03,Presencial,Jue. 07:00 - 09:00,Semana General,UTEC-BA M801(45),45,24,"Mejia Fernandez, Oscar Rodolfo ",omejia@utec.edu.pe
+CS342,COMPILADORES,1,TEORÍA 1,Presencial,Lun. 14:00 - 16:00,Semana General,UTEC-BA A707(44),30,30,"Yarasca Moscol, Julio Eduardo ",jyarascam@utec.edu.pe
+CS342,COMPILADORES,1,LABORATORIO 1.01,Presencial,Mar. 13:00 - 15:00,Semana General,UTEC-BA M602(30),30,30,"Yarasca Moscol, Julio Eduardo ",jyarascam@utec.edu.pe
+CS342,COMPILADORES,1,LABORATORIO 1.01,Presencial,Jue. 13:00 - 15:00,Semana General,UTEC-BA M602(30),30,30,"Yarasca Moscol, Julio Eduardo ",jyarascam@utec.edu.pe
+CS342,COMPILADORES,2,TEORÍA 2,Presencial,Lun. 16:00 - 18:00,Semana General,UTEC-BA A902(42),30,12,"Yarasca Moscol, Julio Eduardo ",jyarascam@utec.edu.pe
+CS342,COMPILADORES,2,LABORATORIO 2.01,Presencial,Mar. 11:00 - 13:00,Semana General,UTEC-BA M602(30),30,12,"Yarasca Moscol, Julio Eduardo ",jyarascam@utec.edu.pe
+CS342,COMPILADORES,2,LABORATORIO 2.01,Presencial,Jue. 11:00 - 13:00,Semana General,UTEC-BA M603(30),30,12,"Yarasca Moscol, Julio Eduardo ",jyarascam@utec.edu.pe
+CS342,COMPILADORES,3,TEORÍA 3,Presencial,Mie. 11:00 - 13:00,Semana General,UTEC-BA M603(30),24,15,"Yarasca Moscol, Julio Eduardo ",jyarascam@utec.edu.pe
+CS342,COMPILADORES,3,LABORATORIO 3.01,Presencial,Vie. 11:00 - 13:00,Semana General,UTEC-BA L208(24),24,15,"Yarasca Moscol, Julio Eduardo ",jyarascam@utec.edu.pe
+CS342,COMPILADORES,3,LABORATORIO 3.01,Presencial,Sab. 11:00 - 13:00,Semana General,UTEC-BA M601(30),24,15,"Yarasca Moscol, Julio Eduardo ",jyarascam@utec.edu.pe
+CS261,COMPUTACION GRAFICA,1,TEORÍA 1,Presencial,Lun. 10:00 - 12:00,Semana General,UTEC-BA A906(44),44,34,"Biagioli, Eric Javier ",ebiagioli@utec.edu.pe
+CS261,COMPUTACION GRAFICA,1,LABORATORIO 1.01,Presencial,Mie. 18:00 - 20:00,Semana General,UTEC-BA L507,22,19,"Marini Monsante, Piero ",pmarini@utec.edu.pe
+CS261,COMPUTACION GRAFICA,1,LABORATORIO 1.01,Presencial,Jue. 18:00 - 20:00,Semana General,UTEC-BA L507,22,19,"Marini Monsante, Piero ",pmarini@utec.edu.pe
+CS261,COMPUTACION GRAFICA,1,LABORATORIO 1.02,Presencial,Mie. 20:00 - 22:00,Semana General,UTEC-BA L507,22,15,"Marini Monsante, Piero ",pmarini@utec.edu.pe
+CS261,COMPUTACION GRAFICA,1,LABORATORIO 1.02,Presencial,Jue. 20:00 - 22:00,Semana General,UTEC-BA L507,22,15,"Marini Monsante, Piero ",pmarini@utec.edu.pe
+CS3P1,COMPUTACION PARALELA Y DISTRIBUIDA,1,TEORÍA 1,Presencial,Lun. 16:00 - 18:00,Semana General,UTEC-BA A905(44),43,25,"Fiestas Iquira, Jose Antonio",jfiestas@utec.edu.pe
+CS3P1,COMPUTACION PARALELA Y DISTRIBUIDA,1,LABORATORIO 1.01,Presencial,Mar. 16:00 - 18:00,Semana General,UTEC-BA M803(45),30,25,"Fiestas Iquira, Jose Antonio",jfiestas@utec.edu.pe
+CS3P1,COMPUTACION PARALELA Y DISTRIBUIDA,1,LABORATORIO 1.01,Presencial,Jue. 16:00 - 18:00,Semana General,UTEC-BA M301(30),30,25,"Fiestas Iquira, Jose Antonio",jfiestas@utec.edu.pe
+CS3P1,COMPUTACION PARALELA Y DISTRIBUIDA,2,TEORÍA 2,Presencial,Mar. 11:00 - 13:00,Semana General,UTEC-BA A706(44),44,34,"Fiestas Iquira, Jose Antonio",jfiestas@utec.edu.pe
+CS3P1,COMPUTACION PARALELA Y DISTRIBUIDA,2,LABORATORIO 2.01,Presencial,Mie. 11:00 - 13:00,Semana General,UTEC-BA M804(45),44,34,"Fiestas Iquira, Jose Antonio",jfiestas@utec.edu.pe
+CS3P1,COMPUTACION PARALELA Y DISTRIBUIDA,2,LABORATORIO 2.01,Presencial,Vie. 14:00 - 16:00,Semana General,UTEC-BA M802(45),44,34,"Fiestas Iquira, Jose Antonio",jfiestas@utec.edu.pe
+MA101,MATEMATICA II,1,TEORÍA VIRTUAL 1,Sincronico,Lun. 11:00 - 12:00,Semana General,UTEC-BA Virtual 100,267,267,"Sanchez Romero, José Renato ",jsanchezr@utec.edu.pe
+MA101,MATEMATICA II,1,TEORÍA 1.01,Presencial,Jue. 07:00 - 09:00,Semana General,UTEC-BA A706(44),44,44,"Reynoso Quispe, Patricia ",preynoso@utec.edu.pe
+MA101,MATEMATICA II,1,TEORÍA 1.02,Presencial,Vie. 07:00 - 09:00,Semana General,UTEC-BA A804(45),45,45,"Navarro Flores, Cristina  ",cnavarro@utec.edu.pe
+MA101,MATEMATICA II,1,TEORÍA 1.03,Presencial,Jue. 09:00 - 11:00,Semana General,UTEC-BA A905(44),44,44,"Reynoso Quispe, Patricia ",preynoso@utec.edu.pe
+MA101,MATEMATICA II,1,TEORÍA 1.04,Presencial,Jue. 11:00 - 13:00,Semana General,UTEC-BA A905(44),44,44,"Sanchez Romero, José Renato ",jsanchezr@utec.edu.pe
+MA101,MATEMATICA II,1,TEORÍA 1.05,Presencial,Mie. 09:00 - 11:00,Semana General,UTEC-BA A801(45),45,45,"Sanchez Romero, José Renato ",jsanchezr@utec.edu.pe
+MA101,MATEMATICA II,1,TEORÍA 1.06,Presencial,Jue. 14:00 - 16:00,Semana General,UTEC-BA A804(45),45,45,"Khouri De Arciniegas, Cordelia ",ckhouri@utec.edu.pe
+MA101,MATEMATICA II,2,TEORÍA VIRTUAL 2,Sincronico,Lun. 20:00 - 21:00,Semana General,UTEC-BA Virtual 101,224,224,"Reynoso Quispe, Patricia ",preynoso@utec.edu.pe
+MA101,MATEMATICA II,2,TEORÍA 2.01,Presencial,Mie. 11:00 - 13:00,Semana General,UTEC-BA A908(48),46,46,"Sanchez Romero, José Renato ",jsanchezr@utec.edu.pe
+MA101,MATEMATICA II,2,TEORÍA 2.02,Presencial,Jue. 09:00 - 11:00,Semana General,UTEC-BA A907(44),44,44,"Sanchez Romero, José Renato ",jsanchezr@utec.edu.pe
+MA101,MATEMATICA II,2,TEORÍA 2.03,Presencial,Mar. 14:00 - 16:00,Semana General,UTEC-BA A703(44),44,44,"Khouri De Arciniegas, Cordelia ",ckhouri@utec.edu.pe
+MA101,MATEMATICA II,2,TEORÍA 2.04,Presencial,Jue. 08:00 - 10:00,Semana General,UTEC-BA A903(46),46,46,"Quispe Rodriguez, Sergio ",squispe@utec.edu.pe
+MA101,MATEMATICA II,2,TEORÍA 2.05,Presencial,Mar. 16:00 - 18:00,Semana General,UTEC-BA A703(44),44,44,"Khouri De Arciniegas, Cordelia ",ckhouri@utec.edu.pe
+MA100,MATEMATICA I,1,TEORÍA 1,Presencial,Mar. 14:00 - 16:00,Semana General,UTEC-BA AULA MAGNA,200,162,"Chavez Pacheco, Xyoby ",xchavez@utec.edu.pe
+MA100,MATEMATICA I,1,TEORÍA 1.01,Presencial,Vie. 09:00 - 11:00,Semana General,UTEC-BA A702(44),40,40,"Cuyubamba Espinoza, Marco Antonio ",mcuyubamba@utec.edu.pe
+MA100,MATEMATICA I,1,TEORÍA 1.02,Presencial,Vie. 11:00 - 13:00,Semana General,UTEC-BA A703(44),40,31,"Chavez Pacheco, Xyoby ",xchavez@utec.edu.pe
+MA100,MATEMATICA I,1,TEORÍA 1.03,Presencial,Jue. 14:00 - 16:00,Semana General,UTEC-BA A701(44),40,32,"Olivera Oliva, Davy Alonso",volivera@utec.edu.pe
+MA100,MATEMATICA I,1,TEORÍA 1.04,Presencial,Vie. 14:00 - 16:00,Semana General,UTEC-BA A701(44),40,33,"Rojas Huamán, Cristian Felix ",crojas@utec.edu.pe
+MA100,MATEMATICA I,1,TEORÍA 1.05,Presencial,Vie. 11:00 - 13:00,Semana General,UTEC-BA A704(44),40,26,"Mendoza Flores, Miguel Alberto ",mmendozaf@utec.edu.pe
+MA100,MATEMATICA I,2,TEORÍA 2,Presencial,Lun. 09:00 - 11:00,Semana General,UTEC-BA AULA MAGNA,240,185,"Chavez Pacheco, Xyoby ",xchavez@utec.edu.pe
+MA100,MATEMATICA I,2,TEORÍA 2.01,Presencial,Jue. 09:00 - 11:00,Semana General,UTEC-BA A703(44),40,28,"Khouri De Arciniegas, Cordelia ",ckhouri@utec.edu.pe
+MA100,MATEMATICA I,2,TEORÍA 2.02,Presencial,Mie. 09:00 - 11:00,Semana General,UTEC-BA A701(44),40,40,"Rojas Huamán, Cristian Felix ",crojas@utec.edu.pe
+MA100,MATEMATICA I,2,TEORÍA 2.03,Presencial,Jue. 11:00 - 13:00,Semana General,UTEC-BA A701(44),40,30,"Khouri De Arciniegas, Cordelia ",ckhouri@utec.edu.pe
+MA100,MATEMATICA I,2,TEORÍA 2.04,Presencial,Jue. 14:00 - 16:00,Semana General,UTEC-BA A702(44),40,20,"Rojas Huamán, Cristian Felix ",crojas@utec.edu.pe
+MA100,MATEMATICA I,2,TEORÍA 2.05,Presencial,Vie. 09:00 - 11:00,Semana General,UTEC-BA A904(44),40,32,"Chavez Pacheco, Xyoby ",xchavez@utec.edu.pe
+MA100,MATEMATICA I,2,TEORÍA 2.06,Presencial,Mie. 11:00 - 13:00,Semana General,UTEC-BA A702(44),40,35,"Rojas Huamán, Cristian Felix ",crojas@utec.edu.pe
+MA100,MATEMATICA I,3,TEORÍA 3,Presencial,Mar. 16:00 - 18:00,Semana General,UTEC-BA AULA MAGNA,219,163,"Chavez Pacheco, Xyoby ",xchavez@utec.edu.pe
+MA100,MATEMATICA I,3,TEORÍA 3.01,Presencial,Mie. 14:00 - 16:00,Semana General,UTEC-BA A706(44),44,44,"Khouri De Arciniegas, Cordelia ",ckhouri@utec.edu.pe
+MA100,MATEMATICA I,3,TEORÍA 3.02,Presencial,Mie. 16:00 - 18:00,Semana General,UTEC-BA A702(44),44,42,"Khouri De Arciniegas, Cordelia ",ckhouri@utec.edu.pe
+MA100,MATEMATICA I,3,TEORÍA 3.03,Presencial,Jue. 11:00 - 13:00,Semana General,UTEC-BA A707(44),44,29,"Chavez Pacheco, Xyoby ",xchavez@utec.edu.pe
+MA100,MATEMATICA I,3,TEORÍA 3.04,Presencial,Mie. 09:00 - 11:00,Semana General,UTEC-BA A903(46),45,23,"Olivera Oliva, Davy Alonso",volivera@utec.edu.pe
+MA100,MATEMATICA I,3,TEORÍA 3.05,Presencial,Mie. 11:00 - 13:00,Semana General,UTEC-BA A902(42),42,25,"Olivera Oliva, Davy Alonso",volivera@utec.edu.pe
+CS231,DESARROLLO BASADO EN PLATAFORMAS,1,TEORÍA 1,Presencial,Mar. 18:00 - 20:00,Semana General,UTEC-BA AULA MAGNA,150,128,"Villavicencio Antunez, Jorge ",jvillavicencio@utec.edu.pe
+CS231,DESARROLLO BASADO EN PLATAFORMAS,1,LABORATORIO 1.01,Presencial,Mie. 07:00 - 09:00,Semana General,UTEC-BA M802(45),45,26,"REVILLA LECCA, MATEO ",mrevilla@utec.edu.pe
+CS231,DESARROLLO BASADO EN PLATAFORMAS,1,LABORATORIO 1.01,Presencial,Vie. 07:00 - 09:00,Semana General,UTEC-BA M801(45),45,26,"REVILLA LECCA, MATEO ",mrevilla@utec.edu.pe
+CS231,DESARROLLO BASADO EN PLATAFORMAS,1,LABORATORIO 1.02,Presencial,Mie. 20:00 - 22:00,Semana General,UTEC-BA M801(45),45,42,"Villavicencio Antunez, Jorge ",jvillavicencio@utec.edu.pe
+CS231,DESARROLLO BASADO EN PLATAFORMAS,1,LABORATORIO 1.02,Presencial,Jue. 20:00 - 22:00,Semana General,UTEC-BA M804(45),45,42,"Villavicencio Antunez, Jorge ",jvillavicencio@utec.edu.pe
+CS231,DESARROLLO BASADO EN PLATAFORMAS,1,LABORATORIO 1.03,Presencial,Mie. 18:00 - 20:00,Semana General,UTEC-BA M601(30),30,30,"RUIZ KUAN, KAT LIM ",kruiz@utec.edu.pe
+CS231,DESARROLLO BASADO EN PLATAFORMAS,1,LABORATORIO 1.03,Presencial,Jue. 18:00 - 20:00,Semana General,UTEC-BA M604(30),30,30,"RUIZ KUAN, KAT LIM ",kruiz@utec.edu.pe
+CS231,DESARROLLO BASADO EN PLATAFORMAS,1,LABORATORIO 1.04,Presencial,Mie. 07:00 - 09:00,Semana General,UTEC-BA M603(30),30,30,"Villavicencio Antunez, Jorge ",jvillavicencio@utec.edu.pe
+CS231,DESARROLLO BASADO EN PLATAFORMAS,1,LABORATORIO 1.04,Presencial,Vie. 08:00 - 10:00,Semana General,UTEC-BA M602(30),30,30,"Villavicencio Antunez, Jorge ",jvillavicencio@utec.edu.pe
+CS361,TOPICOS EN COMPUTACION GRAFICA,1,TEORÍA 1,Presencial,Vie. 16:00 - 18:00,Semana General,UTEC-BA M601(30),30,24,"Nunura Nunura, Cesar Rolando",cnunura@utec.edu.pe
+CS361,TOPICOS EN COMPUTACION GRAFICA,1,LABORATORIO 1.01,Presencial,Jue. 08:00 - 12:00,Semana General,UTEC-BA M301(30),30,24,"Nunura Nunura, Cesar Rolando",cnunura@utec.edu.pe
+CS361,TOPICOS EN COMPUTACION GRAFICA,2,TEORÍA 2,Presencial,Vie. 18:00 - 20:00,Semana General,UTEC-BA M804(45),45,29,"Olivera Oliva, Davy Alonso",volivera@utec.edu.pe
+CS361,TOPICOS EN COMPUTACION GRAFICA,2,LABORATORIO 2.01,Presencial,Mar. 15:00 - 19:00,Semana General,UTEC-BA M804(45),45,29,"Olivera Oliva, Davy Alonso",volivera@utec.edu.pe
+CS361,TOPICOS EN COMPUTACION GRAFICA,3,TEORÍA 3,Presencial,Jue. 14:00 - 16:00,Semana General,UTEC-BA L412,24,24,"Morales Ortiz, Jorge Arturo",jmorales@utec.edu.pe
+CS361,TOPICOS EN COMPUTACION GRAFICA,3,LABORATORIO 3.01,Presencial,Lun. 17:00 - 21:00,Semana General,UTEC-BA M803(45),24,24,"Morales Ortiz, Jorge Arturo",jmorales@utec.edu.pe
+CS361,TOPICOS EN COMPUTACION GRAFICA,4,TEORÍA 4,Presencial,Mie. 07:00 - 09:00,Semana General,UTEC-BA M604(30),30,24,"Olivera Oliva, Davy Alonso",volivera@utec.edu.pe
+CS361,TOPICOS EN COMPUTACION GRAFICA,4,LABORATORIO 4.01,Presencial,Jue. 09:00 - 13:00,Semana General,UTEC-BA M602(30),30,24,"Olivera Oliva, Davy Alonso",volivera@utec.edu.pe
+FG201,APRECIACION ARTISTICA,1,TEORÍA 1,Presencial,Lun. 10:00 - 11:00,Semana General,UTEC-BA A401(20),15,13,"Sagastegui Heredia, Carla Liliana ",csagastegui@utec.edu.pe
+FG201,APRECIACION ARTISTICA,1,TEORÍA 1,Presencial,Mie. 10:00 - 12:00,Semana General,UTEC-BA A502(15),15,13,"Sagastegui Heredia, Carla Liliana ",csagastegui@utec.edu.pe
+FG210,MORAL,1,TEORÍA 1,Presencial,Lun. 12:00 - 14:00,Semana General,UTEC-BA A801(45),40,26,"Centty Gutierrez, Yessica Maria",ycentty@utec.edu.pe
+FG210,MORAL,1,LABORATORIO 1.01,Presencial,Jue. 16:00 - 18:00,Semana General,UTEC-BA A704(44),40,26,"Centty Gutierrez, Yessica Maria",ycentty@utec.edu.pe
+CS392,TOPICOS AVANZADOS EN INGENIERIA DE SOFTWARE,1,TEORÍA 1,Presencial,Jue. 20:00 - 22:00,Semana General,UTEC-BA M601(30),24,14,"Farfán Madariaga, Jaime Moshe",jfarfan@utec.edu.pe
+CS392,TOPICOS AVANZADOS EN INGENIERIA DE SOFTWARE,1,TEORÍA 1,Presencial,Sab. 08:00 - 10:00,Semana General,UTEC-BA M603(30),24,14,"Farfán Madariaga, Jaime Moshe",jfarfan@utec.edu.pe
+CS392,TOPICOS AVANZADOS EN INGENIERIA DE SOFTWARE,1,LABORATORIO 1.01,Presencial,Sab. 10:00 - 12:00,Semana General,UTEC-BA M603(30),24,14,"Farfán Madariaga, Jaime Moshe",jfarfan@utec.edu.pe
+CS201,COMPUTACION EN LA SOCIEDAD,1,TEORÍA 1,Presencial,Mie. 09:00 - 11:00,Semana General,UTEC-BA A601(28),24,16,"Camacho Jiménez, Francisco José",fcamacho@utec.edu.pe
+CS201,COMPUTACION EN LA SOCIEDAD,1,TEORÍA 1,Presencial,Jue. 12:00 - 14:00,Semana General,UTEC-BA A601(28),24,16,"Camacho Jiménez, Francisco José",fcamacho@utec.edu.pe
+CS201,COMPUTACION EN LA SOCIEDAD,1,LABORATORIO 1.01,Presencial,Vie. 18:00 - 22:00,Semana A,UTEC-BA L409,24,16,"Camacho Jiménez, Francisco José",fcamacho@utec.edu.pe
+FG204,TEOLOGIA,1,TEORÍA 1,Presencial,Lun. 08:00 - 10:00,Semana General,UTEC-BA L506,22,22,"Rodriguez Wu, Lucia Geovanna",lrodriguezw@utec.edu.pe
+FG204,TEOLOGIA,1,TEORÍA 1,Presencial,Mie. 08:00 - 10:00,Semana General,UTEC-BA L506,22,22,"Rodriguez Wu, Lucia Geovanna",lrodriguezw@utec.edu.pe
+MA102,CALCULO I,1,TEORÍA VIRTUAL 1,Sincronico,Mar. 09:00 - 10:00,Semana General,UTEC-BA Virtual 100,221,136,"Reynoso Quispe, Patricia ",preynoso@utec.edu.pe
+MA102,CALCULO I,1,TEORÍA 1.01,Presencial,Vie. 07:00 - 09:00,Semana General,UTEC-BA A704(44),44,15,"Reynoso Quispe, Patricia ",preynoso@utec.edu.pe
+MA102,CALCULO I,1,TEORÍA 1.02,Presencial,Mie. 07:00 - 09:00,Semana General,UTEC-BA A705(44),44,13,"Reynoso Quispe, Patricia ",preynoso@utec.edu.pe
+MA102,CALCULO I,1,TEORÍA 1.03,Presencial,Mie. 09:00 - 11:00,Semana General,UTEC-BA A906(44),44,42,"Quispe Rodriguez, Sergio ",squispe@utec.edu.pe
+MA102,CALCULO I,1,TEORÍA 1.04,Presencial,Sab. 07:00 - 09:00,Semana General,UTEC-BA A706(44),44,22,"Navarro Flores, Cristina  ",cnavarro@utec.edu.pe
+MA102,CALCULO I,1,TEORÍA 1.05,Presencial,Jue. 11:00 - 13:00,Semana General,UTEC-BA A1001(45),45,44,"Reynoso Quispe, Patricia ",preynoso@utec.edu.pe
+MA102,CALCULO I,2,TEORÍA VIRTUAL 2,Sincronico,Lun. 11:00 - 12:00,Semana General,UTEC-BA Virtual 101,220,127,"Reynoso Quispe, Patricia ",preynoso@utec.edu.pe
+MA102,CALCULO I,2,TEORÍA 2.01,Presencial,Vie. 14:00 - 16:00,Semana General,UTEC-BA A907(44),44,44,"Navarro Flores, Cristina  ",cnavarro@utec.edu.pe
+MA102,CALCULO I,2,TEORÍA 2.03,Presencial,Mie. 11:00 - 13:00,Semana General,UTEC-BA A903(46),46,26,"Quispe Rodriguez, Sergio ",squispe@utec.edu.pe
+MA102,CALCULO I,2,TEORÍA 2.04,Presencial,Vie. 09:00 - 11:00,Semana General,UTEC-BA A1001(45),44,42,"Reynoso Quispe, Patricia ",preynoso@utec.edu.pe
+MA102,CALCULO I,2,TEORÍA 2.05,Presencial,Vie. 09:00 - 11:00,Semana General,UTEC-BA A902(42),42,15,"Navarro Flores, Cristina  ",cnavarro@utec.edu.pe
+ET301,FORMACION DE EMPRESAS DE BASE TECNOLOGICA II,1,TEORÍA 1,Presencial,Lun. 16:00 - 18:00,Semana General,UTEC-BA A602(24),24,24,"Granda Escajadillo, Kevin André ",kgranda@utec.edu.pe
+ET301,FORMACION DE EMPRESAS DE BASE TECNOLOGICA II,1,LABORATORIO VIRTUAL 1.01,Sincronico,Vie. 09:00 - 11:00,Semana General,UTEC-BA Virtual,24,24,"Granda Escajadillo, Kevin André ",kgranda@utec.edu.pe
+ET301,FORMACION DE EMPRESAS DE BASE TECNOLOGICA II,2,TEORÍA 2,Presencial,Lun. 08:00 - 10:00,Semana General,UTEC-BA A601(28),28,28,"Granda Escajadillo, Kevin André ",kgranda@utec.edu.pe
+ET301,FORMACION DE EMPRESAS DE BASE TECNOLOGICA II,2,LABORATORIO VIRTUAL 2.01,Sincronico,Vie. 11:00 - 13:00,Semana General,UTEC-BA Virtual 147,28,28,"Granda Escajadillo, Kevin André ",kgranda@utec.edu.pe
+ET201,FORMACION DE EMPRESAS DE BASE TECNOLOGICA I,1,TEORÍA VIRTUAL 1,Sincronico,Mar. 17:00 - 18:00,Semana General,UTEC-BA Virtual 100,150,137,"Flores Peña, Pedro Gustavo ",pflores@utec.edu.pe
+ET201,FORMACION DE EMPRESAS DE BASE TECNOLOGICA I,1,TEORÍA 1.06,Presencial,Lun. 08:00 - 10:00,Semana General,UTEC-BA A708(44),30,30,"Flores Peña, Pedro Gustavo ",pflores@utec.edu.pe
+ET201,FORMACION DE EMPRESAS DE BASE TECNOLOGICA I,1,TEORÍA 1.07,Presencial,Jue. 13:00 - 15:00,Semana General,UTEC-BA A802(45),30,30,"Wong Loo, Oscar William Francisco ",owong@utec.edu.pe
+ET201,FORMACION DE EMPRESAS DE BASE TECNOLOGICA I,1,TEORÍA 1.08,Presencial,Jue. 15:00 - 17:00,Semana General,UTEC-BA A904(44),30,30,"Wong Loo, Oscar William Francisco ",owong@utec.edu.pe
+ET201,FORMACION DE EMPRESAS DE BASE TECNOLOGICA I,1,TEORÍA 1.09,Presencial,Lun. 08:00 - 10:00,Semana General,UTEC-BA A906(44),30,25,"Centty Gutierrez, Yessica Maria",ycentty@utec.edu.pe
+ET201,FORMACION DE EMPRESAS DE BASE TECNOLOGICA I,1,TEORÍA 1.1,Presencial,Lun. 10:00 - 12:00,Semana General,UTEC-BA M801(45),30,22,"Flores Peña, Pedro Gustavo ",pflores@utec.edu.pe
+ET201,FORMACION DE EMPRESAS DE BASE TECNOLOGICA I,2,TEORÍA VIRTUAL 2,Sincronico,Lun. 14:00 - 15:00,Semana General,UTEC-BA Virtual 102,250,198,"Pella Fernandez, Gabriela ",gpella@utec.edu.pe
+ET201,FORMACION DE EMPRESAS DE BASE TECNOLOGICA I,2,TEORÍA 2.02,Presencial,Mie. 11:00 - 13:00,Semana General,UTEC-BA A102(36),30,30,"Guevara Medina, Carlos Cesar",cguevara@utec.edu.pe
+ET201,FORMACION DE EMPRESAS DE BASE TECNOLOGICA I,2,TEORÍA 2.04,Presencial,Mar. 11:00 - 13:00,Semana General,UTEC-BA A1001(45),30,30,"Herrera Burstein, Yuri Enrique",yherrera@utec.edu.pe
+ET201,FORMACION DE EMPRESAS DE BASE TECNOLOGICA I,2,TEORÍA 2.06,Presencial,Mar. 15:00 - 17:00,Semana General,UTEC-BA A804(45),30,24,"Flores Peña, Pedro Gustavo ",pflores@utec.edu.pe
+ET201,FORMACION DE EMPRESAS DE BASE TECNOLOGICA I,2,TEORÍA 2.07,Presencial,Mar. 12:00 - 14:00,Semana General,UTEC-BA A907(44),32,21,"Pella Fernandez, Gabriela ",gpella@utec.edu.pe
+ET201,FORMACION DE EMPRESAS DE BASE TECNOLOGICA I,2,TEORÍA 2.08,Presencial,Mie. 13:00 - 15:00,Semana General,UTEC-BA A101(36),32,25,"Guevara Medina, Carlos Cesar",cguevara@utec.edu.pe
+ET201,FORMACION DE EMPRESAS DE BASE TECNOLOGICA I,2,TEORÍA 2.09,Presencial,Mar. 13:00 - 15:00,Semana General,UTEC-BA A1001(45),32,32,"Guevara Medina, Carlos Cesar",cguevara@utec.edu.pe
+ET201,FORMACION DE EMPRESAS DE BASE TECNOLOGICA I,2,TEORÍA 2.1,Presencial,Lun. 12:00 - 14:00,Semana General,UTEC-BA A101(36),32,23,"Flores Peña, Pedro Gustavo ",pflores@utec.edu.pe
+ET201,FORMACION DE EMPRESAS DE BASE TECNOLOGICA I,2,TEORÍA 2.11,Presencial,Lun. 17:00 - 19:00,Semana General,UTEC-BA A907(44),32,13,"Flores Peña, Pedro Gustavo ",pflores@utec.edu.pe
+MA306,ANALISIS NUMERICO,1,TEORÍA 1,Presencial,Mie. 17:00 - 20:00,Semana General,UTEC-BA M302(60),45,26,"Vivanco Huaytara, Fredy ",fvivanco@utec.edu.pe
+MA306,ANALISIS NUMERICO,1,LABORATORIO 1.01,Presencial,Sab. 07:00 - 09:00,Semana General,UTEC-BA M801(45),45,26,"Vivanco Huaytara, Fredy ",fvivanco@utec.edu.pe
+MA203,ESTADISTICA Y PROBABILIDADES,1,TEORÍA 1,Presencial,Mar. 19:00 - 22:00,Semana General,UTEC-BA M601(30),30,30,"Sáenz Egúsquiza, Miguel Ángel ",msaenz@utec.edu.pe
+MA203,ESTADISTICA Y PROBABILIDADES,1,LABORATORIO VIRTUAL 1.01,Sincronico,Vie. 16:00 - 18:00,Semana General,UTEC-BA Virtual,30,30,"Sáenz Egúsquiza, Miguel Ángel ",msaenz@utec.edu.pe
+MA203,ESTADISTICA Y PROBABILIDADES,3,TEORÍA 3,Presencial,Lun. 10:00 - 13:00,Semana General,UTEC-BA M803(45),45,45,"Galarza Geronimo, Orlando Alfredo ",ogalarza@utec.edu.pe
+MA203,ESTADISTICA Y PROBABILIDADES,3,LABORATORIO VIRTUAL 3.01,Sincronico,Vie. 14:00 - 16:00,Semana General,UTEC-BA Virtual,45,45,"Galarza Geronimo, Orlando Alfredo ",ogalarza@utec.edu.pe
+MA203,ESTADISTICA Y PROBABILIDADES,4,TEORÍA 4,Presencial,Lun. 09:00 - 12:00,Semana General,UTEC-BA M804(45),45,45,"Renom Andara, Jose Miguel",jrenom@utec.edu.pe
+MA203,ESTADISTICA Y PROBABILIDADES,4,LABORATORIO VIRTUAL 4.01,Sincronico,Vie. 14:00 - 16:00,Semana General,UTEC-BA Virtual,45,45,"Renom Andara, Jose Miguel",jrenom@utec.edu.pe
+MA203,ESTADISTICA Y PROBABILIDADES,5,TEORÍA 5,Presencial,Lun. 07:00 - 10:00,Semana General,UTEC-BA M802(45),45,45,"Gamero Paredes, Antonio Alejandro ",agamero@utec.edu.pe
+MA203,ESTADISTICA Y PROBABILIDADES,5,LABORATORIO VIRTUAL 5.01,Sincronico,Vie. 18:00 - 20:00,Semana General,UTEC-BA Virtual 105,45,45,"Gamero Paredes, Antonio Alejandro ",agamero@utec.edu.pe
+MA203,ESTADISTICA Y PROBABILIDADES,6,TEORÍA 6,Presencial,Mar. 19:00 - 22:00,Semana General,UTEC-BA M802(45),45,38,"Prado Urbano, Mariano Ignacio ",mprado@utec.edu.pe
+MA203,ESTADISTICA Y PROBABILIDADES,6,LABORATORIO VIRTUAL 6.01,Sincronico,Vie. 18:00 - 20:00,Semana General,UTEC-BA Virtual 10,45,38,"Prado Urbano, Mariano Ignacio ",mprado@utec.edu.pe
+MA203,ESTADISTICA Y PROBABILIDADES,7,TEORÍA 7,Presencial,Lun. 10:00 - 13:00,Semana General,UTEC-BA M802(45),45,45,"Gamero Paredes, Antonio Alejandro ",agamero@utec.edu.pe
+MA203,ESTADISTICA Y PROBABILIDADES,7,LABORATORIO VIRTUAL 7.01,Sincronico,Vie. 16:00 - 18:00,Semana General,UTEC-BA Virtual,45,45,"Gamero Paredes, Antonio Alejandro ",agamero@utec.edu.pe
+MA203,ESTADISTICA Y PROBABILIDADES,8,TEORÍA 8,Presencial,Lun. 14:00 - 17:00,Semana General,UTEC-BA M802(45),45,44,"Rojas Malasquez, Royer Edelwer",rrojasma@utec.edu.pe
+MA203,ESTADISTICA Y PROBABILIDADES,8,LABORATORIO VIRTUAL 8.01,Sincronico,Vie. 14:00 - 16:00,Semana General,UTEC-BA Virtual 101,45,44,"Rojas Malasquez, Royer Edelwer",rrojasma@utec.edu.pe
+FG211,ETICA PROFESIONAL,1,TEORÍA 1,Presencial,Lun. 18:00 - 20:00,Semana General,UTEC-BA A905(44),30,30,"Estrada Merino, Alfredo ",aestrada@utec.edu.pe
+FG211,ETICA PROFESIONAL,1,TEORÍA 1,Presencial,Jue. 17:00 - 18:00,Semana General,UTEC-BA A908(48),30,30,"Estrada Merino, Alfredo ",aestrada@utec.edu.pe
+FG211,ETICA PROFESIONAL,2,TEORÍA 2,Presencial,Mie. 19:00 - 21:00,Semana General,UTEC-BA A903(46),30,30,"Cisneros Hidalgo, Jhon Melvin ",jcisnerosh@utec.edu.pe
+FG211,ETICA PROFESIONAL,2,TEORÍA 2.01,Presencial,Vie. 19:00 - 20:00,Semana General,UTEC-BA A903(46),30,30,"Cisneros Hidalgo, Jhon Melvin ",jcisnerosh@utec.edu.pe
+FG211,ETICA PROFESIONAL,3,TEORÍA 3,Presencial,Jue. 16:00 - 18:00,Semana General,UTEC-BA A706(44),31,31,"Gutierrez Zevallos, Cristian ",cgutierrezz@utec.edu.pe
+FG211,ETICA PROFESIONAL,3,TEORÍA 3.01,Presencial,Mie. 10:00 - 11:00,Semana General,UTEC-BA A1002(44),31,31,"Gutierrez Zevallos, Cristian ",cgutierrezz@utec.edu.pe
+FG211,ETICA PROFESIONAL,4,TEORÍA 4,Presencial,Mar. 19:00 - 21:00,Semana General,UTEC-BA A908(48),30,30,"Herrán Arias, José Luis ",jherran@utec.edu.pe
+FG211,ETICA PROFESIONAL,4,TEORÍA 4.01,Presencial,Vie. 13:00 - 14:00,Semana General,UTEC-BA A908(48),30,30,"Herrán Arias, José Luis ",jherran@utec.edu.pe
+FG211,ETICA PROFESIONAL,5,TEORÍA 5,Presencial,Lun. 08:00 - 10:00,Semana General,UTEC-BA A903(46),30,30,"Estrada Merino, Alfredo ",aestrada@utec.edu.pe
+FG211,ETICA PROFESIONAL,5,TEORÍA 5.01,Presencial,Jue. 18:00 - 19:00,Semana General,UTEC-BA A903(46),30,30,"Estrada Merino, Alfredo ",aestrada@utec.edu.pe
+FG211,ETICA PROFESIONAL,6,TEORÍA 6,Presencial,Jue. 18:00 - 20:00,Semana General,UTEC-BA A701(44),31,31,"Valencia Zapata, Julian ",jvalencia@utec.edu.pe
+FG211,ETICA PROFESIONAL,6,TEORÍA 6,Presencial,Vie. 18:00 - 19:00,Semana General,UTEC-BA A702(44),31,31,"Valencia Zapata, Julian ",jvalencia@utec.edu.pe
+FG211,ETICA PROFESIONAL,7,TEORÍA 7,Presencial,Mie. 18:00 - 20:00,Semana General,UTEC-BA A707(44),30,30,"Valencia Zapata, Julian ",jvalencia@utec.edu.pe
+FG211,ETICA PROFESIONAL,7,TEORÍA 7,Presencial,Vie. 08:00 - 09:00,Semana General,UTEC-BA A701(44),30,30,"Valencia Zapata, Julian ",jvalencia@utec.edu.pe
+FG211,ETICA PROFESIONAL,8,TEORÍA 8,Presencial,Lun. 20:00 - 22:00,Semana General,UTEC-BA A905(44),30,30,"Estrada Merino, Alfredo ",aestrada@utec.edu.pe
+FG211,ETICA PROFESIONAL,8,TEORÍA 8,Presencial,Vie. 16:00 - 17:00,Semana General,UTEC-BA A701(44),30,30,"Estrada Merino, Alfredo ",aestrada@utec.edu.pe
+FG211,ETICA PROFESIONAL,9,TEORÍA 9,Presencial,Jue. 16:00 - 18:00,Semana General,UTEC-BA A802(45),31,31,"Valencia Zapata, Julian ",jvalencia@utec.edu.pe
+FG211,ETICA PROFESIONAL,9,TEORÍA 9,Presencial,Vie. 19:00 - 20:00,Semana General,UTEC-BA A703(44),31,31,"Valencia Zapata, Julian ",jvalencia@utec.edu.pe
+FG211,ETICA PROFESIONAL,10,TEORÍA 10,Presencial,Lun. 12:00 - 14:00,Semana General,UTEC-BA A906(44),30,30,"XICOTA TORRES, ESTER ",exicota@utec.edu.pe
+FG211,ETICA PROFESIONAL,10,TEORÍA 10,Presencial,Mie. 13:00 - 14:00,Semana General,UTEC-BA A703(44),30,30,"XICOTA TORRES, ESTER ",exicota@utec.edu.pe
+CS312,ESTRUCTURAS DE DATOS AVANZADAS,2,TEORÍA 2,Presencial,Lun. 20:00 - 22:00,Semana General,UTEC-BA A903(46),45,37,"Flores Benites, Victor ",vflores@utec.edu.pe
+CS312,ESTRUCTURAS DE DATOS AVANZADAS,2,LABORATORIO 2.01,Presencial,Jue. 18:00 - 20:00,Semana General,UTEC-BA M803(45),45,37,"Flores Benites, Victor ",vflores@utec.edu.pe
+CS312,ESTRUCTURAS DE DATOS AVANZADAS,2,LABORATORIO 2.01,Presencial,Vie. 20:00 - 22:00,Semana General,UTEC-BA M802(45),45,37,"Flores Benites, Victor ",vflores@utec.edu.pe
+FG102,METODOLOGIA DEL ESTUDIO,1,TEORÍA 1,Presencial,Mie. 18:00 - 20:00,Semana General,UTEC-BA A601(28),24,8,"Hijar Santibañez, Alfredo ",ahijar@utec.edu.pe
+FG102,METODOLOGIA DEL ESTUDIO,1,TEORÍA 1,Presencial,Sab. 08:00 - 09:00,Semana General,UTEC-BA A602(24),24,8,"Hijar Santibañez, Alfredo ",ahijar@utec.edu.pe
+FG102,METODOLOGIA DEL ESTUDIO,1,LABORATORIO 1.01,Presencial,Sab. 09:00 - 11:00,Semana General,UTEC-BA A501(30),24,8,"Hijar Santibañez, Alfredo ",ahijar@utec.edu.pe
+FG111,"""PERSONA, MATRIMONIO Y FAMILIA""",1,TEORÍA VIRTUAL 1,Sincronico,Jue. 07:00 - 09:00,Semana General,UTEC-BA Virtual 10,40,16,"Arevalo Ventocilla, Silvanna ",sarevalo@utec.edu.pe
+FG111,"""PERSONA, MATRIMONIO Y FAMILIA""",1,LABORATORIO 1.01,Presencial,Lun. 17:00 - 19:00,Semana General,UTEC-BA M801(45),40,16,"Arevalo Ventocilla, Silvanna ",sarevalo@utec.edu.pe
+CS391,INGENIERIA DE SOFTWARE III,1,TEORÍA 1,Presencial,Lun. 16:00 - 18:00,Semana General,UTEC-BA M602(30),28,10,"Pajuelo Pardo, Gustavo ",gpajuelo@utec.edu.pe
+CS391,INGENIERIA DE SOFTWARE III,1,LABORATORIO 1.01,Presencial,Mie. 14:00 - 16:00,Semana General,UTEC-BA M603(30),28,10,"Pajuelo Pardo, Gustavo ",gpajuelo@utec.edu.pe
+CS391,INGENIERIA DE SOFTWARE III,1,LABORATORIO 1.01,Presencial,Jue. 17:00 - 19:00,Semana General,UTEC-BA M801(45),28,10,"Pajuelo Pardo, Gustavo ",gpajuelo@utec.edu.pe
+CS291,INGENIERIA DE SOFTWARE I,1,TEORÍA 1,Presencial,Lun. 16:00 - 18:00,Semana General,UTEC-BA M302(60),60,54,"Chambilla Aquino, Teófilo ",tchambilla@utec.edu.pe
+CS291,INGENIERIA DE SOFTWARE I,1,LABORATORIO 1.01,Presencial,Mar. 14:00 - 16:00,Semana General,UTEC-BA M302(60),60,54,"Chambilla Aquino, Teófilo ",tchambilla@utec.edu.pe
+CS291,INGENIERIA DE SOFTWARE I,1,LABORATORIO 1.01,Presencial,Jue. 16:00 - 18:00,Semana General,UTEC-BA M302(60),60,54,"Chambilla Aquino, Teófilo ",tchambilla@utec.edu.pe
+FG301,ENSENANZA SOCIAL DE LA IGLESIA,1,TEORÍA 1,Presencial,Sab. 09:00 - 12:00,Semana General,UTEC-BA A708(44),24,15,"Florez Parodi, Luis Enrique",lflorez@utec.edu.pe
+CS381,TOPICOS EN INTELIGENCIA ARTIFICIAL,1,TEORÍA VIRTUAL 1,Sincronico,Mar. 07:00 - 09:00,Semana General,UTEC-BA Virtual 109,15,12,"Morante Ponce, Alan Victor Raul",amorantep@utec.edu.pe
+CS381,TOPICOS EN INTELIGENCIA ARTIFICIAL,1,LABORATORIO 1.01,Presencial,Mie. 07:00 - 09:00,Semana General,UTEC-BA A502(15),15,12,"Morante Ponce, Alan Victor Raul",amorantep@utec.edu.pe
+CS2H1,INTERACCION HUMANO COMPUTADOR,1,TEORÍA 1,Presencial,Lun. 20:00 - 22:00,Semana General,UTEC-BA A908(48),48,48,"Chambilla Aquino, Teófilo ",tchambilla@utec.edu.pe
+CS2H1,INTERACCION HUMANO COMPUTADOR,1,LABORATORIO 1.01,Presencial,Vie. 18:00 - 22:00,Semana General,UTEC-BA L507,24,24,"Chambilla Aquino, Teófilo ",tchambilla@utec.edu.pe
+CS2H1,INTERACCION HUMANO COMPUTADOR,1,LABORATORIO 1.02,Presencial,Mar. 18:00 - 22:00,Semana General,UTEC-BA L507,24,24,"Chambilla Aquino, Teófilo ",tchambilla@utec.edu.pe
+CS393,SISTEMAS DE INFORMACION,1,TEORÍA 1,Presencial,Lun. 08:00 - 09:00,Semana General,UTEC-BA A702(44),42,33,"TENORIO GONZALES, CANDY VERONICA ",ctenorio@utec.edu.pe
+CS393,SISTEMAS DE INFORMACION,1,LABORATORIO 1.01,Presencial,Jue. 11:00 - 13:00,Semana General,UTEC-BA M803(45),42,33,"TENORIO GONZALES, CANDY VERONICA ",ctenorio@utec.edu.pe
+FG103,INTRODUCCION A LA VIDA UNIVERSITARIA,1,TEORÍA 1,Presencial,Mie. 11:00 - 13:00,Semana General,UTEC-BA A701(44),40,18,"Hernández Pacheco, Edgar Javier ",ehernandez@utec.edu.pe
+FG103,INTRODUCCION A LA VIDA UNIVERSITARIA,1,TEORÍA 1,Presencial,Vie. 11:00 - 13:00,Semana General,UTEC-BA A701(44),40,18,"Hernández Pacheco, Edgar Javier ",ehernandez@utec.edu.pe
+CS100,INTRODUCCION DE CIENCIA DE LA COMPUTACION,1,TEORÍA 1,Presencial,Lun. 08:00 - 09:00,Semana General,UTEC-BA AULA MAGNA,126,89,"Brossard Nuñez, Ian Paul ",ibrossard@utec.edu.pe
+CS100,INTRODUCCION DE CIENCIA DE LA COMPUTACION,1,LABORATORIO 1.01,Presencial,Jue. 09:00 - 11:00,Semana General,UTEC-BA M804(45),41,41,"Brossard Nuñez, Ian Paul ",ibrossard@utec.edu.pe
+CS100,INTRODUCCION DE CIENCIA DE LA COMPUTACION,1,LABORATORIO 1.02,Presencial,Jue. 11:00 - 13:00,Semana General,UTEC-BA M804(45),40,38,"Brossard Nuñez, Ian Paul ",ibrossard@utec.edu.pe
+CS100,INTRODUCCION DE CIENCIA DE LA COMPUTACION,1,LABORATORIO 1.03,Presencial,Vie. 09:00 - 11:00,Semana General,UTEC-BA M804(45),45,10,"Brossard Nuñez, Ian Paul ",ibrossard@utec.edu.pe
+FG205,HISTORIA DE LA CULTURA,1,TEORÍA 1,Presencial,Mar. 10:00 - 11:00,Semana General,UTEC-BA A203(30),15,4,"Alexandrino Ocaña, Grace Eliana ",galexandrino@utec.edu.pe
+FG205,HISTORIA DE LA CULTURA,1,TEORÍA 1,Presencial,Jue. 09:00 - 11:00,Semana General,UTEC-BA A201(18),15,4,"Alexandrino Ocaña, Grace Eliana ",galexandrino@utec.edu.pe
+FG106,TEATRO,1,TEORÍA 1,Presencial,Mar. 08:00 - 10:00,Semana General,UTEC-BA A101(36),30,9,"Ramirez Herrera, Victor Gonzalo",vramirez@utec.edu.pe
+FG106,TEATRO,1,TEORÍA 1,Presencial,Jue. 08:00 - 09:00,Semana General,UTEC-BA A101(36),30,9,"Ramirez Herrera, Victor Gonzalo",vramirez@utec.edu.pe
+FG106,TEATRO,2,TEORÍA 2,Presencial,Lun. 08:00 - 09:00,Semana General,UTEC-BA A101(36),30,12,"Ramirez Herrera, Victor Gonzalo",vramirez@utec.edu.pe
+FG106,TEATRO,2,TEORÍA 2,Presencial,Vie. 08:00 - 10:00,Semana General,UTEC-BA A203(30),30,12,"Ramirez Herrera, Victor Gonzalo",vramirez@utec.edu.pe
+ET101,METODOLOGIA DE LA INVESTIGACION EN COMPUTACION,1,TEORÍA VIRTUAL 1,Sincronico,Vie. 16:00 - 19:00,Semana General,UTEC-BA Virtual 140,45,14,"Fiestas Iquira, Jose Antonio",jfiestas@utec.edu.pe
+ET101,METODOLOGIA DE LA INVESTIGACION EN COMPUTACION,2,TEORÍA VIRTUAL 2,Sincronico,Jue. 13:00 - 16:00,Semana General,UTEC-BA Virtual 145,45,32,"Fiestas Iquira, Jose Antonio",jfiestas@utec.edu.pe
+FG101,COMUNICACIÓN,1,TEORÍA 1,Presencial,Lun. 09:00 - 11:00,Semana General,UTEC-BA AUDITORIO,242,134,"Zorrilla Aranguren, Carlos Marcelo",czorrilla@utec.edu.pe
+FG101,COMUNICACION,1,LABORATORIO 1.01,Presencial,Mar. 11:00 - 13:00,Semana General,UTEC-BA A701(44),40,40,"Zorrilla Aranguren, Carlos Marcelo",czorrilla@utec.edu.pe
+FG101,COMUNICACION,1,LABORATORIO 1.02,Presencial,Mie. 14:00 - 16:00,Semana General,UTEC-BA A701(44),40,27,"Cabezas Palacios, Claudia Teresa ",ccabezas@utec.edu.pe
+FG101,COMUNICACION,1,LABORATORIO 1.03,Presencial,Mar. 09:00 - 11:00,Semana General,UTEC-BA A704(44),40,19,"Reaño Donair, Violeta Stephanie",vreano@utec.edu.pe
+FG101,COMUNICACION,1,LABORATORIO 1.04,Presencial,Mar. 09:00 - 11:00,Semana General,UTEC-BA A705(44),42,10,"Cespedes Cano, Daniel ",dcespedesc@utec.edu.pe
+FG101,COMUNICACION,1,LABORATORIO 1.05,Presencial,Mie. 14:00 - 16:00,Semana General,UTEC-BA A702(44),40,10,"Muñoz Rios, Jimena Sol",jmunoz@utec.edu.pe
+FG101,COMUNICACION,1,LABORATORIO 1.06,Presencial,Mie. 09:00 - 11:00,Semana General,UTEC-BA A705(44),40,28,"Reaño Donair, Violeta Stephanie",vreano@utec.edu.pe
+FG101,COMUNICACION,2,TEORÍA 2,Presencial,Mar. 09:00 - 11:00,Semana General,UTEC-BA AULA MAGNA,244,164,"Zorrilla Aranguren, Carlos Marcelo",czorrilla@utec.edu.pe
+FG101,COMUNICACION,2,LABORATORIO 2.01,Presencial,Mie. 11:00 - 13:00,Semana General,UTEC-BA A707(44),40,18,"Cespedes Cano, Daniel ",dcespedesc@utec.edu.pe
+FG101,COMUNICACION,2,LABORATORIO 2.02,Presencial,Jue. 09:00 - 11:00,Semana General,UTEC-BA A708(44),40,40,"Ramirez Herrera, Victor Gonzalo",vramirez@utec.edu.pe
+FG101,COMUNICACION,2,LABORATORIO 2.03,Presencial,Mie. 09:00 - 11:00,Semana General,UTEC-BA A706(44),40,13,"Neira Neira, Kenny ",kneira@utec.edu.pe
+FG101,COMUNICACION,2,LABORATORIO 2.04,Presencial,Jue. 14:00 - 16:00,Semana General,UTEC-BA A703(44),40,33,"Ramirez Herrera, Victor Gonzalo",vramirez@utec.edu.pe
+FG101,COMUNICACION,2,LABORATORIO 2.05,Presencial,Vie. 11:00 - 13:00,Semana General,UTEC-BA A907(44),40,31,"Neira Neira, Kenny ",kneira@utec.edu.pe
+FG101,COMUNICACION,2,LABORATORIO 2.06,Presencial,Jue. 14:00 - 16:00,Semana General,UTEC-BA A704(44),44,29,"Gonzales Camacho, Daniel Isaac",dgonzales@utec.edu.pe
+FG203,ORATORIA,1,TEORÍA 1,Presencial,Mar. 11:00 - 13:00,Semana General,UTEC-BA A803(45),45,45,"Hidalgo Wuest, Oscar ",ohidalgo@utec.edu.pe
+FG203,ORATORIA,1,LABORATORIO 1.01,Presencial,Vie. 14:00 - 16:00,Semana General,UTEC-BA A802(45),45,45,"Hidalgo Wuest, Oscar ",ohidalgo@utec.edu.pe
+FG203,ORATORIA,4,TEORÍA 4,Presencial,Lun. 09:00 - 11:00,Semana General,UTEC-BA A703(44),44,44,"Acosta Pelaez, Gonzalo ",gacosta@utec.edu.pe
+FG203,ORATORIA,4,LABORATORIO 4.01,Presencial,Mie. 14:00 - 16:00,Semana General,UTEC-BA A906(44),44,44,"Acosta Pelaez, Gonzalo ",gacosta@utec.edu.pe
+FG203,ORATORIA,8,TEORÍA 8,Presencial,Lun. 14:00 - 16:00,Semana General,UTEC-BA A901(42),42,42,"Reaño Donair, Violeta Stephanie",vreano@utec.edu.pe
+FG203,ORATORIA,8,LABORATORIO 8.01,Presencial,Mar. 14:00 - 16:00,Semana General,UTEC-BA A902(42),42,42,"Reaño Donair, Violeta Stephanie",vreano@utec.edu.pe
+FG203,ORATORIA,13,TEORÍA 13,Presencial,Mie. 16:00 - 18:00,Semana General,UTEC-BA A804(45),45,45,"Hidalgo Wuest, Oscar ",ohidalgo@utec.edu.pe
+FG203,ORATORIA,13,LABORATORIO 13.01,Presencial,Jue. 16:00 - 18:00,Semana General,UTEC-BA A804(45),45,45,"Hidalgo Wuest, Oscar ",ohidalgo@utec.edu.pe
+FG203,ORATORIA,14,TEORÍA 14,Presencial,Mar. 08:00 - 10:00,Semana General,UTEC-BA A801(45),44,38,"Acosta Pelaez, Gonzalo ",gacosta@utec.edu.pe
+FG203,ORATORIA,14,LABORATORIO 14.01,Presencial,Jue. 08:00 - 10:00,Semana General,UTEC-BA A904(44),44,38,"Acosta Pelaez, Gonzalo ",gacosta@utec.edu.pe
+FG203,ORATORIA,15,TEORÍA 15,Presencial,Mar. 08:00 - 10:00,Semana General,UTEC-BA A906(44),44,38,"Nuñez Del Prado Tavara, Aaron ",anunezd@utec.edu.pe
+FG203,ORATORIA,15,LABORATORIO 15.01,Presencial,Vie. 08:00 - 10:00,Semana General,UTEC-BA A907(44),44,38,"Nuñez Del Prado Tavara, Aaron ",anunezd@utec.edu.pe
+FG203,ORATORIA,16,TEORÍA 16,Presencial,Jue. 08:00 - 10:00,Semana General,UTEC-BA A1002(44),44,30,"Reyes Arcos, Tania Belen",treyes@utec.edu.pe
+FG203,ORATORIA,16,LABORATORIO 16.01,Presencial,Vie. 08:00 - 10:00,Semana General,UTEC-BA A903(46),44,30,"Reyes Arcos, Tania Belen",treyes@utec.edu.pe
+FG203,ORATORIA,17,TEORÍA 17,Presencial,Mie. 11:00 - 13:00,Semana General,UTEC-BA A1002(44),44,44,"Reyes Arcos, Tania Belen",treyes@utec.edu.pe
+FG203,ORATORIA,17,LABORATORIO 17.01,Presencial,Vie. 11:00 - 13:00,Semana General,UTEC-BA A1001(45),44,44,"Reyes Arcos, Tania Belen",treyes@utec.edu.pe
+FG203,ORATORIA,18,TEORÍA 18,Presencial,Mar. 12:00 - 14:00,Semana General,UTEC-BA A1002(44),44,44,"Reaño Donair, Violeta Stephanie",vreano@utec.edu.pe
+FG203,ORATORIA,18,LABORATORIO 18.01,Presencial,Jue. 09:00 - 11:00,Semana General,UTEC-BA A704(44),44,44,"Reaño Donair, Violeta Stephanie",vreano@utec.edu.pe
+FG203,ORATORIA,19,TEORÍA 19,Presencial,Jue. 14:00 - 16:00,Semana General,UTEC-BA A901(42),42,42,"Caballero Reynoso, Veronica ",vcaballero@utec.edu.pe
+FG203,ORATORIA,19,LABORATORIO 19.01,Presencial,Sab. 09:00 - 11:00,Semana General,UTEC-BA A703(44),42,42,"Caballero Reynoso, Veronica ",vcaballero@utec.edu.pe
+FG203,ORATORIA,20,TEORÍA 20,Presencial,Vie. 13:00 - 15:00,Semana General,UTEC-BA A704(44),44,44,"Caballero Reynoso, Veronica ",vcaballero@utec.edu.pe
+FG203,ORATORIA,20,LABORATORIO 20.01,Presencial,Sab. 13:00 - 15:00,Semana General,UTEC-BA A704(44),44,44,"Caballero Reynoso, Veronica ",vcaballero@utec.edu.pe
+FG203,ORATORIA,21,TEORÍA 21,Presencial,Mar. 13:00 - 15:00,Semana General,UTEC-BA A905(44),44,44,"Ramirez Herrera, Victor Gonzalo",vramirez@utec.edu.pe
+FG203,ORATORIA,21,LABORATORIO 21.01,Presencial,Vie. 14:00 - 16:00,Semana General,UTEC-BA A706(44),44,44,"Ramirez Herrera, Victor Gonzalo",vramirez@utec.edu.pe
+FG203,ORATORIA,22,TEORÍA 22,Presencial,Lun. 09:00 - 11:00,Semana General,UTEC-BA A702(44),44,44,"Ramirez Herrera, Victor Gonzalo",vramirez@utec.edu.pe
+FG203,ORATORIA,22,LABORATORIO 22.01,Presencial,Jue. 16:00 - 18:00,Semana General,UTEC-BA A702(44),44,44,"Ramirez Herrera, Victor Gonzalo",vramirez@utec.edu.pe
+FG350,LIDERAZGO,1,TEORÍA VIRTUAL 1,Sincronico,Mie. 17:00 - 19:00,Semana General,UTEC-BA Virtual 106,20,8,"Arevalo Ventocilla, Silvanna ",sarevalo@utec.edu.pe
+FG350,LIDERAZGO,1,LABORATORIO VIRTUAL 1.01,Sincronico,Vie. 07:00 - 09:00,Semana General,UTEC-BA Virtual 105,20,8,"Arevalo Ventocilla, Silvanna ",sarevalo@utec.edu.pe
+MA307,MATEMATICA APLICADA A LA COMPUTACION,1,TEORÍA 1,Presencial,Jue. 07:00 - 09:00,Semana General,UTEC-BA A703(44),44,35,"Olivera Oliva, Davy Alonso",volivera@utec.edu.pe
+MA307,MATEMATICA APLICADA A LA COMPUTACION,1,TEORÍA 1,Presencial,Vie. 16:00 - 18:00,Semana General,UTEC-BA A804(45),44,35,"Olivera Oliva, Davy Alonso",volivera@utec.edu.pe
+CS1D1,ESTRUCTURAS DISCRETAS I,1,TEORÍA 1,Presencial,Mie. 11:00 - 13:00,Semana General,UTEC-BA A705(44),40,22,"Peres Malarin, Luis Miguel ",lperes@utec.edu.pe
+CS1D1,ESTRUCTURAS DISCRETAS I,1,LABORATORIO 1.01,Presencial,Jue. 11:00 - 13:00,Semana General,UTEC-BA A703(44),40,22,"Peres Malarin, Luis Miguel ",lperes@utec.edu.pe
+CS1D1,ESTRUCTURAS DISCRETAS I,1,LABORATORIO 1.01,Presencial,Vie. 11:00 - 13:00,Semana General,UTEC-BA A706(44),40,22,"Peres Malarin, Luis Miguel ",lperes@utec.edu.pe
+CS1D1,ESTRUCTURAS DISCRETAS I,2,TEORÍA 2,Presencial,Mie. 09:00 - 11:00,Semana General,UTEC-BA A703(44),40,37,"Tipe Villanueva, Jorge ",jtipe@utec.edu.pe
+CS1D1,ESTRUCTURAS DISCRETAS I,2,LABORATORIO 2.01,Presencial,Jue. 09:00 - 11:00,Semana General,UTEC-BA A706(44),40,37,"Tipe Villanueva, Jorge ",jtipe@utec.edu.pe
+CS1D1,ESTRUCTURAS DISCRETAS I,2,LABORATORIO 2.01,Presencial,Vie. 09:00 - 11:00,Semana General,UTEC-BA A703(44),40,37,"Tipe Villanueva, Jorge ",jtipe@utec.edu.pe
+CS1D1,ESTRUCTURAS DISCRETAS I,3,TEORÍA 3,Presencial,Mie. 11:00 - 13:00,Semana General,UTEC-BA A706(44),40,39,"Tipe Villanueva, Jorge ",jtipe@utec.edu.pe
+CS1D1,ESTRUCTURAS DISCRETAS I,3,LABORATORIO 3.01,Presencial,Jue. 11:00 - 13:00,Semana General,UTEC-BA A704(44),40,39,"Tipe Villanueva, Jorge ",jtipe@utec.edu.pe
+CS1D1,ESTRUCTURAS DISCRETAS I,3,LABORATORIO 3.01,Presencial,Vie. 11:00 - 13:00,Semana General,UTEC-BA A707(44),40,39,"Tipe Villanueva, Jorge ",jtipe@utec.edu.pe
+CS1D1,ESTRUCTURAS DISCRETAS I,4,TEORÍA 4,Presencial,Mie. 09:00 - 11:00,Semana General,UTEC-BA A704(44),42,18,"Sanchez Ruiz, David ",dsanchezr@utec.edu.pe
+CS1D1,ESTRUCTURAS DISCRETAS I,4,LABORATORIO 4.01,Presencial,Jue. 09:00 - 11:00,Semana General,UTEC-BA A707(44),42,18,"Sanchez Ruiz, David ",dsanchezr@utec.edu.pe
+CS1D1,ESTRUCTURAS DISCRETAS I,4,LABORATORIO 4.01,Presencial,Vie. 09:00 - 11:00,Semana General,UTEC-BA A704(44),42,18,"Sanchez Ruiz, David ",dsanchezr@utec.edu.pe
+CS1D1,ESTRUCTURAS DISCRETAS I,5,TEORÍA 5,Presencial,Mie. 11:00 - 13:00,Semana General,UTEC-BA A601(28),20,20,"Renom Andara, Jose Miguel",jrenom@utec.edu.pe
+CS1D1,ESTRUCTURAS DISCRETAS I,5,LABORATORIO 5.01,Presencial,Jue. 11:00 - 13:00,Semana General,UTEC-BA A602(24),20,20,"Renom Andara, Jose Miguel",jrenom@utec.edu.pe
+CS1D1,ESTRUCTURAS DISCRETAS I,5,LABORATORIO 5.01,Presencial,Vie. 11:00 - 13:00,Semana General,UTEC-BA A101(36),20,20,"Renom Andara, Jose Miguel",jrenom@utec.edu.pe
+CS1D2,ESTRUCTURAS DISCRETAS II,1,TEORÍA 1,Presencial,Lun. 11:00 - 13:00,Semana General,UTEC-BA A703(44),44,44,"Mayta Guillermo, Jorge Enrique ",jmayta@utec.edu.pe
+CS1D2,ESTRUCTURAS DISCRETAS II,1,LABORATORIO 1.01,Presencial,Mie. 11:00 - 13:00,Semana General,UTEC-BA A907(44),44,44,"Mayta Guillermo, Jorge Enrique ",jmayta@utec.edu.pe
+CS1D2,ESTRUCTURAS DISCRETAS II,1,LABORATORIO 1.01,Presencial,Vie. 11:00 - 13:00,Semana General,UTEC-BA A904(44),44,44,"Mayta Guillermo, Jorge Enrique ",jmayta@utec.edu.pe
+CS1D2,ESTRUCTURAS DISCRETAS II,2,TEORÍA 2,Presencial,Mar. 11:00 - 13:00,Semana General,UTEC-BA A801(45),44,44,"Tipe Villanueva, Jorge ",jtipe@utec.edu.pe
+CS1D2,ESTRUCTURAS DISCRETAS II,2,LABORATORIO 2.01,Presencial,Mie. 15:00 - 17:00,Semana General,UTEC-BA A801(45),44,44,"Tipe Villanueva, Jorge ",jtipe@utec.edu.pe
+CS1D2,ESTRUCTURAS DISCRETAS II,2,LABORATORIO 2.01,Presencial,Vie. 15:00 - 17:00,Semana General,UTEC-BA A707(44),44,44,"Tipe Villanueva, Jorge ",jtipe@utec.edu.pe
+CS1D2,ESTRUCTURAS DISCRETAS II,3,TEORÍA 3,Presencial,Mar. 11:00 - 13:00,Semana General,UTEC-BA A903(46),44,44,"Sanchez Ruiz, David ",dsanchezr@utec.edu.pe
+CS1D2,ESTRUCTURAS DISCRETAS II,3,LABORATORIO 3.01,Presencial,Mie. 07:00 - 09:00,Semana General,UTEC-BA A802(45),44,44,"Sanchez Ruiz, David ",dsanchezr@utec.edu.pe
+CS1D2,ESTRUCTURAS DISCRETAS II,3,LABORATORIO 3.01,Presencial,Vie. 11:00 - 13:00,Semana General,UTEC-BA A906(44),44,44,"Sanchez Ruiz, David ",dsanchezr@utec.edu.pe
+CS1D2,ESTRUCTURAS DISCRETAS II,5,TEORÍA 5,Presencial,Lun. 15:00 - 17:00,Semana General,UTEC-BA A704(44),44,28,"Mas Huaman, Ronald Jesus ",rmas@utec.edu.pe
+CS1D2,ESTRUCTURAS DISCRETAS II,5,LABORATORIO 5.01,Presencial,Mar. 14:00 - 16:00,Semana General,UTEC-BA A803(45),44,28,"Mas Huaman, Ronald Jesus ",rmas@utec.edu.pe
+CS1D2,ESTRUCTURAS DISCRETAS II,5,LABORATORIO 5.01,Presencial,Vie. 15:00 - 17:00,Semana General,UTEC-BA A1001(45),44,28,"Mas Huaman, Ronald Jesus ",rmas@utec.edu.pe
+MA201,CALCULO II,1,TEORÍA 1,Presencial,Jue. 14:00 - 16:00,Semana General,UTEC-BA M604(30),30,30,"Camarena Perez, Victor ",vcamarena@utec.edu.pe
+MA201,CALCULO II,1,LABORATORIO 1.01,Presencial,Sab. 14:00 - 16:00,Semana General,UTEC-BA M602(30),30,30,"Camarena Perez, Victor ",vcamarena@utec.edu.pe
+MA201,CALCULO II,11,TEORÍA 11,Presencial,Mar. 16:00 - 18:00,Semana General,UTEC-BA M601(30),30,30,"Camarena Perez, Victor ",vcamarena@utec.edu.pe
+MA201,CALCULO II,11,LABORATORIO 11.01,Presencial,Jue. 17:00 - 19:00,Semana General,UTEC-BA M602(30),30,30,"Camarena Perez, Victor ",vcamarena@utec.edu.pe
+MA201,CALCULO II,2,TEORÍA 2,Presencial,Lun. 13:00 - 15:00,Semana General,UTEC-BA M603(30),30,30,"Mendoza Montalvo, Jimmy ",jmendozam@utec.edu.pe
+MA201,CALCULO II,2,LABORATORIO 2.01,Presencial,Sab. 13:00 - 15:00,Semana General,UTEC-BA M801(45),30,30,"Mendoza Montalvo, Jimmy ",jmendozam@utec.edu.pe
+MA201,CALCULO II,3,TEORÍA 3,Presencial,Lun. 14:00 - 16:00,Semana General,UTEC-BA M801(45),45,45,"Pantoja Carhuavilca, Hermes Yesser",hpantoja@utec.edu.pe
+MA201,CALCULO II,3,LABORATORIO 3.01,Presencial,Mar. 13:00 - 15:00,Semana General,UTEC-BA M804(45),45,45,"Pantoja Carhuavilca, Hermes Yesser",hpantoja@utec.edu.pe
+MA201,CALCULO II,4,TEORÍA 4,Presencial,Mie. 18:00 - 20:00,Semana General,UTEC-BA M801(45),45,45,"Obregon Ramos, Maximo  ",mobregon@utec.edu.pe
+MA201,CALCULO II,4,LABORATORIO 4.01,Presencial,Vie. 18:00 - 20:00,Semana General,UTEC-BA M801(45),45,45,"Obregon Ramos, Maximo  ",mobregon@utec.edu.pe
+MA201,CALCULO II,6,TEORÍA 6,Presencial,Lun. 15:00 - 17:00,Semana General,UTEC-BA M604(30),30,30,"Mendoza Montalvo, Jimmy ",jmendozam@utec.edu.pe
+MA201,CALCULO II,6,LABORATORIO 6.01,Presencial,Jue. 14:00 - 16:00,Semana General,UTEC-BA M601(30),30,30,"Mendoza Montalvo, Jimmy ",jmendozam@utec.edu.pe
+MA201,CALCULO II,7,TEORÍA 7,Presencial,Mie. 18:00 - 20:00,Semana General,UTEC-BA M802(45),45,45,"Perez Cupe, Rosulo ",rperezc@utec.edu.pe
+MA201,CALCULO II,7,LABORATORIO 7.01,Presencial,Sab. 14:00 - 16:00,Semana General,UTEC-BA M803(45),45,45,"Perez Cupe, Rosulo ",rperezc@utec.edu.pe
+MA201,CALCULO II,8,TEORÍA 8,Presencial,Mie. 16:00 - 18:00,Semana General,UTEC-BA M804(45),45,45,"Perez Cupe, Rosulo ",rperezc@utec.edu.pe
+MA201,CALCULO II,8,LABORATORIO 8.01,Presencial,Vie. 16:00 - 18:00,Semana General,UTEC-BA M302(60),45,45,"Perez Cupe, Rosulo ",rperezc@utec.edu.pe
+MA201,CALCULO II,9,TEORÍA 9,Presencial,Mar. 11:00 - 13:00,Semana General,UTEC-BA M301(30),30,30,"Mendoza Montalvo, Jimmy ",jmendozam@utec.edu.pe
+MA201,CALCULO II,9,LABORATORIO 9.01,Presencial,Sab. 16:00 - 18:00,Semana General,UTEC-BA M801(45),30,30,"Mendoza Montalvo, Jimmy ",jmendozam@utec.edu.pe
+MA201,CALCULO II,13,TEORÍA 13,Presencial,Lun. 09:00 - 11:00,Semana General,UTEC-BA M604(30),30,30,"Mantari Laureano, Jose  Luis",jmantari@utec.edu.pe
+MA201,CALCULO II,13,LABORATORIO 13.01,Presencial,Mie. 09:00 - 11:00,Semana General,UTEC-BA M601(30),30,30,"Mantari Laureano, Jose  Luis",jmantari@utec.edu.pe
+MA201,CALCULO II,14,TEORÍA 14,Presencial,Mie. 13:00 - 15:00,Semana General,UTEC-BA M601(30),30,30,"Perez Cupe, Rosulo ",rperezc@utec.edu.pe
+MA201,CALCULO II,14,LABORATORIO 14.01,Presencial,Sab. 16:00 - 18:00,Semana General,UTEC-BA M602(30),30,30,"Perez Cupe, Rosulo ",rperezc@utec.edu.pe
+FG220,ANALISIS DE LA REALIDAD PERUANA,1,TEORÍA 1,Presencial,Lun. 14:00 - 17:00,Semana General,UTEC-BA A703(44),44,35,"Espinoza Delgado, Giancarlo ",gespinozad@utec.edu.pe
+FG220,ANALISIS DE LA REALIDAD PERUANA,2,TEORÍA 2,Presencial,Lun. 13:00 - 15:00,Semana General,UTEC-BA A705(44),44,44,"Pino Matos, Jose ",jpino@utec.edu.pe
+FG220,ANALISIS DE LA REALIDAD PERUANA,2,TEORÍA 2,Presencial,Jue. 10:00 - 11:00,Semana General,UTEC-BA A904(44),44,44,"Pino Matos, Jose ",jpino@utec.edu.pe
+FG220,ANALISIS DE LA REALIDAD PERUANA,3,TEORÍA 3,Presencial,Lun. 15:00 - 16:00,Semana General,UTEC-BA A902(42),42,42,"Nuñez Del Prado Tavara, Aaron ",anunezd@utec.edu.pe
+FG220,ANALISIS DE LA REALIDAD PERUANA,3,TEORÍA 3,Presencial,Jue. 11:00 - 13:00,Semana General,UTEC-BA A803(45),42,42,"Nuñez Del Prado Tavara, Aaron ",anunezd@utec.edu.pe
+FG220,ANALISIS DE LA REALIDAD PERUANA,4,TEORÍA 4,Presencial,Mar. 09:00 - 10:00,Semana General,UTEC-BA A904(44),42,42,"Stiglich Labarthe, Matteo ",mstiglich@utec.edu.pe
+FG220,ANALISIS DE LA REALIDAD PERUANA,4,TEORÍA 4,Presencial,Jue. 11:00 - 13:00,Semana General,UTEC-BA A902(42),42,42,"Stiglich Labarthe, Matteo ",mstiglich@utec.edu.pe
+FG220,ANALISIS DE LA REALIDAD PERUANA,5,TEORÍA 5,Presencial,Mar. 10:00 - 11:00,Semana General,UTEC-BA A803(45),44,44,"Stiglich Labarthe, Matteo ",mstiglich@utec.edu.pe
+FG220,ANALISIS DE LA REALIDAD PERUANA,5,TEORÍA 5,Presencial,Jue. 14:00 - 16:00,Semana General,UTEC-BA A706(44),44,44,"Stiglich Labarthe, Matteo ",mstiglich@utec.edu.pe
+FG220,ANALISIS DE LA REALIDAD PERUANA,6,TEORÍA 6,Presencial,Mie. 12:00 - 13:00,Semana General,UTEC-BA A904(44),44,44,"Watson Jimenez, Lucia ",lwatson@utec.edu.pe
+FG220,ANALISIS DE LA REALIDAD PERUANA,6,TEORÍA 6,Presencial,Jue. 14:00 - 16:00,Semana General,UTEC-BA A708(44),44,44,"Watson Jimenez, Lucia ",lwatson@utec.edu.pe
+FG220,ANALISIS DE LA REALIDAD PERUANA,7,TEORÍA 7,Presencial,Mar. 17:00 - 19:00,Semana General,UTEC-BA A907(44),44,12,"Adrianzen Ponce, Cayetana ",cadrianzen@utec.edu.pe
+FG220,ANALISIS DE LA REALIDAD PERUANA,7,TEORÍA 7,Presencial,Jue. 17:00 - 18:00,Semana General,UTEC-BA A907(44),44,12,"Adrianzen Ponce, Cayetana ",cadrianzen@utec.edu.pe
+FG220,ANALISIS DE LA REALIDAD PERUANA,8,TEORÍA 8,Presencial,Mar. 15:00 - 17:00,Semana General,UTEC-BA A1001(45),44,38,"Nuñez Del Prado Tavara, Aaron ",anunezd@utec.edu.pe
+FG220,ANALISIS DE LA REALIDAD PERUANA,8,TEORÍA 8,Presencial,Jue. 16:00 - 17:00,Semana General,UTEC-BA A907(44),44,38,"Nuñez Del Prado Tavara, Aaron ",anunezd@utec.edu.pe
+FG220,ANALISIS DE LA REALIDAD PERUANA,9,TEORÍA 9,Presencial,Mie. 13:00 - 14:00,Semana General,UTEC-BA A906(44),44,44,"Watson Jimenez, Lucia ",lwatson@utec.edu.pe
+FG220,ANALISIS DE LA REALIDAD PERUANA,9,TEORÍA 9,Presencial,Jue. 10:00 - 12:00,Semana General,UTEC-BA A908(48),44,44,"Watson Jimenez, Lucia ",lwatson@utec.edu.pe
+FG220,ANALISIS DE LA REALIDAD PERUANA,10,TEORÍA 10,Presencial,Mie. 14:00 - 16:00,Semana General,UTEC-BA A904(44),44,44,"Espinoza Delgado, Giancarlo ",gespinozad@utec.edu.pe
+FG220,ANALISIS DE LA REALIDAD PERUANA,10,TEORÍA 10,Presencial,Jue. 16:00 - 17:00,Semana General,UTEC-BA A703(44),44,44,"Espinoza Delgado, Giancarlo ",gespinozad@utec.edu.pe
+FG220,ANALISIS DE LA REALIDAD PERUANA,11,TEORÍA 11,Presencial,Mie. 17:00 - 19:00,Semana General,UTEC-BA A705(44),44,10,"Adrianzen Ponce, Cayetana ",cadrianzen@utec.edu.pe
+FG220,ANALISIS DE LA REALIDAD PERUANA,11,TEORÍA 11,Presencial,Jue. 18:00 - 19:00,Semana General,UTEC-BA A704(44),44,10,"Adrianzen Ponce, Cayetana ",cadrianzen@utec.edu.pe
+CS281,INTELIGENCIA ARTIFICIAL,1,TEORÍA 1,Presencial,Lun. 11:00 - 13:00,Semana General,UTEC-BA M303(60),30,26,"Soriano Vargas, Aurea Rossy ",asoriano@utec.edu.pe
+CS281,INTELIGENCIA ARTIFICIAL,1,LABORATORIO 1.01,Presencial,Mar. 11:00 - 13:00,Semana General,UTEC-BA M803(45),30,26,"Soriano Vargas, Aurea Rossy ",asoriano@utec.edu.pe
+CS281,INTELIGENCIA ARTIFICIAL,1,LABORATORIO 1.01,Presencial,Vie. 11:00 - 13:00,Semana General,UTEC-BA M601(30),30,26,"Soriano Vargas, Aurea Rossy ",asoriano@utec.edu.pe
+CS311,PROGRAMACION COMPETITIVA,1,TEORÍA 1,Presencial,Lun. 16:00 - 18:00,Semana General,UTEC-BA A908(48),45,30,"Napa Bernuy, Angel Gerardo ",anapa@utec.edu.pe
+CS311,PROGRAMACION COMPETITIVA,1,LABORATORIO 1.01,Presencial,Jue. 16:00 - 18:00,Semana General,UTEC-BA M803(45),45,30,"Napa Bernuy, Angel Gerardo ",anapa@utec.edu.pe
+CS311,PROGRAMACION COMPETITIVA,1,LABORATORIO 1.01,Presencial,Vie. 16:00 - 18:00,Semana General,UTEC-BA M801(45),45,30,"Napa Bernuy, Angel Gerardo ",anapa@utec.edu.pe
+CS112,CIENCIA DE LA COMPUTACION I,1,TEORÍA 1,Presencial,Lun. 14:00 - 16:00,Semana General,UTEC-BA AULA MAGNA,247,206,"Bermejo Rios, Maria Hilda",mbermejo@utec.edu.pe
+CS112,CIENCIA DE LA COMPUTACION I,1,LABORATORIO 1.01,Presencial,Mar. 09:00 - 11:00,Semana General,UTEC-BA M801(45),40,40,"Brossard Nuñez, Ian Paul ",ibrossard@utec.edu.pe
+CS112,CIENCIA DE LA COMPUTACION I,1,LABORATORIO 1.01,Presencial,Mie. 09:00 - 11:00,Semana General,UTEC-BA M801(45),40,40,"Brossard Nuñez, Ian Paul ",ibrossard@utec.edu.pe
+CS112,CIENCIA DE LA COMPUTACION I,1,LABORATORIO 1.02,Presencial,Mar. 11:00 - 13:00,Semana General,UTEC-BA M801(45),40,36,"Brossard Nuñez, Ian Paul ",ibrossard@utec.edu.pe
+CS112,CIENCIA DE LA COMPUTACION I,1,LABORATORIO 1.02,Presencial,Mie. 11:00 - 13:00,Semana General,UTEC-BA M801(45),40,36,"Brossard Nuñez, Ian Paul ",ibrossard@utec.edu.pe
+CS112,CIENCIA DE LA COMPUTACION I,1,LABORATORIO 1.03,Presencial,Mie. 09:00 - 11:00,Semana General,UTEC-BA M802(45),40,36,"Bermejo Rios, Maria Hilda",mbermejo@utec.edu.pe
+CS112,CIENCIA DE LA COMPUTACION I,1,LABORATORIO 1.03,Presencial,Vie. 09:00 - 11:00,Semana General,UTEC-BA M801(45),40,36,"Bermejo Rios, Maria Hilda",mbermejo@utec.edu.pe
+CS112,CIENCIA DE LA COMPUTACION I,1,LABORATORIO 1.04,Presencial,Mie. 11:00 - 13:00,Semana General,UTEC-BA M802(45),42,28,"Sotomayor Beltran, Carlos Alberto ",csotomayorb@utec.edu.pe
+CS112,CIENCIA DE LA COMPUTACION I,1,LABORATORIO 1.04,Presencial,Vie. 11:00 - 13:00,Semana General,UTEC-BA M801(45),42,28,"Sotomayor Beltran, Carlos Alberto ",csotomayorb@utec.edu.pe
+CS112,CIENCIA DE LA COMPUTACION I,1,LABORATORIO 1.05,Presencial,Mar. 11:00 - 13:00,Semana General,UTEC-BA M802(45),40,37,"Nina Choquehuayta, Wilder ",wnina@utec.edu.pe
+CS112,CIENCIA DE LA COMPUTACION I,1,LABORATORIO 1.05,Presencial,Mie. 11:00 - 13:00,Semana General,UTEC-BA M803(45),40,37,"Nina Choquehuayta, Wilder ",wnina@utec.edu.pe
+CS112,CIENCIA DE LA COMPUTACION I,1,LABORATORIO 1.06,Presencial,Mar. 14:00 - 16:00,Semana General,UTEC-BA M802(45),45,29,"Chavez Alvarez, Jose Armando ",jchaveza@utec.edu.pe
+CS112,CIENCIA DE LA COMPUTACION I,1,LABORATORIO 1.06,Presencial,Jue. 14:00 - 16:00,Semana General,UTEC-BA M802(45),45,29,"Chavez Alvarez, Jose Armando ",jchaveza@utec.edu.pe
+CS112,CIENCIA DE LA COMPUTACION I,2,TEORÍA 2,Presencial,Lun. 11:00 - 13:00,Semana General,UTEC-BA AULA MAGNA,245,229,"Bermejo Rios, Maria Hilda",mbermejo@utec.edu.pe
+CS112,CIENCIA DE LA COMPUTACION I,2,LABORATORIO 2.01,Presencial,Jue. 11:00 - 13:00,Semana General,UTEC-BA M801(45),40,35,"Gallegos Velgara, Henry Giovanny",hgallegos@utec.edu.pe
+CS112,CIENCIA DE LA COMPUTACION I,2,LABORATORIO 2.01,Presencial,Vie. 11:00 - 13:00,Semana General,UTEC-BA M802(45),40,35,"Gallegos Velgara, Henry Giovanny",hgallegos@utec.edu.pe
+CS112,CIENCIA DE LA COMPUTACION I,2,LABORATORIO 2.02,Presencial,Jue. 11:00 - 13:00,Semana General,UTEC-BA M802(45),40,40,"Bermejo Rios, Maria Hilda",mbermejo@utec.edu.pe
+CS112,CIENCIA DE LA COMPUTACION I,2,LABORATORIO 2.02,Presencial,Vie. 11:00 - 13:00,Semana General,UTEC-BA M803(45),40,40,"Bermejo Rios, Maria Hilda",mbermejo@utec.edu.pe
+CS112,CIENCIA DE LA COMPUTACION I,2,LABORATORIO 2.03,Presencial,Mar. 14:00 - 16:00,Semana General,UTEC-BA M801(45),40,37,"Gallegos Velgara, Henry Giovanny",hgallegos@utec.edu.pe
+CS112,CIENCIA DE LA COMPUTACION I,2,LABORATORIO 2.03,Presencial,Mie. 14:00 - 16:00,Semana General,UTEC-BA M801(45),40,37,"Gallegos Velgara, Henry Giovanny",hgallegos@utec.edu.pe
+CS112,CIENCIA DE LA COMPUTACION I,2,LABORATORIO 2.04,Presencial,Jue. 09:00 - 11:00,Semana General,UTEC-BA M801(45),40,38,"Sotomayor Beltran, Carlos Alberto ",csotomayorb@utec.edu.pe
+CS112,CIENCIA DE LA COMPUTACION I,2,LABORATORIO 2.04,Presencial,Vie. 09:00 - 11:00,Semana General,UTEC-BA M802(45),40,38,"Sotomayor Beltran, Carlos Alberto ",csotomayorb@utec.edu.pe
+CS112,CIENCIA DE LA COMPUTACION I,2,LABORATORIO 2.05,Presencial,Mie. 14:00 - 16:00,Semana General,UTEC-BA M802(45),40,39,"Sotomayor Beltran, Carlos Alberto ",csotomayorb@utec.edu.pe
+CS112,CIENCIA DE LA COMPUTACION I,2,LABORATORIO 2.05,Presencial,Jue. 14:00 - 16:00,Semana General,UTEC-BA M801(45),40,39,"Sotomayor Beltran, Carlos Alberto ",csotomayorb@utec.edu.pe
+CS112,CIENCIA DE LA COMPUTACION I,2,LABORATORIO 2.06,Presencial,Jue. 09:00 - 11:00,Semana General,UTEC-BA M802(45),45,40,"Gallegos Velgara, Henry Giovanny",hgallegos@utec.edu.pe
+CS112,CIENCIA DE LA COMPUTACION I,2,LABORATORIO 2.06,Presencial,Vie. 09:00 - 11:00,Semana General,UTEC-BA M803(45),45,40,"Gallegos Velgara, Henry Giovanny",hgallegos@utec.edu.pe
+CS113,CIENCIA DE LA COMPUTACION II,1,TEORÍA VIRTUAL 1,Sincronico,Lun. 18:00 - 20:00,Semana General,UTEC-BA Virtual ,240,240,"Brossard Nuñez, Ian Paul ",ibrossard@utec.edu.pe
+CS113,CIENCIA DE LA COMPUTACION II,1,LABORATORIO 1.01,Presencial,Jue. 07:00 - 09:00,Semana General,UTEC-BA M802(45),45,45,"Quevedo Vega, Percy ",pquevedo@utec.edu.pe
+CS113,CIENCIA DE LA COMPUTACION II,1,LABORATORIO 1.01,Presencial,Vie. 07:00 - 09:00,Semana General,UTEC-BA M804(45),45,45,"Quevedo Vega, Percy ",pquevedo@utec.edu.pe
+CS113,CIENCIA DE LA COMPUTACION II,1,LABORATORIO 1.02,Presencial,Mie. 12:00 - 14:00,Semana General,UTEC-BA M602(30),30,30,"Chavez Alvarez, Jose Armando ",jchaveza@utec.edu.pe
+CS113,CIENCIA DE LA COMPUTACION II,1,LABORATORIO 1.02,Presencial,Vie. 12:00 - 14:00,Semana General,UTEC-BA M602(30),30,30,"Chavez Alvarez, Jose Armando ",jchaveza@utec.edu.pe
+CS113,CIENCIA DE LA COMPUTACION II,1,LABORATORIO 1.03,Presencial,Mar. 09:00 - 11:00,Semana General,UTEC-BA M803(45),45,45,"Gallegos Velgara, Henry Giovanny",hgallegos@utec.edu.pe
+CS113,CIENCIA DE LA COMPUTACION II,1,LABORATORIO 1.03,Presencial,Mie. 09:00 - 11:00,Semana General,UTEC-BA M803(45),45,45,"Gallegos Velgara, Henry Giovanny",hgallegos@utec.edu.pe
+CS113,CIENCIA DE LA COMPUTACION II,1,LABORATORIO 1.05,Presencial,Mie. 18:00 - 20:00,Semana General,UTEC-BA M804(45),45,45,"Abisrror Zarate, Marvin ",mabisrror@utec.edu.pe
+CS113,CIENCIA DE LA COMPUTACION II,1,LABORATORIO 1.05,Presencial,Jue. 18:00 - 20:00,Semana General,UTEC-BA M802(45),45,45,"Abisrror Zarate, Marvin ",mabisrror@utec.edu.pe
+CS113,CIENCIA DE LA COMPUTACION II,1,LABORATORIO 1.06,Presencial,Mar. 07:00 - 09:00,Semana General,UTEC-BA M802(45),45,45,"Quevedo Vega, Percy ",pquevedo@utec.edu.pe
+CS113,CIENCIA DE LA COMPUTACION II,1,LABORATORIO 1.06,Presencial,Mie. 07:00 - 09:00,Semana General,UTEC-BA M804(45),45,45,"Quevedo Vega, Percy ",pquevedo@utec.edu.pe
+CS113,CIENCIA DE LA COMPUTACION II,1,LABORATORIO 1.07,Presencial,Mar. 09:00 - 11:00,Semana General,UTEC-BA M603(30),30,30,"Bermejo Rios, Maria Hilda",mbermejo@utec.edu.pe
+CS113,CIENCIA DE LA COMPUTACION II,1,LABORATORIO 1.07,Presencial,Jue. 09:00 - 11:00,Semana General,UTEC-BA M601(30),30,30,"Bermejo Rios, Maria Hilda",mbermejo@utec.edu.pe
+CS113,CIENCIA DE LA COMPUTACION II,2,TEORÍA VIRTUAL 2,Sincronico,Lun. 16:00 - 18:00,Semana General,UTEC-BA Virtual 100,270,270,"Brossard Nuñez, Ian Paul ",ibrossard@utec.edu.pe
+CS113,CIENCIA DE LA COMPUTACION II,2,LABORATORIO 2.01,Presencial,Mar. 17:00 - 19:00,Semana General,UTEC-BA M302(60),45,45,"Bermejo Rios, Maria Hilda",mbermejo@utec.edu.pe
+CS113,CIENCIA DE LA COMPUTACION II,2,LABORATORIO 2.01,Presencial,Sab. 11:00 - 13:00,Semana General,UTEC-BA M302(60),45,45,"Bermejo Rios, Maria Hilda",mbermejo@utec.edu.pe
+CS113,CIENCIA DE LA COMPUTACION II,2,LABORATORIO 2.02,Presencial,Mie. 16:00 - 18:00,Semana General,UTEC-BA M802(45),45,45,"Gallegos Velgara, Henry Giovanny",hgallegos@utec.edu.pe
+CS113,CIENCIA DE LA COMPUTACION II,2,LABORATORIO 2.02,Presencial,Jue. 16:00 - 18:00,Semana General,UTEC-BA M802(45),45,45,"Gallegos Velgara, Henry Giovanny",hgallegos@utec.edu.pe
+CS113,CIENCIA DE LA COMPUTACION II,2,LABORATORIO 2.03,Presencial,Jue. 16:00 - 18:00,Semana General,UTEC-BA M804(45),45,45,"Rivas Medina, Rubén Demetrio",rrivas@utec.edu.pe
+CS113,CIENCIA DE LA COMPUTACION II,2,LABORATORIO 2.03,Presencial,Vie. 16:00 - 18:00,Semana General,UTEC-BA M803(45),45,45,"Rivas Medina, Rubén Demetrio",rrivas@utec.edu.pe
+CS113,CIENCIA DE LA COMPUTACION II,2,LABORATORIO 2.04,Presencial,Vie. 07:00 - 09:00,Semana General,UTEC-BA M803(45),45,45,"Gallegos Velgara, Henry Giovanny",hgallegos@utec.edu.pe
+CS113,CIENCIA DE LA COMPUTACION II,2,LABORATORIO 2.04,Presencial,Sab. 09:00 - 11:00,Semana General,UTEC-BA M803(45),45,45,"Gallegos Velgara, Henry Giovanny",hgallegos@utec.edu.pe
+CS113,CIENCIA DE LA COMPUTACION II,2,LABORATORIO 2.05,Presencial,Jue. 14:00 - 16:00,Semana General,UTEC-BA M804(45),45,45,"Bermejo Rios, Maria Hilda",mbermejo@utec.edu.pe
+CS113,CIENCIA DE LA COMPUTACION II,2,LABORATORIO 2.05,Presencial,Vie. 14:00 - 16:00,Semana General,UTEC-BA M803(45),45,45,"Bermejo Rios, Maria Hilda",mbermejo@utec.edu.pe
+CS113,CIENCIA DE LA COMPUTACION II,2,LABORATORIO 2.06,Presencial,Mar. 09:00 - 11:00,Semana General,UTEC-BA M804(45),45,45,"Nina Choquehuayta, Wilder ",wnina@utec.edu.pe
+CS113,CIENCIA DE LA COMPUTACION II,2,LABORATORIO 2.06,Presencial,Sab. 09:00 - 11:00,Semana General,UTEC-BA M801(45),45,45,"Nina Choquehuayta, Wilder ",wnina@utec.edu.pe
+CS111,PROGRAMACION DE VIDEO JUEGOS,1,TEORÍA 1,Presencial,Lun. 18:00 - 20:00,Semana General,UTEC-BA AUDITORIO,105,64,"Rivas Medina, Rubén Demetrio",rrivas@utec.edu.pe
+CS111,PROGRAMACION DE VIDEO JUEGOS,1,LABORATORIO 1.01,Presencial,Jue. 18:00 - 20:00,Semana General,UTEC-BA M603(30),30,13,"Rivas Medina, Rubén Demetrio",rrivas@utec.edu.pe
+CS111,PROGRAMACION DE VIDEO JUEGOS,1,LABORATORIO 1.01,Presencial,Vie. 18:00 - 20:00,Semana General,UTEC-BA M604(30),30,13,"Rivas Medina, Rubén Demetrio",rrivas@utec.edu.pe
+CS111,PROGRAMACION DE VIDEO JUEGOS,1,LABORATORIO 1.02,Presencial,Mar. 18:00 - 20:00,Semana General,UTEC-BA M801(45),45,21,"Chavez Alvarez, Jose Armando ",jchaveza@utec.edu.pe
+CS111,PROGRAMACION DE VIDEO JUEGOS,1,LABORATORIO 1.02,Presencial,Jue. 18:00 - 20:00,Semana General,UTEC-BA M804(45),45,21,"Chavez Alvarez, Jose Armando ",jchaveza@utec.edu.pe
+CS111,PROGRAMACION DE VIDEO JUEGOS,1,LABORATORIO 1.03,Presencial,Mar. 11:00 - 13:00,Semana General,UTEC-BA M603(30),30,30,"Chavez Alvarez, Jose Armando ",jchaveza@utec.edu.pe
+CS111,PROGRAMACION DE VIDEO JUEGOS,1,LABORATORIO 1.03,Presencial,Vie. 10:00 - 12:00,Semana General,UTEC-BA M603(30),30,30,"Chavez Alvarez, Jose Armando ",jchaveza@utec.edu.pe
+CS341,LENGUAJES DE PROGRAMACION,1,TEORÍA VIRTUAL 1,Sincronico,Lun. 09:00 - 11:00,Semana General,UTEC-BA Virtual 10,45,17,"Mandujano Cornejo, Vittorino ",vmandujano@utec.edu.pe
+CS341,LENGUAJES DE PROGRAMACION,1,LABORATORIO 1.01,Presencial,Jue. 14:00 - 16:00,Semana General,UTEC-BA M803(45),45,17,"Mandujano Cornejo, Vittorino ",vmandujano@utec.edu.pe
+CS341,LENGUAJES DE PROGRAMACION,1,LABORATORIO 1.01,Presencial,Vie. 12:00 - 14:00,Semana General,UTEC-BA M302(60),45,17,"Mandujano Cornejo, Vittorino ",vmandujano@utec.edu.pe
+CS404,PROYECTO FINAL DE CARRERA III,1,TEORÍA VIRTUAL 1,Sincronico,Mar. 10:00 - 12:00,Semana General,UTEC-BA Virtual 112,20,19,"Granda Escajadillo, Kevin André ",kgranda@utec.edu.pe
+CS404,PROYECTO FINAL DE CARRERA III,1,TEORÍA VIRTUAL 1,Sincronico,Jue. 09:00 - 11:00,Semana General,UTEC-BA Virtual 116,20,19,"Granda Escajadillo, Kevin André ",kgranda@utec.edu.pe
+CS402,PROYECTO FINAL DE CARRERA I,1,TEORÍA VIRTUAL 1,Sincronico,Lun. 15:00 - 16:00,Semana General,UTEC-BA Virtual 105,53,52,"Mora Cloque, Rensso Victor Hugo ",rmora@utec.edu.pe
+CS402,PROYECTO FINAL DE CARRERA I,1,TEORÍA VIRTUAL 1.01,Sincronico,Mar. 15:00 - 18:00,Semana General,UTEC-BA Virtual 112,10,10,"Soriano Vargas, Aurea Rossy ",asoriano@utec.edu.pe
+CS402,PROYECTO FINAL DE CARRERA I,1,TEORÍA VIRTUAL 1.02,Sincronico,Mie. 16:00 - 19:00,Semana General,UTEC-BA Virtual 114,7,5,"Lopez Del Alamo, Cristian Jose",clopezd@utec.edu.pe
+CS402,PROYECTO FINAL DE CARRERA I,1,TEORÍA VIRTUAL 1.03,Sincronico,Mie. 14:00 - 17:00,Semana General,UTEC-BA Virtual 111,7,7,"Adanaque Infante, Luz Antuanet",ladanaque@utec.edu.pe
+CS402,PROYECTO FINAL DE CARRERA I,1,TEORÍA VIRTUAL 1.04,Sincronico,Mie. 15:00 - 18:00,Semana General,UTEC-BA Virtual 121,9,8,"Fiestas Iquira, Jose Antonio",jfiestas@utec.edu.pe
+CS402,PROYECTO FINAL DE CARRERA I,1,TEORÍA VIRTUAL 1.05,Sincronico,Jue. 16:00 - 19:00,Semana General,UTEC-BA Virtual 121,7,7,"Villegas Suárez, Ariana Mirella ",avillegass@utec.edu.pe
+CS402,PROYECTO FINAL DE CARRERA I,1,TEORÍA VIRTUAL 1.06,Sincronico,Jue. 17:00 - 20:00,Semana General,UTEC-BA Virtual 116,7,7,"Cayllahua Cahuina, Edward Jorge Yuri ",ecayllahua@utec.edu.pe
+CS402,PROYECTO FINAL DE CARRERA I,1,TEORÍA VIRTUAL 1.07,Sincronico,Vie. 16:00 - 19:00,Semana General,UTEC-BA Virtual 114,8,8,"Biagioli, Eric Javier ",ebiagioli@utec.edu.pe
+CS403,PROYECTO FINAL DE CARRERA II,1,TEORÍA VIRTUAL 1,Sincronico,Lun. 09:00 - 11:00,Semana General,UTEC-BA Virtual 114,7,6,"Lopez Del Alamo, Cristian Jose",clopezd@utec.edu.pe
+CS403,PROYECTO FINAL DE CARRERA II,1,TEORÍA VIRTUAL 1,Sincronico,Jue. 09:00 - 11:00,Semana General,UTEC-BA Virtual 105,7,6,"Lopez Del Alamo, Cristian Jose",clopezd@utec.edu.pe
+CS403,PROYECTO FINAL DE CARRERA II,2,TEORÍA VIRTUAL 2,Sincronico,Jue. 09:00 - 11:00,Semana General,UTEC-BA Virtual 109,7,7,"Fiestas Iquira, Jose Antonio",jfiestas@utec.edu.pe
+CS403,PROYECTO FINAL DE CARRERA II,2,TEORÍA VIRTUAL 2,Sincronico,Vie. 09:00 - 11:00,Semana General,UTEC-BA Virtual 128,7,7,"Fiestas Iquira, Jose Antonio",jfiestas@utec.edu.pe
+CS403,PROYECTO FINAL DE CARRERA II,3,TEORÍA VIRTUAL 3,Sincronico,Lun. 16:00 - 18:00,Semana General,UTEC-BA Virtual 128,7,4,"Soriano Vargas, Aurea Rossy ",asoriano@utec.edu.pe
+CS403,PROYECTO FINAL DE CARRERA II,3,TEORÍA VIRTUAL 3,Sincronico,Jue. 16:00 - 18:00,Semana General,UTEC-BA Virtual 110,7,4,"Soriano Vargas, Aurea Rossy ",asoriano@utec.edu.pe
+CS403,PROYECTO FINAL DE CARRERA II,5,TEORÍA VIRTUAL 5,Sincronico,Jue. 18:00 - 20:00,Semana General,UTEC-BA Virtual 118,7,4,"Gonzalez Reaño, Jorge Luis",jgonzalez@utec.edu.pe
+CS403,PROYECTO FINAL DE CARRERA II,5,TEORÍA VIRTUAL 5,Sincronico,Vie. 18:00 - 20:00,Semana General,UTEC-BA Virtual 111,7,4,"Gonzalez Reaño, Jorge Luis",jgonzalez@utec.edu.pe
+CS403,PROYECTO FINAL DE CARRERA II,7,TEORÍA VIRTUAL 7,Sincronico,Mar. 17:00 - 19:00,Semana General,UTEC-BA Virtual 115,7,2,"Biagioli, Eric Javier ",ebiagioli@utec.edu.pe
+CS403,PROYECTO FINAL DE CARRERA II,7,TEORÍA VIRTUAL 7,Sincronico,Jue. 17:00 - 19:00,Semana General,UTEC-BA Virtual 112,7,2,"Biagioli, Eric Javier ",ebiagioli@utec.edu.pe
+CS331,REDES Y COMUNICACION,1,TEORÍA VIRTUAL 1,Sincronico,Lun. 12:00 - 13:00,Semana General,UTEC-BA Virtual 104,45,18,"Williams Valencia, Carlos Eduardo ",cwilliams@utec.edu.pe
+CS331,REDES Y COMUNICACION,1,LABORATORIO 1.01,Presencial,Mie. 20:00 - 22:00,Semana General,UTEC-BA M802(45),30,18,"Arias Obregon, Gabriel Andres ",garias@utec.edu.pe
+CS331,REDES Y COMUNICACION,1,LABORATORIO 1.01,Presencial,Jue. 20:00 - 22:00,Semana General,UTEC-BA M301(30),30,18,"Arias Obregon, Gabriel Andres ",garias@utec.edu.pe
+CS331,REDES Y COMUNICACION,2,TEORÍA VIRTUAL 2,Sincronico,Lun. 13:00 - 14:00,Semana General,UTEC-BA Virtual 105,30,14,"Williams Valencia, Carlos Eduardo ",cwilliams@utec.edu.pe
+CS331,REDES Y COMUNICACION,2,LABORATORIO 2.01,Presencial,Mar. 18:00 - 20:00,Semana General,UTEC-BA M803(45),30,14,"Arias Obregon, Gabriel Andres ",garias@utec.edu.pe
+CS331,REDES Y COMUNICACION,2,LABORATORIO 2.01,Presencial,Mie. 18:00 - 20:00,Semana General,UTEC-BA M602(30),30,14,"Arias Obregon, Gabriel Andres ",garias@utec.edu.pe
+CS362,ROBOTICA,1,TEORÍA 1,Presencial,Mar. 08:00 - 10:00,Semana General,UTEC-BA A707(44),24,23,"Ramos Ponce, Oscar Efraín",oramos@utec.edu.pe
+CS362,ROBOTICA,1,TEORÍA 1,Presencial,Jue. 09:00 - 10:00,Semana General,UTEC-BA A902(42),24,23,"Ramos Ponce, Oscar Efraín",oramos@utec.edu.pe
+CS362,ROBOTICA,1,LABORATORIO 1.01,Presencial,Vie. 14:00 - 18:00,Semana A,UTEC-BA L201,24,23,"Lopez Manrique, Jose Alexander",jlopezm@utec.edu.pe
+CS251,SISTEMAS OPERATIVOS,1,TEORÍA 1,Presencial,Lun. 12:00 - 14:00,Semana General,UTEC-BA A707(44),44,20,"Gonzalez Reaño, Jorge Luis",jgonzalez@utec.edu.pe
+CS251,SISTEMAS OPERATIVOS,1,LABORATORIO 1.01,Presencial,Mie. 09:00 - 11:00,Semana General,UTEC-BA M302(60),44,20,"Pinto Larrea, Mauricio Jorge ",mpinto@utec.edu.pe
+CS251,SISTEMAS OPERATIVOS,1,LABORATORIO 1.01,Presencial,Jue. 14:00 - 16:00,Semana General,UTEC-BA M302(60),44,20,"Pinto Larrea, Mauricio Jorge ",mpinto@utec.edu.pe
+CS251,SISTEMAS OPERATIVOS,2,TEORÍA 2,Presencial,Lun. 10:00 - 12:00,Semana General,UTEC-BA A801(45),45,11,"Gonzalez Reaño, Jorge Luis",jgonzalez@utec.edu.pe
+CS251,SISTEMAS OPERATIVOS,2,LABORATORIO 2.01,Presencial,Mie. 13:00 - 15:00,Semana General,UTEC-BA M302(60),45,11,"Pinto Larrea, Mauricio Jorge ",mpinto@utec.edu.pe
+CS251,SISTEMAS OPERATIVOS,2,LABORATORIO 2.01,Presencial,Vie. 14:00 - 16:00,Semana General,UTEC-BA M801(45),45,11,"Pinto Larrea, Mauricio Jorge ",mpinto@utec.edu.pe
+ID101,INGLES TECNICO PROFESIONAL,1,TEORÍA 1,Presencial,Mar. 08:00 - 10:00,Semana General,UTEC-BA L202,24,20,"Ramirez Quiroz, Elmer Hernán",eramirez@utec.edu.pe
+ID101,INGLES TECNICO PROFESIONAL,1,LABORATORIO 1.01,Presencial,Jue. 08:00 - 10:00,Semana General,UTEC-BA L202,24,20,"Ramirez Quiroz, Elmer Hernán",eramirez@utec.edu.pe
+CS211,TEORIA DE LA COMPUTACION,1,TEORÍA 1,Presencial,Lun. 14:00 - 16:00,Semana General,UTEC-BA M302(60),49,48,"Napa Bernuy, Angel Gerardo ",anapa@utec.edu.pe
+CS211,TEORIA DE LA COMPUTACION,1,LABORATORIO 1.01,Presencial,Mie. 07:00 - 09:00,Semana General,UTEC-BA M302(60),49,48,"Napa Bernuy, Angel Gerardo ",anapa@utec.edu.pe
+CS211,TEORIA DE LA COMPUTACION,1,LABORATORIO 1.01,Presencial,Jue. 07:00 - 09:00,Semana General,UTEC-BA M302(60),49,48,"Napa Bernuy, Angel Gerardo ",anapa@utec.edu.pe
+CS211,TEORIA DE LA COMPUTACION,2,TEORÍA 2,Presencial,Mar. 13:00 - 15:00,Semana General,UTEC-BA A804(45),45,45,"Napa Bernuy, Angel Gerardo ",anapa@utec.edu.pe
+CS211,TEORIA DE LA COMPUTACION,2,LABORATORIO 2.01,Presencial,Mie. 14:00 - 16:00,Semana General,UTEC-BA M804(45),45,45,"Napa Bernuy, Angel Gerardo ",anapa@utec.edu.pe
+CS211,TEORIA DE LA COMPUTACION,2,LABORATORIO 2.01,Presencial,Vie. 13:00 - 15:00,Semana General,UTEC-BA M804(45),45,45,"Napa Bernuy, Angel Gerardo ",anapa@utec.edu.pe
+CS351,SEGURIDAD EN COMPUTACION,1,TEORÍA 1,Presencial,Lun. 18:00 - 20:00,Semana General,UTEC-BA A708(44),30,5,"GASTULO SALAZAR, LUIS MIGUEL ",lgastulo@utec.edu.pe
+CS351,SEGURIDAD EN COMPUTACION,1,LABORATORIO 1.01,Presencial,Mie. 18:00 - 22:00,Semana General,UTEC-BA A702(44),30,5,"GASTULO SALAZAR, LUIS MIGUEL ",lgastulo@utec.edu.pe
+CS1D3,ALGEBRA ABSTRACTA,1,TEORÍA VIRTUAL 1,Sincronico,Lun. 14:00 - 15:00,Semana General,UTEC-BA Virtual 1,240,240,"Barraza Bernaola, Julio Cesar",jbarraza@utec.edu.pe
+CS1D3,ALGEBRA ABSTRACTA,1,LABORATORIO 1.01,Presencial,Sab. 07:00 - 09:00,Semana General,UTEC-BA M803(45),45,45,"Barraza Bernaola, Julio Cesar",jbarraza@utec.edu.pe
+CS1D3,ALGEBRA ABSTRACTA,1,LABORATORIO 1.02,Presencial,Sab. 11:00 - 13:00,Semana General,UTEC-BA M803(45),45,45,"Anco Blas, Edith Chavely ",eanco@utec.edu.pe
+CS1D3,ALGEBRA ABSTRACTA,1,LABORATORIO 1.03,Presencial,Vie. 15:00 - 17:00,Semana General,UTEC-BA M804(45),45,45,"Anco Blas, Edith Chavely ",eanco@utec.edu.pe
+CS1D3,ALGEBRA ABSTRACTA,1,LABORATORIO 1.04,Presencial,Mar. 07:00 - 09:00,Semana General,UTEC-BA M804(45),45,45,"Perez Cupe, Rosulo ",rperezc@utec.edu.pe
+CS1D3,ALGEBRA ABSTRACTA,1,LABORATORIO 1.05,Presencial,Mie. 13:00 - 15:00,Semana General,UTEC-BA M604(30),30,30,"Barraza Bernaola, Julio Cesar",jbarraza@utec.edu.pe
+CS1D3,ALGEBRA ABSTRACTA,1,LABORATORIO 1.06,Presencial,Mar. 09:00 - 11:00,Semana General,UTEC-BA M601(30),30,30,"Anco Blas, Edith Chavely ",eanco@utec.edu.pe
+CS1D3,ALGEBRA ABSTRACTA,2,TEORÍA VIRTUAL 2,Sincronico,Lun. 13:00 - 14:00,Semana General,UTEC-BA Virtual 100,210,210,"Pantoja Carhuavilca, Hermes Yesser",hpantoja@utec.edu.pe
+CS1D3,ALGEBRA ABSTRACTA,2,LABORATORIO 2.01,Presencial,Mar. 09:00 - 11:00,Semana General,UTEC-BA M802(45),45,45,"Seclen Campos, Rolando Roberto ",rseclen@utec.edu.pe
+CS1D3,ALGEBRA ABSTRACTA,2,LABORATORIO 2.02,Presencial,Mie. 09:00 - 11:00,Semana General,UTEC-BA M804(45),45,45,"Pantoja Carhuavilca, Hermes Yesser",hpantoja@utec.edu.pe
+CS1D3,ALGEBRA ABSTRACTA,2,LABORATORIO 2.03,Presencial,Vie. 07:00 - 09:00,Semana General,UTEC-BA M802(45),45,45,"Barraza Bernaola, Julio Cesar",jbarraza@utec.edu.pe
+CS1D3,ALGEBRA ABSTRACTA,2,LABORATORIO 2.04,Presencial,Mie. 09:00 - 11:00,Semana General,UTEC-BA M604(30),30,30,"Perez Cupe, Rosulo ",rperezc@utec.edu.pe
+CS1D3,ALGEBRA ABSTRACTA,2,LABORATORIO 2.05,Presencial,Vie. 18:00 - 20:00,Semana General,UTEC-BA M302(60),45,45,"Perez Cupe, Rosulo ",rperezc@utec.edu.pe
+FG202,APRECIACION LITERARIA,1,TEORÍA VIRTUAL 1,Sincronico,Jue. 09:00 - 11:00,Semana General,UTEC-BA Virtual 110,10,5,"Millán Falconí, Armando ",amillan@utec.edu.pe
+FG202,APRECIACION LITERARIA,1,LABORATORIO 1.01,Presencial,Lun. 08:00 - 10:00,Semana General,UTEC-BA M603(30),10,5,"Millán Falconí, Armando ",amillan@utec.edu.pe
+FG104,INTRODUCCION A LA FILOSOFIA,1,TEORÍA 1,Presencial,Mie. 07:00 - 08:00,Semana General,UTEC-BA A707(44),44,43,"García Rojas, Diana Lucía",dgarciar@utec.edu.pe
+FG104,INTRODUCCION A LA FILOSOFIA,1,TEORÍA 1,Presencial,Jue. 13:00 - 15:00,Semana General,UTEC-BA A907(44),44,43,"García Rojas, Diana Lucía",dgarciar@utec.edu.pe
+FG104,INTRODUCCION A LA FILOSOFIA,2,TEORÍA 2,Presencial,Mie. 16:00 - 18:00,Semana General,UTEC-BA A906(44),44,44,"Arana Alencastre, Jean Luis ",jarana@utec.edu.pe
+FG104,INTRODUCCION A LA FILOSOFIA,2,TEORÍA 2,Presencial,Jue. 17:00 - 18:00,Semana General,UTEC-BA A906(44),44,44,"Arana Alencastre, Jean Luis ",jarana@utec.edu.pe
+FG104,INTRODUCCION A LA FILOSOFIA,3,TEORÍA 3,Presencial,Mie. 19:00 - 21:00,Semana General,UTEC-BA A803(45),45,45,"Arana Alencastre, Jean Luis ",jarana@utec.edu.pe
+FG104,INTRODUCCION A LA FILOSOFIA,3,TEORÍA 3,Presencial,Jue. 20:00 - 21:00,Semana General,UTEC-BA A803(45),45,45,"Arana Alencastre, Jean Luis ",jarana@utec.edu.pe
+FG104,INTRODUCCION A LA FILOSOFIA,4,TEORÍA 4,Presencial,Jue. 19:00 - 20:00,Semana General,UTEC-BA A803(45),45,31,"Davila Morey, Dante ",ddavila@utec.edu.pe
+FG104,INTRODUCCION A LA FILOSOFIA,4,TEORÍA 4,Presencial,Vie. 19:00 - 21:00,Semana General,UTEC-BA A802(45),45,31,"Davila Morey, Dante ",ddavila@utec.edu.pe
+FG104,INTRODUCCION A LA FILOSOFIA,5,TEORÍA 5,Presencial,Jue. 07:00 - 08:00,Semana General,UTEC-BA A804(45),45,45,"Oliart Bonilla, Rodrigo Nicolas ",roliart@utec.edu.pe
+FG104,INTRODUCCION A LA FILOSOFIA,5,TEORÍA 5,Presencial,Vie. 07:00 - 09:00,Semana General,UTEC-BA A802(45),45,45,"Oliart Bonilla, Rodrigo Nicolas ",roliart@utec.edu.pe
+FG104,INTRODUCCION A LA FILOSOFIA,6,TEORÍA 6,Presencial,Mar. 08:00 - 09:00,Semana General,UTEC-BA A904(44),44,44,"Millán Falconí, Armando ",amillan@utec.edu.pe
+FG104,INTRODUCCION A LA FILOSOFIA,6,TEORÍA 6,Presencial,Mie. 10:00 - 12:00,Semana General,UTEC-BA A905(44),44,44,"Millán Falconí, Armando ",amillan@utec.edu.pe
+FG104,INTRODUCCION A LA FILOSOFIA,9,TEORÍA 9,Presencial,Mar. 12:00 - 13:00,Semana General,UTEC-BA A708(44),44,44,"Alayza Prager, Cristina ",calayza@utec.edu.pe
+FG104,INTRODUCCION A LA FILOSOFIA,9,TEORÍA 9,Presencial,Mie. 08:00 - 10:00,Semana General,UTEC-BA A905(44),44,44,"Alayza Prager, Cristina ",calayza@utec.edu.pe
+FG104,INTRODUCCION A LA FILOSOFIA,10,TEORÍA 10,Presencial,Jue. 08:00 - 10:00,Semana General,UTEC-BA A901(42),42,42,"Oliart Bonilla, Rodrigo Nicolas ",roliart@utec.edu.pe
+FG104,INTRODUCCION A LA FILOSOFIA,10,TEORÍA 10,Presencial,Vie. 09:00 - 10:00,Semana General,UTEC-BA A802(45),42,42,"Oliart Bonilla, Rodrigo Nicolas ",roliart@utec.edu.pe
+FG104,INTRODUCCION A LA FILOSOFIA,11,TEORÍA 11,Presencial,Mie. 07:00 - 09:00,Semana General,UTEC-BA A803(45),45,45,"Davila Morey, Dante ",ddavila@utec.edu.pe
+FG104,INTRODUCCION A LA FILOSOFIA,11,TEORÍA 11,Presencial,Jue. 10:00 - 11:00,Semana General,UTEC-BA A1001(45),45,45,"Davila Morey, Dante ",ddavila@utec.edu.pe
+FG104,INTRODUCCION A LA FILOSOFIA,12,TEORÍA 12,Presencial,Mie. 18:00 - 19:00,Semana General,UTEC-BA A701(44),44,19,"Arana Alencastre, Jean Luis ",jarana@utec.edu.pe
+FG104,INTRODUCCION A LA FILOSOFIA,12,TEORÍA 12,Presencial,Jue. 18:00 - 20:00,Semana General,UTEC-BA A907(44),44,19,"Arana Alencastre, Jean Luis ",jarana@utec.edu.pe
+CB111,FISICA COMPUTACIONAL,1,TEORÍA 1,Presencial,Mar. 11:00 - 13:00,Semana General,UTEC-BA AUDITORIO,134,132,"Cuyubamba Espinoza, Marco Antonio ",mcuyubamba@utec.edu.pe
+CB111,FISICA COMPUTACIONAL,1,TEORÍA 1.01,Presencial,Vie. 15:00 - 17:00,Semana General,UTEC-BA A705(44),44,44,"Castillo Ruiz, Oscar Eduardo",ocastillo@utec.edu.pe
+CB111,FISICA COMPUTACIONAL,1,TEORÍA 1.02,Presencial,Vie. 12:00 - 14:00,Semana General,UTEC-BA A801(45),45,45,"Castillo Ruiz, Oscar Eduardo",ocastillo@utec.edu.pe
+CB111,FISICA COMPUTACIONAL,1,TEORÍA 1.03,Presencial,Vie. 11:00 - 13:00,Semana General,UTEC-BA M303(60),45,43,"Cuyubamba Espinoza, Marco Antonio ",mcuyubamba@utec.edu.pe

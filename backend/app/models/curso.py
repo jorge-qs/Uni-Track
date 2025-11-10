@@ -29,6 +29,9 @@ class Curso(Base):
     horas = Column(Integer, nullable=True)  # Horas semanales
     # opción simple: almacenar la lista como texto separador por comas
     prerequisito = Column(String(200), nullable=True)  # guarda "CALCULO I,MATEMATICA II"
-
+    prerequisito_cod = Column(String(200), nullable=True)  # guarda "MA101,MA102"
+    resources = Column(String(1000), nullable=True)  # recursos adicionales (URL u otros)
+    descripcion = Column(String(1000), nullable=True)  # descripción del curso
+    
     def __repr__(self):
         return f"<Curso(cod_curso='{self.cod_curso}', nombre='{self.curso}')>"

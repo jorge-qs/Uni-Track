@@ -3,7 +3,7 @@ Modelo ORM para la tabla Estudiante
 Tabla estática (se crea después del registro)
 """
 
-from sqlalchemy import Column, String, Float, Boolean, Date, Integer
+from sqlalchemy import Column, String, Boolean, Integer
 from app.db.database import Base
 
 
@@ -41,3 +41,10 @@ class Alumno(Base):
 
     def __repr__(self):
         return f"<Estudiante(cod_persona='{self.cod_persona}', periodo='{self.per_ingreso}')>"
+    
+    def verificar_contrasenia(self, contrasenia_input: str) -> bool:
+        """
+        Verifica si la contraseña ingresada coincide con la almacenada.
+        Aquí se puede implementar hashing si es necesario.
+        """
+        return self.contrasenia == contrasenia_input
