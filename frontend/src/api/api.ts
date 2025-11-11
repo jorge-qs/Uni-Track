@@ -71,3 +71,135 @@ export function getStoredLogin(): LoginResponse | null {
     return null;
   }
 }
+
+export interface PrediccionRequest {
+  cod_persona: string;
+  cod_curso: string;
+}
+
+export interface PrediccionResponse {
+  success: boolean;
+  cod_persona: string;
+  cod_curso: string;
+  nota_estimada: number;
+  mensaje?: string;
+}
+
+/**
+ * Predice la nota estimada de un estudiante para un curso específico
+ */
+export async function predecirNota(
+  codPersona: string,
+  codCurso: string,
+): Promise<number> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/prediccion/predecir`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        cod_persona: codPersona,
+        cod_curso: codCurso,
+      }),
+    });
+
+    if (!response.ok) {
+      console.error(`Error al predecir nota para ${codCurso}`);
+      return 14.0; // Retornar valor por defecto
+    }
+
+    const data: PrediccionResponse = await response.json();
+    return data.nota_estimada;
+  } catch (error) {
+    console.error(`Error al predecir nota para ${codCurso}:`, error);
+    return 14.0; // Retornar valor por defecto en caso de error
+  }
+}
+
+export interface RecursoRecomendado {
+  curso: string;
+  recurso_1?: string | null;
+  recurso_2?: string | null;
+  recurso_3?: string | null;
+  recurso_4?: string | null;
+  descripcion?: string | null;
+}
+
+export interface RecursosResponse {
+  success: boolean;
+  curso: string;
+  recursos: string[];
+  descripcion?: string | null;
+}
+
+export interface RecursosMatriculadosResponse {
+  success: boolean;
+  cursos: Record<string, {
+    recursos: string[];
+    descripcion?: string;
+  }>;
+}
+
+/**
+ * Obtiene los recursos recomendados para un curso específico
+ */
+export async function getRecursosCurso(nombreCurso: string): Promise<RecursosResponse | null> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/recursos/curso/${encodeURIComponent(nombreCurso)}`);
+
+    if (!response.ok) {
+      console.error(`Error al obtener recursos para ${nombreCurso}`);
+      return null;
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error(`Error al obtener recursos para ${nombreCurso}:`, error);
+    return null;
+  }
+}
+
+/**
+ * Obtiene todos los recursos recomendados
+ */
+export async function getTodosRecursos(): Promise<RecursoRecomendado[]> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/recursos/todos`);
+
+    if (!response.ok) {
+      console.error('Error al obtener todos los recursos');
+      return [];
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error al obtener todos los recursos:', error);
+    return [];
+  }
+}
+
+/**
+ * Obtiene los recursos para una lista de cursos matriculados
+ */
+export async function getRecursosMatriculados(cursos: Array<{code: string, name: string}>): Promise<RecursosMatriculadosResponse | null> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/recursos/matriculados`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ cursos }),
+    });
+
+    if (!response.ok) {
+      console.error('Error al obtener recursos para cursos matriculados');
+      return null;
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error al obtener recursos para cursos matriculados:', error);
+    return null;
+  }
+}

@@ -7,7 +7,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import settings
-from app.routes import auth, modelo
+from app.routes import auth, modelo, prediccion, recursos
 from app.db.database import init_db, engine
 from app.db.csv_import import import_csv_tables
 
@@ -32,6 +32,8 @@ app.add_middleware(
 # Registrar rutas
 app.include_router(auth.router, prefix="/api/v1/auth", tags=["Autenticación"])
 app.include_router(modelo.router, prefix="/api/v1/modelo", tags=["Modelo Predictivo"])
+app.include_router(prediccion.router, prefix="/api/v1/prediccion", tags=["Predicción de Notas"])
+app.include_router(recursos.router, prefix="/api/v1/recursos", tags=["Recursos Académicos"])
 
 @app.get("/", tags=["Health"])
 async def root():

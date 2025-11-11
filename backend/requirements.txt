@@ -24,3 +24,9 @@ httpx==0.26.0
 
 # Validación
 email-validator==2.1.0
+
+# Machine Learning
+pandas==2.0.3
+scikit-learn==1.5.1
+numpy==1.26.4
+lightgbm==4.5.0

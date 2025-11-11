@@ -1,30 +1,104 @@
-const resourceGroups = [
-  {
-    course: 'Programación II',
-    resources: [
-      { title: 'Guía de laboratorios', size: '2.4 MB', link: '#' },
-      { title: 'Patrones de diseño - resumen', size: '1.1 MB', link: '#' },
-      { title: 'Checklist buenas prácticas', size: '650 KB', link: '#' },
-    ],
-  },
-  {
-    course: 'Probabilidad y Estadística',
-    resources: [
-      { title: 'Formulario de distribuciones', size: '950 KB', link: '#' },
-      { title: 'Casos de estudio', size: '3.2 MB', link: '#' },
-    ],
-  },
-  {
-    course: 'Arquitectura de Software',
-    resources: [
-      { title: 'Arquitecturas Modernas', size: '4.6 MB', link: '#' },
-      { title: 'Documentación de APIs', size: '1.8 MB', link: '#' },
-      { title: 'Guía de despliegue', size: '2.1 MB', link: '#' },
-    ],
-  },
-];
+import { useState, useEffect } from 'react';
+import { getRecursosMatriculados } from '../api/api';
 
 export default function ResourcesPage() {
+  const [resourceGroups, setResourceGroups] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const loadResources = async () => {
+      try {
+        // Obtener cursos matriculados desde localStorage
+        const enrollmentData = localStorage.getItem('unitrack.enrollment');
+
+        if (!enrollmentData) {
+          // Si no hay matrícula, mostrar mensaje
+          setResourceGroups([]);
+          setLoading(false);
+          return;
+        }
+
+        const enrollment = JSON.parse(enrollmentData);
+        const cursos = enrollment.courses.map(c => ({
+          code: c.code,
+          name: c.name
+        }));
+
+        // Obtener recursos desde la API
+        const response = await getRecursosMatriculados(cursos);
+
+        if (response && response.success) {
+          // Transformar la respuesta a formato esperado
+          const groups = enrollment.courses.map(course => ({
+            course: `${course.code} - ${course.name}`,
+            courseCode: course.code,
+            description: response.cursos[course.code]?.descripcion || 'Sin descripción disponible',
+            resources: response.cursos[course.code]?.recursos || [],
+          }));
+
+          setResourceGroups(groups);
+        } else {
+          setResourceGroups([]);
+        }
+      } catch (err) {
+        console.error('Error cargando recursos:', err);
+        setError('Error al cargar los recursos académicos');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadResources();
+  }, []);
+  if (loading) {
+    return (
+      <div className="flex min-h-[400px] items-center justify-center">
+        <div className="text-center">
+          <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-utec-blue border-r-transparent"></div>
+          <p className="mt-4 text-sm text-utec-muted">Cargando recursos...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex min-h-[400px] items-center justify-center">
+        <div className="text-center">
+          <span className="material-symbols-outlined text-5xl text-red-500">error</span>
+          <p className="mt-4 text-lg font-semibold text-utec-text">{error}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (resourceGroups.length === 0) {
+    return (
+      <div className="space-y-8">
+        <header className="space-y-2">
+          <h1 className="text-3xl font-bold text-utec-text">
+            Recursos Académicos
+          </h1>
+          <p className="text-sm text-utec-muted">
+            Accede a material de apoyo organizado por curso. Guarda tus favoritos y
+            mantén a mano los documentos clave de cada asignatura.
+          </p>
+        </header>
+
+        <div className="rounded-2xl border border-utec-border bg-yellow-50/60 p-8 text-center">
+          <span className="material-symbols-outlined text-5xl text-yellow-600">school</span>
+          <p className="mt-4 text-lg font-semibold text-utec-text">
+            No tienes cursos matriculados
+          </p>
+          <p className="mt-2 text-sm text-utec-muted">
+            Dirígete a la sección de matrícula para seleccionar tus cursos y ver los recursos recomendados.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-8">
       <header className="space-y-2">
@@ -40,46 +114,55 @@ export default function ResourcesPage() {
       <section className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         {resourceGroups.map((group) => (
           <div
-            key={group.course}
+            key={group.courseCode}
             className="space-y-4 rounded-2xl border border-utec-border bg-white p-6 shadow-sm"
           >
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-lg font-semibold text-utec-text">
-                  {group.course}
-                </h2>
-                <p className="text-sm text-utec-muted">
-                  {group.resources.length} archivos disponibles
-                </p>
-              </div>
-              <button
-                type="button"
-                className="rounded-full bg-utec-blue/10 px-4 py-2 text-xs font-semibold text-utec-blue"
-              >
-                Añadir recurso
-              </button>
+            <div>
+              <h2 className="text-lg font-semibold text-utec-text">
+                {group.course}
+              </h2>
+              <p className="text-sm text-utec-muted mt-2">
+                {group.description}
+              </p>
+              <p className="text-sm text-utec-muted mt-2">
+                {group.resources.length} recursos recomendados
+              </p>
             </div>
             <div className="space-y-3">
-              {group.resources.map((resource) => (
-                <a
-                  key={resource.title}
-                  href={resource.link}
-                  className="flex items-center justify-between rounded-xl border border-utec-border bg-gray-50 p-4 text-sm text-utec-text transition hover:border-utec-blue hover:bg-white"
-                >
-                  <div className="flex items-center gap-3">
-                    <span className="material-symbols-outlined text-2xl text-utec-blue">
-                      picture_as_pdf
-                    </span>
-                    <div>
-                      <p className="font-semibold">{resource.title}</p>
-                      <p className="text-xs text-utec-muted">{resource.size}</p>
+              {group.resources.length > 0 ? (
+                group.resources.map((resource, index) => (
+                  <a
+                    key={index}
+                    href="#"
+                    className="group flex items-center justify-between rounded-xl border border-utec-border bg-gradient-to-r from-gray-50 to-white p-4 text-sm text-utec-text transition hover:border-utec-blue hover:shadow-md"
+                  >
+                    <div className="flex items-center gap-3 flex-1">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-red-100">
+                        <span className="material-symbols-outlined text-3xl text-red-600">
+                          picture_as_pdf
+                        </span>
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-semibold text-utec-text group-hover:text-utec-blue transition">
+                          {resource}
+                        </p>
+                        <p className="text-xs text-utec-muted mt-1">
+                          Documento PDF • Material recomendado
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                  <span className="material-symbols-outlined text-xl text-utec-muted">
-                    download
-                  </span>
-                </a>
-              ))}
+                    <div className="flex items-center gap-2">
+                      <span className="material-symbols-outlined text-xl text-utec-blue group-hover:scale-110 transition">
+                        download
+                      </span>
+                    </div>
+                  </a>
+                ))
+              ) : (
+                <div className="rounded-xl border border-dashed border-utec-border bg-gray-50 p-4 text-center text-sm text-utec-muted">
+                  No hay recursos disponibles para este curso
+                </div>
+              )}
             </div>
           </div>
         ))}
@@ -93,8 +176,8 @@ export default function ResourcesPage() {
           Sugerencia
         </p>
         <p className="mt-2">
-          Centraliza tus recursos más utilizados y comparte material con tu
-          cohorte para fomentar el aprendizaje colaborativo.
+          Estos recursos han sido cuidadosamente seleccionados para complementar tu aprendizaje en cada curso.
+          Consulta regularmente esta sección para aprovechar al máximo los materiales recomendados.
         </p>
       </div>
     </div>

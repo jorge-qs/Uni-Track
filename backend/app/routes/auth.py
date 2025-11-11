@@ -179,15 +179,22 @@ async def login(
     }
 
 
-    # 4) cursos disponibles (cursos cuyas prerequisitos se cumplen)
+    # 4) cursos disponibles (cursos cuyas prerequisitos se cumplen y que NO ha llevado)
 
     cursos_aprobados = [
         m.cod_curso for m in matriculas if m.nota is not None and round(m.nota) >= 11
     ]
 
+    # Cursos que ya llevó (aprobados o no)
+    cursos_llevados = [m.cod_curso for m in matriculas]
+
 
     cursos_disponibles = []
     for i in cursos:
+        # Saltar si ya llevó el curso
+        if i.cod_curso in cursos_llevados:
+            continue
+
         prereqs = str_to_list_simple(i.prerequisito_cod)
         abierto = True
         for pr in prereqs:
@@ -250,7 +257,7 @@ async def login(
 #     ]
 # }
 
-    
+
     secciones_info = {}
     for c in cursos_disponibles:
         secciones_disp = [i for i in secciones if i.cod_curso == c]
@@ -270,7 +277,14 @@ async def login(
                             "correo": s.correo
                     }
                 )
-        secciones_info[c] = secciones_dic
+
+        # Limitar a solo las primeras 2 secciones (con todos sus grupos)
+        secciones_limitadas = {}
+        for idx, (seccion_num, seccion_data) in enumerate(secciones_dic.items()):
+            if idx < 2:  # Solo las primeras 2 secciones
+                secciones_limitadas[seccion_num] = seccion_data
+
+        secciones_info[c] = secciones_limitadas
 
     # 6) resources_info: diccionario { cod_curso: [resources] }
 
