@@ -115,6 +115,7 @@ export default function EnrollmentPage() {
   const [loadingPredictions, setLoadingPredictions] = useState(false);
   const [enrolling, setEnrolling] = useState(false);
   const [courseDescriptions, setCourseDescriptions] = useState({});
+  const [selectedEventDetail, setSelectedEventDetail] = useState(null); // Para el modal
 
   const selectedCodes = useMemo(
     () => new Set(selectedCourses.map((course) => course.code)),
@@ -128,15 +129,20 @@ export default function EnrollmentPage() {
 
   const calendarEvents = useMemo(
     () =>
-      selectedCourses.flatMap((course) =>
-        course.sessions.map((session) => ({
+      selectedCourses.flatMap((course) => {
+        const sectionIndex = course.selectedSectionIndex || 0;
+        const section = course.allSections[sectionIndex];
+        if (!section) return [];
+
+        return section.sessions.map((session) => ({
           ...session,
           code: course.code,
           name: course.name,
           color: generateCourseColor(course.code),
           grade: course.estimatedGrade,
-        })),
-      ),
+          sectionName: section.sectionName,
+        }));
+      }),
     [selectedCourses],
   );
 
@@ -161,18 +167,19 @@ export default function EnrollmentPage() {
         const cursoInfo = cursos_info?.find(c => c.cod_curso === codCurso);
         if (!cursoInfo) continue;
 
-        // Obtener secciones (primeras 2)
+        // Obtener TODAS las secciones
         const secciones = secciones_info?.[codCurso] || {};
 
-        // Parsear horarios de las secciones
-        const sessions = [];
-        for (const seccionData of Object.values(secciones)) {
+        // Agrupar horarios por sección
+        const allSections = [];
+        for (const [seccionId, seccionData] of Object.entries(secciones)) {
           const grupos = seccionData.grupos || [];
+          const sessionGroup = [];
 
           for (const grupo of grupos) {
             const parsed = parseHorario(grupo.horario);
             if (parsed) {
-              sessions.push({
+              sessionGroup.push({
                 ...parsed,
                 location: grupo.ubicacion || 'N/A',
                 grupo: grupo.grupo,
@@ -180,10 +187,18 @@ export default function EnrollmentPage() {
               });
             }
           }
+
+          if (sessionGroup.length > 0) {
+            allSections.push({
+              sectionId: seccionId,
+              sectionName: seccionData.seccion || `Sección ${seccionId}`,
+              sessions: sessionGroup,
+            });
+          }
         }
 
-        // Solo agregar curso si tiene horarios
-        if (sessions.length > 0) {
+        // Solo agregar curso si tiene secciones
+        if (allSections.length > 0) {
           catalog.push({
             code: codCurso,
             name: cursoInfo.curso,
@@ -191,7 +206,8 @@ export default function EnrollmentPage() {
             prerequisites: cursoInfo.prerequisitos || [],
             slots: 30, // Por defecto
             estimatedGrade: null, // Se cargará después
-            sessions: sessions.slice(0, 2), // Máximo 2 horarios
+            allSections: allSections, // Todas las secciones disponibles
+            selectedSectionIndex: 0, // Por defecto la primera sección
           });
         }
       }
@@ -267,10 +283,17 @@ export default function EnrollmentPage() {
   // Función para encontrar conflictos de horario
   const findScheduleConflicts = (newCourse, currentCourses) => {
     const conflicts = [];
+    const newSectionIndex = newCourse.selectedSectionIndex || 0;
+    const newSection = newCourse.allSections[newSectionIndex];
+    if (!newSection) return conflicts;
 
     for (const existingCourse of currentCourses) {
-      for (const newSession of newCourse.sessions) {
-        for (const existingSession of existingCourse.sessions) {
+      const existingSectionIndex = existingCourse.selectedSectionIndex || 0;
+      const existingSection = existingCourse.allSections[existingSectionIndex];
+      if (!existingSection) continue;
+
+      for (const newSession of newSection.sessions) {
+        for (const existingSession of existingSection.sessions) {
           if (checkTimeOverlap(newSession, existingSession)) {
             const dayLabel = daysOfWeek.find(d => d.key === newSession.day)?.label || newSession.day;
             conflicts.push({
@@ -284,6 +307,25 @@ export default function EnrollmentPage() {
     }
 
     return conflicts;
+  };
+
+  const handleSectionChange = (courseCode, newSectionIndex) => {
+    setSelectedCourses((prev) =>
+      prev.map((course) =>
+        course.code === courseCode
+          ? { ...course, selectedSectionIndex: newSectionIndex }
+          : course
+      )
+    );
+
+    // También actualizar en el catálogo si existe
+    setCourseCatalog((prev) =>
+      prev.map((course) =>
+        course.code === courseCode
+          ? { ...course, selectedSectionIndex: newSectionIndex }
+          : course
+      )
+    );
   };
 
   const handleToggleCourse = (course) => {
@@ -479,19 +521,46 @@ export default function EnrollmentPage() {
                       ))}
                     </div>
                   )}
+
+                  {/* Selector de sección */}
+                  {course.allSections && course.allSections.length > 1 && (
+                    <div className="flex items-center gap-2">
+                      <label className="text-sm font-semibold text-utec-text">Sección:</label>
+                      <select
+                        value={course.selectedSectionIndex || 0}
+                        onChange={(e) => handleSectionChange(course.code, parseInt(e.target.value))}
+                        className="rounded-lg border border-utec-border bg-white px-3 py-1 text-sm text-utec-text focus:border-utec-blue focus:outline-none"
+                      >
+                        {course.allSections.map((section, idx) => (
+                          <option key={idx} value={idx}>
+                            {section.sectionName} ({section.sessions.length} horario{section.sessions.length !== 1 ? 's' : ''})
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
+
+                  {/* Horarios de la sección seleccionada */}
                   <div className="space-y-2 rounded-lg bg-gray-50 p-3 text-sm text-utec-muted">
-                    {course.sessions.map((session, index) => (
-                      <div key={`${course.code}-${session.day}-${index}`} className="flex items-center gap-2">
-                        <span className="material-symbols-outlined text-base text-utec-blue">
-                          schedule
-                        </span>
-                        <span className="font-medium capitalize">
-                          {daysOfWeek.find(d => d.key === session.day)?.label || session.day}
-                        </span>
-                        <span>- {formatEventRange(session.start, session.end)}</span>
-                        <span>- {session.location}</span>
-                      </div>
-                    ))}
+                    {(() => {
+                      const sectionIndex = course.selectedSectionIndex || 0;
+                      const section = course.allSections[sectionIndex];
+                      if (!section) return null;
+
+                      return section.sessions.map((session, index) => (
+                        <div key={`${course.code}-${session.day}-${index}`} className="flex items-center gap-2">
+                          <span className="material-symbols-outlined text-base text-utec-blue">
+                            schedule
+                          </span>
+                          <span className="font-medium capitalize">
+                            {daysOfWeek.find(d => d.key === session.day)?.label || session.day}
+                          </span>
+                          <span>- {formatEventRange(session.start, session.end)}</span>
+                          <span>- {session.location}</span>
+                          {session.docente && <span className="text-xs">({session.docente})</span>}
+                        </div>
+                      ));
+                    })()}
                   </div>
                   <div className="flex items-center justify-between text-sm text-utec-muted">
                     <p>Cupos disponibles: {course.slots}</p>
@@ -598,24 +667,19 @@ export default function EnrollmentPage() {
                             event.end,
                           );
                           return (
-                            <div
+                            <button
                               key={`${event.code}-${event.start}-${event.end}-${eventIdx}`}
-                              className="absolute left-[8%] right-[8%] rounded-xl p-3 text-xs text-white shadow-lg"
+                              onClick={() => setSelectedEventDetail(event)}
+                              className="absolute left-[8%] right-[8%] rounded-xl p-2 text-xs text-white shadow-lg hover:shadow-xl transition cursor-pointer"
                               style={{ top, height, backgroundColor: event.color }}
                             >
-                              <p className="text-sm font-semibold">
-                                {event.name}
+                              <p className="text-sm font-bold truncate">
+                                {event.code}
                               </p>
-                              <p className="font-mono text-[11px]">
-                                {formatEventRange(event.start, event.end)}
+                              <p className="font-mono text-[10px] opacity-90">
+                                {event.start}
                               </p>
-                              <p className="text-[11px] opacity-90">{event.location}</p>
-                              {event.grade !== null && (
-                                <p className="mt-1 text-[11px] font-semibold text-white/90">
-                                  Nota estimada: {formatGrade(event.grade)}/20
-                                </p>
-                              )}
-                            </div>
+                            </button>
                           );
                         })}
                       </div>
@@ -634,6 +698,93 @@ export default function EnrollmentPage() {
           </div>
         </div>
       </section>
+
+      {/* Modal de detalles del evento */}
+      {selectedEventDetail && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+          onClick={() => setSelectedEventDetail(null)}
+        >
+          <div
+            className="w-full max-w-md rounded-2xl border border-utec-border bg-white p-6 shadow-xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="mb-4 flex items-start justify-between">
+              <div>
+                <h3 className="text-xl font-bold text-utec-text">
+                  {selectedEventDetail.code}
+                </h3>
+                <p className="text-sm text-utec-muted">{selectedEventDetail.name}</p>
+              </div>
+              <button
+                onClick={() => setSelectedEventDetail(null)}
+                className="rounded-full p-1 hover:bg-gray-100 transition"
+              >
+                <span className="material-symbols-outlined text-utec-muted">close</span>
+              </button>
+            </div>
+
+            <div className="space-y-3">
+              <div className="rounded-lg bg-gray-50 p-3">
+                <div className="flex items-center gap-2 text-sm">
+                  <span className="material-symbols-outlined text-utec-blue">schedule</span>
+                  <span className="font-semibold">Horario:</span>
+                </div>
+                <p className="mt-1 text-sm text-utec-muted ml-7">
+                  {daysOfWeek.find(d => d.key === selectedEventDetail.day)?.label} - {formatEventRange(selectedEventDetail.start, selectedEventDetail.end)}
+                </p>
+              </div>
+
+              <div className="rounded-lg bg-gray-50 p-3">
+                <div className="flex items-center gap-2 text-sm">
+                  <span className="material-symbols-outlined text-utec-blue">location_on</span>
+                  <span className="font-semibold">Ubicación:</span>
+                </div>
+                <p className="mt-1 text-sm text-utec-muted ml-7">{selectedEventDetail.location}</p>
+              </div>
+
+              {selectedEventDetail.docente && (
+                <div className="rounded-lg bg-gray-50 p-3">
+                  <div className="flex items-center gap-2 text-sm">
+                    <span className="material-symbols-outlined text-utec-blue">person</span>
+                    <span className="font-semibold">Docente:</span>
+                  </div>
+                  <p className="mt-1 text-sm text-utec-muted ml-7">{selectedEventDetail.docente}</p>
+                </div>
+              )}
+
+              {selectedEventDetail.sectionName && (
+                <div className="rounded-lg bg-gray-50 p-3">
+                  <div className="flex items-center gap-2 text-sm">
+                    <span className="material-symbols-outlined text-utec-blue">group</span>
+                    <span className="font-semibold">Sección:</span>
+                  </div>
+                  <p className="mt-1 text-sm text-utec-muted ml-7">{selectedEventDetail.sectionName}</p>
+                </div>
+              )}
+
+              {selectedEventDetail.grade !== null && (
+                <div className="rounded-lg bg-emerald-50 p-3">
+                  <div className="flex items-center gap-2 text-sm">
+                    <span className="material-symbols-outlined text-emerald-600">grade</span>
+                    <span className="font-semibold text-emerald-700">Nota estimada:</span>
+                  </div>
+                  <p className="mt-1 text-lg font-bold text-emerald-700 ml-7">
+                    {formatGrade(selectedEventDetail.grade)}/20
+                  </p>
+                </div>
+              )}
+            </div>
+
+            <button
+              onClick={() => setSelectedEventDetail(null)}
+              className="mt-6 w-full rounded-lg bg-utec-blue px-4 py-2 text-white font-semibold hover:bg-blue-700 transition"
+            >
+              Cerrar
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
