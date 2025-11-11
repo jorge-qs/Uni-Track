@@ -147,7 +147,7 @@ export default function CurriculumPage() {
         </p>
       </div>
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-        <div className="rounded-2xl border border-utec-border bg-white p-4 shadow-sm">
+        <div className="rounded-2xl border border-utec-border bg-white p-4 shadow-[0_4px_15px_rgba(0,0,0,0.08)]">
         <p className="text-xs font-semibold uppercase text-utec-muted">
           Progreso General
         </p>
@@ -156,7 +156,7 @@ export default function CurriculumPage() {
           {approvedCredits} creditos aprobados de 200.
         </p>
         </div>
-        <div className="rounded-2xl border border-utec-border bg-white p-4 shadow-sm">
+        <div className="rounded-2xl border border-utec-border bg-white p-4 shadow-[0_4px_15px_rgba(0,0,0,0.08)]">
         <p className="text-xs font-semibold uppercase text-utec-muted">
           Aprobado / Total
         </p>
@@ -171,7 +171,7 @@ export default function CurriculumPage() {
       </div>
       </header>
 
-      <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-utec-border bg-white p-5 shadow-sm">
+      <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-utec-border bg-white p-5 shadow-[0_8px_25px_rgba(0,0,0,0.12)]">
       <div>
         <p className="text-sm font-medium text-utec-text">
         Vista del plan de estudios
@@ -219,7 +219,7 @@ export default function CurriculumPage() {
           {group.courses.map((course) => (
           <div
             key={`${group.cycle}-${course.code}`}
-            className="flex flex-col gap-3 rounded-2xl border border-utec-border bg-white p-5 shadow-sm"
+            className="flex flex-col gap-3 rounded-2xl border border-utec-border bg-white p-5 shadow-[0_4px_15px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_25px_rgba(0,0,0,0.12)] transition"
           >
             <div className="flex items-center justify-between">
             <div>

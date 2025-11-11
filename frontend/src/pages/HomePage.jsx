@@ -95,7 +95,7 @@ export default function HomePage() {
         {metricCards.map((metric) => (
           <div
             key={metric.label}
-            className="rounded-2xl border border-utec-border bg-white p-5 shadow-sm"
+            className="rounded-2xl border border-utec-border bg-white p-5 shadow-[0_4px_15px_rgba(0,0,0,0.08)]"
           >
             <p className="text-xs font-semibold uppercase tracking-wide text-utec-muted">
               {metric.label}
@@ -108,7 +108,7 @@ export default function HomePage() {
       </section>
 
       <section className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        <div className="rounded-2xl border border-utec-border bg-white p-6 shadow-sm lg:col-span-2">
+        <div className="rounded-2xl border border-utec-border bg-white p-6 shadow-[0_8px_25px_rgba(0,0,0,0.12)] lg:col-span-2">
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-semibold text-utec-text">
               Recent activity &amp; announcements
@@ -145,7 +145,7 @@ export default function HomePage() {
             ))}
           </div>
         </div>
-        <div className="rounded-2xl border border-utec-border bg-white p-6 shadow-sm">
+        <div className="rounded-2xl border border-utec-border bg-white p-6 shadow-[0_8px_25px_rgba(0,0,0,0.12)]">
           <h2 className="text-lg font-semibold text-utec-text">
             Performance insights
           </h2>
@@ -171,7 +171,7 @@ export default function HomePage() {
             <Link
               key={item.title}
               to={item.path}
-              className="group rounded-2xl border border-utec-border bg-white p-5 shadow-sm transition hover:border-utec-blue hover:shadow-md"
+              className="group rounded-2xl border border-utec-border bg-white p-5 shadow-[0_4px_15px_rgba(0,0,0,0.08)] transition hover:border-utec-blue hover:shadow-[0_8px_25px_rgba(0,0,0,0.12)]"
             >
               <span className="material-symbols-outlined text-3xl text-utec-muted transition group-hover:text-utec-blue">
                 {item.icon}

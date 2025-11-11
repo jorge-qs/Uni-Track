@@ -115,7 +115,7 @@ export default function ResourcesPage() {
         {resourceGroups.map((group) => (
           <div
             key={group.courseCode}
-            className="space-y-4 rounded-2xl border border-utec-border bg-white p-6 shadow-sm"
+            className="space-y-4 rounded-2xl border border-utec-border bg-white p-6 shadow-[0_8px_25px_rgba(0,0,0,0.12)]"
           >
             <div>
               <h2 className="text-lg font-semibold text-utec-text">

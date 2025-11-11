@@ -70,7 +70,7 @@ export default function ProceduresPage() {
       <section className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         <form
           onSubmit={handleSubmit}
-          className="space-y-5 rounded-2xl border border-utec-border bg-white p-6 shadow-sm lg:col-span-2"
+          className="space-y-5 rounded-2xl border border-utec-border bg-white p-6 shadow-[0_8px_25px_rgba(0,0,0,0.12)] lg:col-span-2"
         >
           <div>
             <h2 className="text-lg font-semibold text-utec-text">
@@ -175,7 +175,7 @@ export default function ProceduresPage() {
           </div>
         </form>
 
-        <aside className="space-y-6 rounded-2xl border border-utec-border bg-white p-6 shadow-sm">
+        <aside className="space-y-6 rounded-2xl border border-utec-border bg-white p-6 shadow-[0_8px_25px_rgba(0,0,0,0.12)]">
           <div>
             <h2 className="text-lg font-semibold text-utec-text">
               Trámites en curso
@@ -186,7 +186,7 @@ export default function ProceduresPage() {
           </div>
           <div className="space-y-4">
             {activeRequests.map((request) => (
-              <div key={request.id} className="rounded-xl border border-utec-border p-4">
+              <div key={request.id} className="rounded-xl border border-utec-border p-4 shadow-[0_2px_10px_rgba(0,0,0,0.06)] hover:shadow-[0_4px_15px_rgba(0,0,0,0.1)] transition">
                 <div className="flex items-center justify-between">
                   <p className="text-sm font-semibold text-utec-text">
                     {request.id}

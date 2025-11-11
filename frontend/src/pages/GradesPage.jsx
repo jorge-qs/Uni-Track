@@ -65,7 +65,7 @@ export default function GradesPage() {
       </p>
       </header>
 
-      <section className="rounded-2xl border border-utec-border bg-white p-6 shadow-sm">
+      <section className="rounded-2xl border border-utec-border bg-white p-6 shadow-[0_8px_25px_rgba(0,0,0,0.12)]">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
         <h2 className="text-lg font-semibold text-utec-text">
@@ -76,13 +76,13 @@ export default function GradesPage() {
         </p>
         </div>
         <div className="grid grid-cols-2 gap-3 text-sm">
-        <div className="rounded-xl border border-utec-border px-4 py-3">
+        <div className="rounded-xl border border-utec-border px-4 py-3 shadow-[0_2px_10px_rgba(0,0,0,0.06)]">
           <p className="text-utec-muted">Creditos aprobados</p>
           <p className="text-xl font-semibold text-utec-text">
           {approvedCredits}
           </p>
         </div>
-        <div className="rounded-xl border border-utec-border px-4 py-3">
+        <div className="rounded-xl border border-utec-border px-4 py-3 shadow-[0_2px_10px_rgba(0,0,0,0.06)]">
           <p className="text-utec-muted">Promedio ponderado</p>
           <p className="text-xl font-semibold text-utec-text">
           {formatNumber(promedioGeneral)}
@@ -136,7 +136,7 @@ export default function GradesPage() {
       </div>
       </section>
 
-      <section className="rounded-2xl border border-utec-border bg-white p-6 shadow-sm">
+      <section className="rounded-2xl border border-utec-border bg-white p-6 shadow-[0_8px_25px_rgba(0,0,0,0.12)]">
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-semibold text-utec-text">
         Calificaciones por periodo
@@ -154,7 +154,7 @@ export default function GradesPage() {
         periods.map((periodData) => (
           <div
           key={periodData.period}
-          className="rounded-xl border border-utec-border p-5"
+          className="rounded-xl border border-utec-border p-5 shadow-[0_4px_15px_rgba(0,0,0,0.08)] hover:shadow-[0_6px_20px_rgba(0,0,0,0.12)] transition"
           >
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div>
