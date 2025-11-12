@@ -3,9 +3,9 @@ import { useMemo, useState } from "react";
 import { getStoredLogin } from "../api/api";
 
 const statusLabels = {
-  approved: { text: "Approved", color: "bg-green-100 text-green-700" },
-  failed: { text: "Failed", color: "bg-red-100 text-red-700" },
-  missing: { text: "Missing", color: "bg-amber-100 text-amber-700" },
+  approved: { text: "Aprobado", color: "bg-green-100 text-green-700" },
+  failed: { text: "Reprobado", color: "bg-red-100 text-red-700" },
+  missing: { text: "Faltante", color: "bg-amber-100 text-amber-700" },
 };
 
 const typeLabels = {
