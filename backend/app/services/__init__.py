@@ -1,3 +1,5 @@
 from app.services import modelo
 
-__all__ = ["modelo"]
+from app.services import predictor_nota
+
+__all__ = ["modelo", "predictor_nota"]

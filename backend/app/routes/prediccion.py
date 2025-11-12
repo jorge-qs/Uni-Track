@@ -14,13 +14,7 @@ from app.models.alumno import Alumno
 from app.models.curso import Curso
 from app.models.matricula import Matricula
 
-try:
-    from app.predictor_nota import get_predictor
-    PREDICTOR_AVAILABLE = True
-    print("✓ Modelo ML cargado exitosamente")
-except ImportError as e:
-    print(f"Warning: No se pudo cargar el predictor de notas: {e}")
-    PREDICTOR_AVAILABLE = False
+from app.services.predictor_nota import get_predictor
 
 router = APIRouter()
 
@@ -120,6 +114,8 @@ async def predecir_nota(
         'familia': curso.familia,
         'nivel_curso': curso.nivel_curso
     }
+
+    PREDICTOR_AVAILABLE = True
 
     # Realizar predicción con modelo ML
     if PREDICTOR_AVAILABLE:
