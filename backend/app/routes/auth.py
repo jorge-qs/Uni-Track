@@ -153,7 +153,7 @@ async def login(
             cred_cursos.get(m["cod_curso"], 0) for m in matricula_dict[per]["cursos"]
         )
         matricula_dict[per]["cursos_aprobados"] = sum(
-            1 for m in matricula_dict[per]["cursos"] if m["nota"] is not None and round(m["nota"]) >= 11
+            1 for m in matricula_dict[per]["cursos"] if m["nota"] is not None and round(m["nota"]) >= 12
         )
         matricula_dict[per]["promedio_periodo"] = round(
             sum(m["nota"] for m in matricula_dict[per]["cursos"] if m["nota"] is not None) /
@@ -167,10 +167,10 @@ async def login(
 
     academic_info = {
         "total_cursos": len(matriculas),
-        "cursos_aprobados": sum(1 for m in matriculas if m.nota is not None and round(m.nota) >= 11),
-        "cursos_reprobados": sum(1 for m in matriculas if m.nota is not None and round(m.nota) < 11),
+        "cursos_aprobados": sum(1 for m in matriculas if m.nota is not None and round(m.nota) >= 12),
+        "cursos_reprobados": sum(1 for m in matriculas if m.nota is not None and round(m.nota) < 12),
         "creditos_aprobados": sum(
-            cred_cursos.get(m.cod_curso, 0) for m in matriculas if m.nota is not None and round(m.nota) >= 11
+            cred_cursos.get(m.cod_curso, 0) for m in matriculas if m.nota is not None and round(m.nota) >= 12
         ),
         "promedio_general": round(
             sum(m.nota for m in matriculas if m.nota is not None) / 
@@ -182,7 +182,7 @@ async def login(
     # 4) cursos disponibles (cursos cuyas prerequisitos se cumplen y que NO ha llevado)
 
     cursos_aprobados = [
-        m.cod_curso for m in matriculas if m.nota is not None and round(m.nota) >= 11
+        m.cod_curso for m in matriculas if m.nota is not None and m.nota >= 11.5
     ]
 
     # Cursos que ya llevó (aprobados o no)
