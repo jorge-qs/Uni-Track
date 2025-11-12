@@ -170,46 +170,107 @@ export default function EnrollmentPage() {
         if (!cursoInfo) continue;
 
         // Obtener TODAS las secciones
-        const secciones = secciones_info?.[codCurso] || {};
+        const seccionesCurso = secciones_info?.[codCurso];
+        if (!seccionesCurso) continue;
 
-        // Agrupar horarios por sección
+        // Agrupar horarios por secciónn
         const allSections = [];
-        for (const [seccionId, seccionData] of Object.entries(secciones)) {
-          const grupos = seccionData.grupos || [];
-          const sessionGroup = [];
 
-          for (const grupo of grupos) {
-            const parsed = parseHorario(grupo.horario);
-            if (parsed) {
-              sessionGroup.push({
-                ...parsed,
-                location: grupo.ubicacion || 'N/A',
-                grupo: grupo.grupo,
-                docente: grupo.docente,
+        if (seccionesCurso?.horarios) {
+          // Nuevo formato: objeto de horarios agrupados por secci?n
+          for (const [seccionId, horariosLista] of Object.entries(seccionesCurso.horarios)) {
+            if (!Array.isArray(horariosLista)) continue;
+
+            const sessionGroup = [];
+            for (const horarioData of horariosLista) {
+              const horarioStr = horarioData?.Horario || horarioData?.horario;
+              if (!horarioStr) continue;
+
+              const parsed = parseHorario(horarioStr);
+              if (parsed) {
+                sessionGroup.push({
+                  ...parsed,
+                  location: horarioData.Ubicacion || horarioData.ubicacion || 'N/A',
+                  grupo: horarioData.Grupo || horarioData.grupo,
+                  docente: horarioData.Docente || horarioData.docente,
+                  modalidad: horarioData.Modalidad || horarioData.modalidad,
+                  frecuencia: horarioData.Frecuencia || horarioData.frecuencia,
+                  vacantes: horarioData.Vacantes ?? horarioData.vacantes,
+                  matriculados: horarioData.Matriculados ?? horarioData.matriculados,
+                });
+              }
+            }
+
+            if (sessionGroup.length > 0) {
+              const sampleHorario = horariosLista[0] || {};
+              const sectionLabel = seccionId || sampleHorario.Seccion;
+              let sectionName = sectionLabel ? `Sección ${sectionLabel}` : null;
+              if (!sectionName && sampleHorario.Grupo) {
+                sectionName = sampleHorario.Grupo;
+              }
+              if (!sectionName) {
+                sectionName = `Sección ${allSections.length + 1}`;
+              }
+
+              allSections.push({
+                sectionId: seccionId,
+                sectionName,
+                sessions: sessionGroup,
               });
             }
           }
+        } else {
+          // Formato anterior: cada Sección tiene un objeto con sus grupos
+          for (const [seccionId, seccionData] of Object.entries(seccionesCurso)) {
+            if (!seccionData || typeof seccionData !== 'object') continue;
 
-          if (sessionGroup.length > 0) {
-            allSections.push({
-              sectionId: seccionId,
-              sectionName: seccionData.seccion || `Sección ${seccionId}`,
-              sessions: sessionGroup,
-            });
+            const grupos = seccionData.grupos || [];
+            const sessionGroup = [];
+
+            for (const grupo of grupos) {
+              const parsed = parseHorario(grupo.horario);
+              if (parsed) {
+                sessionGroup.push({
+                  ...parsed,
+                  location: grupo.ubicacion || 'N/A',
+                  grupo: grupo.grupo,
+                  docente: grupo.docente,
+                });
+              }
+            }
+
+            if (sessionGroup.length > 0) {
+              allSections.push({
+                sectionId: seccionId,
+                sectionName: seccionData.seccion || `Sección ${seccionId}`,
+                sessions: sessionGroup,
+              });
+            }
           }
         }
 
         // Solo agregar curso si tiene secciones
         if (allSections.length > 0) {
+          const availableSlots = allSections.reduce((maxSlots, section) => {
+            const sectionMax = section.sessions.reduce((sectionSlots, session) => {
+              if (session.vacantes != null && session.matriculados != null) {
+                const disponibles = Math.max(session.vacantes - session.matriculados, 0);
+                return Math.max(sectionSlots, disponibles);
+              }
+              return sectionSlots;
+            }, 0);
+            return Math.max(maxSlots, sectionMax);
+          }, 0);
+
           catalog.push({
             code: codCurso,
-            name: cursoInfo.curso,
+            name: seccionesCurso?.curso || cursoInfo.curso,
             credits: cursoInfo.creditos || 3,
             prerequisites: cursoInfo.prerequisitos || [],
-            slots: 30, // Por defecto
-            estimatedGrade: null, // Se cargará después
+            slots: availableSlots > 0 ? availableSlots : 30, // Por defecto si no hay datos
+            estimatedGrade: null, // Se cargar? despu?s
             allSections: allSections, // Todas las secciones disponibles
-            selectedSectionIndex: 0, // Por defecto la primera sección
+            selectedSectionIndex: 0, // Por defecto la primera Sección
           });
         }
       }

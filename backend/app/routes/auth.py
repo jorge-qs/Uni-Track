@@ -2,6 +2,7 @@
 Endpoints de autenticación
 Login simplificado sin contraseña (solo código de estudiante)
 """
+import json as js
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
@@ -212,79 +213,12 @@ async def login(
 
     # 5) sacar de la tabla Seccion los recursos asociados a los cursos disponibles
 
-    secciones = db.query(Seccion).filter(
-        Seccion.cod_curso.in_(cursos_disponibles)
-    ).all()
-
-# dado
-# CS210,ALGORITMOS Y ESTRUCTURAS DE DATOS,1,TEORÍA 1,Presencial,Lun. 11:00 - 13:00,Semana General,UTEC-BA A901(42),30,30,"Nina Choquehuayta, Wilder ",wnina@utec.edu.pe
-# CS210,ALGORITMOS Y ESTRUCTURAS DE DATOS,1,LABORATORIO 1.01,Presencial,Jue. 07:00 - 09:00,Semana General,UTEC-BA M604(30),30,30,"Nina Choquehuayta, Wilder ",wnina@utec.edu.pe
-# CS210,ALGORITMOS Y ESTRUCTURAS DE DATOS,1,LABORATORIO 1.01,Presencial,Vie. 10:00 - 12:00,Semana General,UTEC-BA M604(30),30,30,"Nina Choquehuayta, Wilder ",wnina@utec.edu.pe
-# CS210,ALGORITMOS Y ESTRUCTURAS DE DATOS,2,TEORÍA 2,Presencial,Mar. 18:00 - 20:00,Semana General,UTEC-BA A903(46),45,45,"Sanchez Enriquez, Heider Ysaias",hsanchez@utec.edu.pe
-# CS210,ALGORITMOS Y ESTRUCTURAS DE DATOS,2,LABORATORIO 2.01,Presencial,Mie. 18:00 - 20:00,Semana General,UTEC-BA M803(45),45,45,"Sanchez Enriquez, Heider Ysaias",hsanchez@utec.edu.pe
-# CS210,ALGORITMOS Y ESTRUCTURAS DE DATOS,2,LABORATORIO 2.01,Presencial,Jue. 18:00 - 20:00,Semana General,UTEC-BA M302(60),45,45,"Sanchez Enriquez, Heider Ysaias",hsanchez@utec.edu.pe
-# CS210,ALGORITMOS Y ESTRUCTURAS DE DATOS,3,TEORÍA 3,Presencial,Mar. 11:00 - 13:00,Semana General,UTEC-BA M302(60),30,30,"Ojeda Rios, Brenner Humberto ",bojeda@utec.edu.pe
-# CS210,ALGORITMOS Y ESTRUCTURAS DE DATOS,3,LABORATORIO 3.01,Presencial,Jue. 12:00 - 14:00,Semana General,UTEC-BA M601(30),30,30,"Ojeda Rios, Brenner Humberto ",bojeda@utec.edu.pe
-# CS210,ALGORITMOS Y ESTRUCTURAS DE DATOS,3,LABORATORIO 3.01,Presencial,Vie. 10:00 - 12:00,Semana General,UTEC-BA M602(30),30,30,"Ojeda Rios, Brenner Humberto ",bojeda@utec.edu.pe
-
-# quiero
-# {
-#     "CS210":[
-#         {
-#             "seccion": 1,
-#             "grupos":[
-#                 {
-#                     "grupo": "TEORÍA 1",
-#                     "modalidad": "Presencial",
-#                     "horario": "Lun. 11:00 - 13:00",
-#                     "frecuencia": "Semana General",
-#                     "ubicacion":"UTEC-BA A901(42)",
-#                     "vacantes": 30,
-#                     "matriculados":30,
-#                     "docente": "Ojeda Rios, Brenner Humberto",
-#                     "correo": "bojeda@utec.edu.pe"
-#                 },
-#                 {
-
-#                 },
-#                 {
-
-#                 }
-#             ]
-#          },
-#         {},
-#         {}
-#     ]
-# }
+    with open('./data/secciones_playground.json', 'r', encoding='utf-8') as f:
+        secciones = js.load(f)
 
 
-    secciones_info = {}
-    for c in cursos_disponibles:
-        secciones_disp = [i for i in secciones if i.cod_curso == c]
-        secciones_dic = {}
-        for s in secciones_disp:
-            if s.seccion not in secciones_dic:
-                secciones_dic[s.seccion] = {"grupos": []}
-            secciones_dic[s.seccion]["grupos"].append({
-                    "grupo": s.grupo,
-                    "modalidad": s.modalidad,
-                    "horario": s.horario,
-                            "frecuencia": s.frecuencia,
-                            "ubicacion": s.ubicacion,
-                            "vacantes": s.vacantes,
-                            "matriculados": s.matriculados,
-                            "docente": s.docente,
-                            "correo": s.correo
-                    }
-                )
 
-        # Limitar a solo las primeras 2 secciones (con todos sus grupos)
-        secciones_limitadas = {}
-        for idx, (seccion_num, seccion_data) in enumerate(secciones_dic.items()):
-            if idx < 2:  # Solo las primeras 2 secciones
-                secciones_limitadas[seccion_num] = seccion_data
-
-        secciones_info[c] = secciones_limitadas
+    secciones_info = {curso: horarios for curso, horarios in secciones.items() if curso in cursos_disponibles}
 
     # 6) resources_info: diccionario { cod_curso: [resources] }
 
