@@ -68,6 +68,38 @@ curl -X POST http://localhost:8000/api/v1/prediccion/predecir-por-matricula \
 2. **Recomendador de Horario**: Botón morado "Recomendar Mejor Horario" en Calendario Tentativo
 3. **Notas Predichas en Popup**: Al hacer clic en un curso, verás 2 predicciones (individual y con matrícula)
 
+### 🐳 Uso con Docker
+
+**Docker Compose funciona perfectamente sin cambios adicionales**:
+
+```bash
+# Pull de la rama
+git checkout rama-modelos
+git pull origin rama-modelos
+
+# Iniciar con Docker
+docker-compose up --build
+
+# Los modelos .pkl se cargarán automáticamente desde ./backend
+```
+
+**Verificar que funciona**:
+```bash
+# Ver logs del backend
+docker-compose logs backend
+
+# Deberías ver:
+# "OK - Modelo clasificador cargado exitosamente"
+# "OK - Modelo de prediccion por matricula cargado exitosamente"
+# "Sistema de recomendacion cargado exitosamente"
+```
+
+**¿Por qué funciona?**
+- `docker-compose.yml` monta `./backend:/app` (línea 28)
+- Los archivos `.pkl` están en `./backend/app/` en tu máquina
+- Docker los monta automáticamente en el contenedor
+- No requiere configuración adicional ✅
+
 ### 📚 Documentación completa
 
 Ver `INTEGRACION_MODELOS_ML.md` para detalles técnicos completos.
