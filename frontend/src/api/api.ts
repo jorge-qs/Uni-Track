@@ -210,3 +210,191 @@ export async function getRecursosMatriculados(cursos: Array<{code: string, name:
     return null;
   }
 }
+
+// ============================================================================
+// NUEVOS ENDPOINTS - MODELOS DE PREDICCIÓN Y RECOMENDACIÓN
+// ============================================================================
+
+export interface CursoPrediccion {
+  cod_curso: string;
+  nota_predicha: number;
+}
+
+export interface PrediccionMatriculaRequest {
+  cod_persona: string;
+  codigos_cursos: string[];
+  per_matricula: string;
+}
+
+export interface PrediccionMatriculaResponse {
+  success: boolean;
+  cod_persona: string;
+  per_matricula: string;
+  predicciones: CursoPrediccion[];
+  mensaje?: string;
+}
+
+/**
+ * Predice las notas para múltiples cursos considerando la carga total de la matrícula.
+ * Este endpoint utiliza el modelo de predicción por matrícula que toma en cuenta
+ * todos los cursos de la matrícula para hacer predicciones más precisas.
+ *
+ * @param codPersona - Código del estudiante
+ * @param codigosCursos - Lista de códigos de cursos
+ * @param perMatricula - Período de matrícula (ej: "2025-01")
+ * @returns Predicciones de notas para cada curso considerando la carga total
+ */
+export async function predecirNotasPorMatricula(
+  codPersona: string,
+  codigosCursos: string[],
+  perMatricula: string
+): Promise<PrediccionMatriculaResponse> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/prediccion/predecir-por-matricula`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        cod_persona: codPersona,
+        codigos_cursos: codigosCursos,
+        per_matricula: perMatricula,
+      }),
+    });
+
+    if (!response.ok) {
+      console.error(`Error al predecir notas por matrícula: ${response.status}`);
+      // Retornar respuesta con valores por defecto
+      return {
+        success: false,
+        cod_persona: codPersona,
+        per_matricula: perMatricula,
+        predicciones: codigosCursos.map(cod => ({
+          cod_curso: cod,
+          nota_predicha: 14.0
+        })),
+        mensaje: 'Error al obtener predicciones, usando valores por defecto'
+      };
+    }
+
+    const data: PrediccionMatriculaResponse = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error al predecir notas por matrícula:', error);
+    // Retornar respuesta con valores por defecto en caso de error
+    return {
+      success: false,
+      cod_persona: codPersona,
+      per_matricula: perMatricula,
+      predicciones: codigosCursos.map(cod => ({
+        cod_curso: cod,
+        nota_predicha: 14.0
+      })),
+      mensaje: 'Error de conexión, usando valores por defecto'
+    };
+  }
+}
+
+export interface MetricasBase {
+  atraso: number;
+  eficiencia: number;
+  simplicidad: number;
+  obligatorio: number;
+  familia: number;
+  cluster: number;
+  dependientes: number;
+  profundidad: number;
+}
+
+export interface DetallesCurso {
+  codigo: string;
+  nombre: string;
+  score_individual: number;
+  nota_predicha: number;
+  creditos: number;
+  metricas_base: MetricasBase;
+}
+
+export interface ResultadoBundle {
+  bundle_id: number;
+  bundle_score: number;
+  is_valid: boolean;
+  message: string;
+  total_credits: number;
+  total_hours: number;
+  avg_quality_per_course: number;
+  cursos_desaprobados_predichos: number;
+  courses_list: string[];
+  course_details: DetallesCurso[];
+}
+
+export interface MejorRecomendacion {
+  index: number;
+  score: number;
+  cursos: string[];
+  detalle: ResultadoBundle | null;
+}
+
+export interface RecomendacionResponse {
+  success: boolean;
+  meta: {
+    cod_persona: number;
+    per_matricula: string;
+    total_evaluados: number;
+    mejor_opcion_index: number;
+  };
+  mejor_recomendacion: MejorRecomendacion;
+  todos_los_resultados: ResultadoBundle[];
+  mensaje?: string;
+}
+
+/**
+ * Evalúa diferentes combinaciones de cursos (bundles) y recomienda la mejor opción.
+ *
+ * Este endpoint utiliza múltiples métricas para evaluar cada combinación:
+ * - Atraso académico
+ * - Eficiencia (créditos/horas)
+ * - Simplicidad (prerequisitos)
+ * - Prioridad de cursos obligatorios
+ * - Familia del curso
+ * - Dificultad (cluster)
+ * - Dependientes (cursos que dependen de este)
+ * - Profundidad en el árbol de prerequisitos
+ * - Predicción de nota (usando modelo por matrícula)
+ *
+ * @param codPersona - Código del estudiante
+ * @param perMatricula - Período de matrícula (ej: "2025-01")
+ * @param bundles - Lista de combinaciones de cursos a evaluar
+ * @returns Recomendación con el mejor bundle y análisis detallado
+ */
+export async function recomendarMejorHorario(
+  codPersona: string,
+  perMatricula: string,
+  bundles: string[][]
+): Promise<RecomendacionResponse | null> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/recomendacion/mejor-horario`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        cod_persona: codPersona,
+        per_matricula: perMatricula,
+        bundles: bundles,
+      }),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error(`Error al obtener recomendación de horario: ${response.status}`, errorText);
+      return null;
+    }
+
+    const data: RecomendacionResponse = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error al obtener recomendación de horario:', error);
+    return null;
+  }
+}

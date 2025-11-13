@@ -1,5 +1,5 @@
 import { useMemo, useState, useEffect } from 'react';
-import { getStoredLogin, predecirNota } from '../api/api';
+import { getStoredLogin, predecirNota, predecirNotasPorMatricula, recomendarMejorHorario } from '../api/api';
 
 const HOUR_HEIGHT = 60;
 const START_HOUR = 7;
@@ -118,6 +118,10 @@ export default function EnrollmentPage() {
   const [conflictModal, setConflictModal] = useState(null);
   const [enrollmentConfirmModal, setEnrollmentConfirmModal] = useState(false);
   const [enrollmentSuccessModal, setEnrollmentSuccessModal] = useState(false);
+  const [matriculaPredictions, setMatriculaPredictions] = useState({});
+  const [loadingMatriculaPredictions, setLoadingMatriculaPredictions] = useState(false);
+  const [recommendationModal, setRecommendationModal] = useState(null);
+  const [loadingRecommendation, setLoadingRecommendation] = useState(false);
 
   const selectedCodes = useMemo(
     () => new Set(selectedCourses.map((course) => course.code)),
@@ -306,6 +310,46 @@ export default function EnrollmentPage() {
     loadCourses();
   }, []);
 
+  // Actualizar predicciones por matrícula cuando cambian los cursos seleccionados
+  useEffect(() => {
+    const updateMatriculaPredictions = async () => {
+      if (selectedCourses.length === 0) {
+        setMatriculaPredictions({});
+        return;
+      }
+
+      const loginData = getStoredLogin();
+      if (!loginData?.cod_persona) return;
+
+      setLoadingMatriculaPredictions(true);
+
+      try {
+        const cursosSeleccionados = selectedCourses.map(c => c.code);
+        const periodo = "2025-01"; // TODO: Obtener período actual dinámicamente
+
+        const resultado = await predecirNotasPorMatricula(
+          loginData.cod_persona,
+          cursosSeleccionados,
+          periodo
+        );
+
+        // Convertir array de predicciones a objeto {cod_curso: nota}
+        const predictionsMap = {};
+        resultado.predicciones.forEach(pred => {
+          predictionsMap[pred.cod_curso] = pred.nota_predicha;
+        });
+
+        setMatriculaPredictions(predictionsMap);
+      } catch (error) {
+        console.error('Error al actualizar predicciones por matrícula:', error);
+      } finally {
+        setLoadingMatriculaPredictions(false);
+      }
+    };
+
+    updateMatriculaPredictions();
+  }, [selectedCourses]);
+
   // Función para verificar si dos sesiones se solapan
   const checkTimeOverlap = (session1, session2) => {
     // Si son días diferentes, no hay solapamiento
@@ -435,6 +479,96 @@ export default function EnrollmentPage() {
     } finally {
       setEnrolling(false);
     }
+  };
+
+  const handleRecommendBestSchedule = async () => {
+    const loginData = getStoredLogin();
+    if (!loginData?.cod_persona) {
+      alert('No se encontró información del estudiante');
+      return;
+    }
+
+    if (courseCatalog.length === 0) {
+      alert('No hay cursos disponibles para recomendar');
+      return;
+    }
+
+    setLoadingRecommendation(true);
+
+    try {
+      // Generar diferentes combinaciones de cursos (bundles)
+      // Por simplicidad, generamos 3 bundles:
+      // 1. Cursos actualmente seleccionados (si hay)
+      // 2. Primeros 4-5 cursos del catálogo
+      // 3. Combinación variada
+
+      const bundles = [];
+
+      // Bundle 1: Cursos seleccionados actuales (si hay al menos 2)
+      if (selectedCourses.length >= 2) {
+        bundles.push(selectedCourses.map(c => c.code));
+      }
+
+      // Bundle 2: Primeros 4-5 cursos disponibles
+      const bundle2 = courseCatalog.slice(0, Math.min(5, courseCatalog.length)).map(c => c.code);
+      if (bundle2.length >= 2) {
+        bundles.push(bundle2);
+      }
+
+      // Bundle 3: Combinación de cursos obligatorios y de mayor prioridad
+      const bundle3 = courseCatalog
+        .filter(c => c.credits >= 3) // Cursos con buenos créditos
+        .slice(0, Math.min(4, courseCatalog.length))
+        .map(c => c.code);
+      if (bundle3.length >= 2 && bundle3.join(',') !== bundle2.join(',')) {
+        bundles.push(bundle3);
+      }
+
+      // Bundle 4: Variación con cursos diferentes
+      const bundle4 = courseCatalog
+        .filter((_, idx) => idx % 2 === 0) // Cursos alternados
+        .slice(0, Math.min(5, courseCatalog.length))
+        .map(c => c.code);
+      if (bundle4.length >= 2 && bundle4.join(',') !== bundle2.join(',') && bundle4.join(',') !== bundle3.join(',')) {
+        bundles.push(bundle4);
+      }
+
+      if (bundles.length === 0) {
+        alert('No se pudieron generar suficientes opciones de matrícula para comparar');
+        return;
+      }
+
+      const periodo = "2025-01"; // TODO: Obtener período dinámicamente
+
+      const resultado = await recomendarMejorHorario(
+        loginData.cod_persona,
+        periodo,
+        bundles
+      );
+
+      if (resultado) {
+        setRecommendationModal(resultado);
+      } else {
+        alert('Error al obtener recomendación. Intenta de nuevo.');
+      }
+    } catch (error) {
+      console.error('Error al obtener recomendación:', error);
+      alert('Error al procesar la recomendación. Verifica tu conexión.');
+    } finally {
+      setLoadingRecommendation(false);
+    }
+  };
+
+  const applyRecommendation = (cursosCodigos) => {
+    // Limpiar selección actual
+    setSelectedCourses([]);
+
+    // Agregar los cursos recomendados
+    const cursosAgregar = courseCatalog.filter(c => cursosCodigos.includes(c.code));
+    setSelectedCourses(cursosAgregar);
+
+    // Cerrar modal
+    setRecommendationModal(null);
   };
 
   if (loading) {
@@ -637,8 +771,31 @@ export default function EnrollmentPage() {
 
         <div className="space-y-4 rounded-2xl border border-utec-border bg-white p-6 shadow-[0_10px_40px_rgba(0,0,0,0.15)]">
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-utec-text">Calendario tentativo</h2>
-            <span className="text-sm text-utec-muted">Formato semanal - 7am a 10pm</span>
+            <div>
+              <h2 className="text-lg font-semibold text-utec-text">Calendario tentativo</h2>
+              <span className="text-sm text-utec-muted">Formato semanal - 7am a 10pm</span>
+            </div>
+            <button
+              onClick={handleRecommendBestSchedule}
+              disabled={loadingRecommendation || courseCatalog.length === 0}
+              className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition ${
+                loadingRecommendation || courseCatalog.length === 0
+                  ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  : 'bg-purple-600 text-white hover:bg-purple-700 shadow-lg hover:shadow-xl'
+              }`}
+            >
+              {loadingRecommendation ? (
+                <>
+                  <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-white border-r-transparent"></span>
+                  <span>Analizando...</span>
+                </>
+              ) : (
+                <>
+                  <span className="material-symbols-outlined text-xl">auto_awesome</span>
+                  <span>Recomendar Mejor Horario</span>
+                </>
+              )}
+            </button>
           </div>
           <p className="text-sm text-utec-muted">
             Visualiza los cursos seleccionados en una cuadrilla de 7 dias. Usa esta vista
@@ -792,10 +949,32 @@ export default function EnrollmentPage() {
                 <div className="rounded-lg bg-emerald-50 p-3">
                   <div className="flex items-center gap-2 text-sm">
                     <span className="material-symbols-outlined text-emerald-600">grade</span>
-                    <span className="font-semibold text-emerald-700">Nota estimada:</span>
+                    <span className="font-semibold text-emerald-700">Nota estimada (individual):</span>
                   </div>
                   <p className="mt-1 text-lg font-bold text-emerald-700 ml-7">
                     {formatGrade(selectedEventDetail.grade)}/20
+                  </p>
+                </div>
+              )}
+
+              {matriculaPredictions[selectedEventDetail.code] && (
+                <div className="rounded-lg bg-purple-50 p-3 border-2 border-purple-200">
+                  <div className="flex items-center gap-2 text-sm mb-1">
+                    <span className="material-symbols-outlined text-purple-600">psychology</span>
+                    <span className="font-semibold text-purple-700">Nota predicha (con matrícula):</span>
+                  </div>
+                  <p className="text-lg font-bold text-purple-700 ml-7">
+                    {formatGrade(matriculaPredictions[selectedEventDetail.code])}/20
+                  </p>
+                  <p className="text-xs text-purple-600 mt-2 ml-7">
+                    {loadingMatriculaPredictions ? (
+                      <span className="flex items-center gap-1">
+                        <span className="inline-block h-3 w-3 animate-spin rounded-full border-2 border-solid border-purple-600 border-r-transparent"></span>
+                        Actualizando...
+                      </span>
+                    ) : (
+                      'Considera todos los cursos seleccionados'
+                    )}
                   </p>
                 </div>
               )}
@@ -963,6 +1142,134 @@ export default function EnrollmentPage() {
               className="w-full rounded-lg bg-green-600 px-4 py-2 font-semibold text-white hover:bg-green-700 transition"
             >
               Entendido
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de recomendación de horario */}
+      {recommendationModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 overflow-y-auto"
+          onClick={() => setRecommendationModal(null)}
+        >
+          <div
+            className="w-full max-w-2xl rounded-2xl border border-purple-200 bg-white p-6 shadow-[0_20px_60px_rgba(147,51,234,0.3)] my-8"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="mb-4 flex items-start gap-3">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-purple-100">
+                <span className="material-symbols-outlined text-2xl text-purple-600">auto_awesome</span>
+              </div>
+              <div className="flex-1">
+                <h3 className="text-xl font-bold text-purple-600">Mejor Horario Recomendado</h3>
+                <p className="text-sm text-utec-muted mt-1">
+                  Analizamos {recommendationModal.meta.total_evaluados} opciones usando IA
+                </p>
+              </div>
+              <button
+                onClick={() => setRecommendationModal(null)}
+                className="rounded-full p-1 hover:bg-gray-100 transition"
+              >
+                <span className="material-symbols-outlined text-utec-muted">close</span>
+              </button>
+            </div>
+
+            {/* Mejor opción */}
+            <div className="mb-6 rounded-xl border-2 border-purple-200 bg-purple-50 p-4">
+              <div className="mb-3 flex items-center justify-between">
+                <div>
+                  <h4 className="text-lg font-bold text-purple-700">Opción Recomendada</h4>
+                  <p className="text-sm text-purple-600">
+                    Score: {recommendationModal.mejor_recomendacion.score.toFixed(1)} puntos
+                  </p>
+                </div>
+                {recommendationModal.mejor_recomendacion.detalle?.is_valid ? (
+                  <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">
+                    ✓ Válido
+                  </span>
+                ) : (
+                  <span className="rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-700">
+                    ⚠ Advertencia
+                  </span>
+                )}
+              </div>
+
+              <div className="mb-3 grid grid-cols-3 gap-3 text-center">
+                <div className="rounded-lg bg-white p-2">
+                  <p className="text-xs text-utec-muted">Créditos</p>
+                  <p className="text-lg font-bold text-purple-700">
+                    {recommendationModal.mejor_recomendacion.detalle?.total_credits}
+                  </p>
+                </div>
+                <div className="rounded-lg bg-white p-2">
+                  <p className="text-xs text-utec-muted">Cursos</p>
+                  <p className="text-lg font-bold text-purple-700">
+                    {recommendationModal.mejor_recomendacion.cursos.length}
+                  </p>
+                </div>
+                <div className="rounded-lg bg-white p-2">
+                  <p className="text-xs text-utec-muted">En riesgo</p>
+                  <p className="text-lg font-bold text-purple-700">
+                    {recommendationModal.mejor_recomendacion.detalle?.cursos_desaprobados_predichos || 0}
+                  </p>
+                </div>
+              </div>
+
+              <div className="mb-3 space-y-2">
+                <p className="text-sm font-semibold text-purple-700">Cursos incluidos:</p>
+                <div className="flex flex-wrap gap-2">
+                  {recommendationModal.mejor_recomendacion.cursos.map((codigo) => (
+                    <span
+                      key={codigo}
+                      className="rounded-lg bg-white px-3 py-1 text-sm font-semibold text-purple-700 shadow-sm"
+                    >
+                      {codigo}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {recommendationModal.mejor_recomendacion.detalle?.course_details && (
+                <div className="mt-3 max-h-48 space-y-2 overflow-y-auto rounded-lg bg-white p-3">
+                  <p className="text-xs font-semibold text-utec-muted uppercase">Detalles por curso:</p>
+                  {recommendationModal.mejor_recomendacion.detalle.course_details.map((curso) => (
+                    <div key={curso.codigo} className="flex items-center justify-between border-b border-purple-100 pb-2 last:border-0">
+                      <div>
+                        <p className="text-sm font-semibold text-utec-text">{curso.codigo}</p>
+                        <p className="text-xs text-utec-muted truncate max-w-xs">{curso.nombre}</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm font-bold text-purple-600">
+                          {formatGrade(curso.nota_predicha)}/20
+                        </p>
+                        <p className="text-xs text-utec-muted">{curso.creditos} créd.</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              <button
+                onClick={() => applyRecommendation(recommendationModal.mejor_recomendacion.cursos)}
+                className="mt-4 w-full rounded-lg bg-purple-600 px-4 py-2 font-semibold text-white hover:bg-purple-700 transition"
+              >
+                Aplicar esta recomendación
+              </button>
+            </div>
+
+            {/* Mensaje del sistema */}
+            {recommendationModal.mensaje && (
+              <div className="mb-4 rounded-lg bg-blue-50 p-3">
+                <p className="text-sm text-utec-text">{recommendationModal.mensaje}</p>
+              </div>
+            )}
+
+            <button
+              onClick={() => setRecommendationModal(null)}
+              className="w-full rounded-lg border border-utec-border px-4 py-2 font-semibold text-utec-text hover:bg-gray-50 transition"
+            >
+              Cerrar
             </button>
           </div>
         </div>

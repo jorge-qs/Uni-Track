@@ -17,10 +17,18 @@ from app.models.matricula import Matricula
 try:
     from app.predictor_nota import get_predictor
     PREDICTOR_AVAILABLE = True
-    print("✓ Modelo ML cargado exitosamente")
+    print("Modelo ML cargado exitosamente")
 except ImportError as e:
     print(f"Warning: No se pudo cargar el predictor de notas: {e}")
     PREDICTOR_AVAILABLE = False
+
+try:
+    from app.predictor_nota_x_matricula import get_predictor_matricula
+    PREDICTOR_MATRICULA_AVAILABLE = True
+    print("Modelo de prediccion por matricula cargado")
+except ImportError as e:
+    print(f"Warning: No se pudo cargar el predictor por matricula: {e}")
+    PREDICTOR_MATRICULA_AVAILABLE = False
 
 router = APIRouter()
 
@@ -37,6 +45,25 @@ class PrediccionResponse(BaseModel):
     cod_curso: str
     nota_estimada: float
     categoria_riesgo: Optional[str] = None  # "Riesgo", "Normal", "Factible"
+    mensaje: Optional[str] = None
+
+
+class PrediccionMatriculaRequest(BaseModel):
+    cod_persona: str
+    codigos_cursos: list[str]
+    per_matricula: str
+
+
+class CursoPrediccion(BaseModel):
+    cod_curso: str
+    nota_predicha: float
+
+
+class PrediccionMatriculaResponse(BaseModel):
+    success: bool
+    cod_persona: str
+    per_matricula: str
+    predicciones: list[CursoPrediccion]
     mensaje: Optional[str] = None
 
 
@@ -200,3 +227,101 @@ async def predecir_notas_multiples(
         'cod_persona': cod_persona,
         'predicciones': predicciones
     }
+
+
+@router.post("/predecir-por-matricula", response_model=PrediccionMatriculaResponse)
+async def predecir_notas_por_matricula(
+    request: PrediccionMatriculaRequest,
+    db: Session = Depends(get_db)
+):
+    """
+    Predice las notas para múltiples cursos considerando la carga total de la matrícula.
+    Este endpoint utiliza el modelo de predicción por matrícula que toma en cuenta
+    todos los cursos de la matrícula para hacer predicciones más precisas.
+
+    Args:
+        request: Contiene cod_persona, lista de códigos de cursos, y período de matrícula
+        db: Sesión de base de datos
+
+    Returns:
+        Lista de predicciones con notas estimadas para cada curso
+    """
+
+    # Verificar que el alumno existe
+    alumno = db.query(Alumno).filter(
+        Alumno.cod_persona == request.cod_persona
+    ).first()
+
+    if not alumno:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"No se encontró alumno con código {request.cod_persona}"
+        )
+
+    # Verificar que los cursos existen
+    for cod_curso in request.codigos_cursos:
+        curso = db.query(Curso).filter(
+            Curso.cod_curso == cod_curso
+        ).first()
+
+        if not curso:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"No se encontró curso con código {cod_curso}"
+            )
+
+    # Realizar predicción con modelo de predicción por matrícula
+    if not PREDICTOR_MATRICULA_AVAILABLE:
+        # Fallback si el modelo no está disponible
+        predicciones = [
+            CursoPrediccion(cod_curso=cod, nota_predicha=14.0)
+            for cod in request.codigos_cursos
+        ]
+        mensaje = "Modelo de predicción por matrícula no disponible. Usando valores por defecto."
+    else:
+        try:
+            predictor_matricula = get_predictor_matricula()
+
+            # Convertir cod_persona a int si es necesario
+            try:
+                cod_persona_int = int(request.cod_persona)
+            except ValueError:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f"El código de persona debe ser un número entero"
+                )
+
+            # Realizar predicción
+            lista_notas = predictor_matricula.predecir_notas(
+                cod_persona=cod_persona_int,
+                lista_cod_curso=request.codigos_cursos,
+                per_matricula=request.per_matricula
+            )
+
+            # Convertir el resultado a la estructura esperada
+            predicciones = [
+                CursoPrediccion(cod_curso=cod_curso, nota_predicha=nota)
+                for cod_curso, nota in lista_notas
+            ]
+
+            mensaje = f"Predicción exitosa considerando {len(request.codigos_cursos)} cursos de la matrícula"
+
+        except Exception as e:
+            print(f"Error en predicción por matrícula: {e}")
+            import traceback
+            traceback.print_exc()
+
+            # Fallback en caso de error
+            predicciones = [
+                CursoPrediccion(cod_curso=cod, nota_predicha=14.0)
+                for cod in request.codigos_cursos
+            ]
+            mensaje = f"Error en predicción: {str(e)[:100]}. Usando valores por defecto."
+
+    return PrediccionMatriculaResponse(
+        success=True,
+        cod_persona=request.cod_persona,
+        per_matricula=request.per_matricula,
+        predicciones=predicciones,
+        mensaje=mensaje
+    )

@@ -38,20 +38,20 @@ class PredictorNota:
         try:
             import joblib
             self.modelo = joblib.load(MODEL_PATH)
-            print(f"✓ Modelo clasificador cargado exitosamente (joblib)")
+            print(f"OK - Modelo clasificador cargado exitosamente (joblib)")
         except Exception as e:
             print(f"Intento con joblib falló: {e}")
             try:
                 import pickle5 as pickle_alt
                 with open(MODEL_PATH, 'rb') as f:
                     self.modelo = pickle_alt.load(f)
-                print(f"✓ Modelo clasificador cargado exitosamente (pickle5)")
+                print(f"OK - Modelo clasificador cargado exitosamente (pickle5)")
             except Exception as e2:
                 print(f"Intento con pickle5 falló: {e2}")
                 try:
                     with open(MODEL_PATH, 'rb') as f:
                         self.modelo = pickle.load(f, encoding='latin1')
-                    print(f"✓ Modelo clasificador cargado exitosamente (pickle latin1)")
+                    print(f"OK - Modelo clasificador cargado exitosamente (pickle latin1)")
                 except Exception as e3:
                     print(f"Error al cargar modelo con pickle: {e3}")
                     self.modelo = None
@@ -60,7 +60,7 @@ class PredictorNota:
         try:
             print(f"Cargando dataset de features...")
             self.df_features = pd.read_csv(DATA_PATH)
-            print(f"✓ Dataset cargado: {len(self.df_features)} filas")
+            print(f"OK - Dataset cargado: {len(self.df_features)} filas")
         except Exception as e:
             print(f"Error al cargar dataset: {e}")
             self.df_features = None
@@ -110,7 +110,7 @@ class PredictorNota:
             filas = self.df_features[filtros]
 
             if filas.empty:
-                print(f"⚠ No hay datos para {cod_persona}/{cod_curso}" +
+                print(f"WARNING - No hay datos para {cod_persona}/{cod_curso}" +
                       (f"/{per_matricula}" if per_matricula else ""))
                 if historial_academico:
                     return (historial_academico.get('promedio_acumulado', 14.0), "Normal")
@@ -134,7 +134,7 @@ class PredictorNota:
             nota_estimada = CATEGORIA_A_NOTA.get(categoria, 14.0)
             categoria_label = CATEGORIA_LABELS.get(categoria, "Normal")
 
-            print(f"✓ Clasificación: {categoria_label} (categoría {categoria}) -> Nota estimada: {nota_estimada:.1f} para {cod_persona}/{cod_curso}")
+            print(f"OK - Clasificacion: {categoria_label} (categoria {categoria}) -> Nota estimada: {nota_estimada:.1f} para {cod_persona}/{cod_curso}")
             return (round(nota_estimada, 1), categoria_label)
 
         except Exception as e:
