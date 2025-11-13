@@ -82,16 +82,19 @@ export interface PrediccionResponse {
   cod_persona: string;
   cod_curso: string;
   nota_estimada: number;
+  categoria_riesgo?: string; // "Riesgo", "Normal", "Factible"
   mensaje?: string;
 }
 
 /**
  * Predice la nota estimada de un estudiante para un curso específico
+ * Ahora usa el modelo clasificador de riesgo académico
  */
 export async function predecirNota(
   codPersona: string,
   codCurso: string,
-): Promise<number> {
+  perMatricula?: string,
+): Promise<{ nota: number; categoria: string }> {
   try {
     const response = await fetch(`${API_BASE_URL}/prediccion/predecir`, {
       method: 'POST',
@@ -101,19 +104,23 @@ export async function predecirNota(
       body: JSON.stringify({
         cod_persona: codPersona,
         cod_curso: codCurso,
+        per_matricula: perMatricula,
       }),
     });
 
     if (!response.ok) {
       console.error(`Error al predecir nota para ${codCurso}`);
-      return 14.0; // Retornar valor por defecto
+      return { nota: 14.0, categoria: 'Normal' }; // Retornar valor por defecto
     }
 
     const data: PrediccionResponse = await response.json();
-    return data.nota_estimada;
+    return {
+      nota: data.nota_estimada,
+      categoria: data.categoria_riesgo || 'Normal'
+    };
   } catch (error) {
     console.error(`Error al predecir nota para ${codCurso}:`, error);
-    return 14.0; // Retornar valor por defecto en caso de error
+    return { nota: 14.0, categoria: 'Normal' }; // Retornar valor por defecto en caso de error
   }
 }
 

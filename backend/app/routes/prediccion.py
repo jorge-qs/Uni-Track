@@ -28,6 +28,7 @@ router = APIRouter()
 class PrediccionRequest(BaseModel):
     cod_persona: str
     cod_curso: str
+    per_matricula: Optional[str] = None  # Período de matrícula opcional para el clasificador
 
 
 class PrediccionResponse(BaseModel):
@@ -35,6 +36,7 @@ class PrediccionResponse(BaseModel):
     cod_persona: str
     cod_curso: str
     nota_estimada: float
+    categoria_riesgo: Optional[str] = None  # "Riesgo", "Normal", "Factible"
     mensaje: Optional[str] = None
 
 
@@ -121,18 +123,20 @@ async def predecir_nota(
         'nivel_curso': curso.nivel_curso
     }
 
-    # Realizar predicción con modelo ML
+    # Realizar predicción con modelo ML clasificador
+    categoria_riesgo = None
     if PREDICTOR_AVAILABLE:
         try:
             predictor = get_predictor()
-            nota_estimada = predictor.predecir_nota(
+            nota_estimada, categoria_riesgo = predictor.predecir_nota(
                 request.cod_persona,
                 request.cod_curso,
-                alumno_data,
-                curso_data,
-                historial_academico
+                per_matricula=request.per_matricula,
+                alumno_data=alumno_data,
+                curso_data=curso_data,
+                historial_academico=historial_academico
             )
-            mensaje = "Predicción realizada con modelo ML"
+            mensaje = f"Clasificación: {categoria_riesgo}"
         except Exception as e:
             print(f"Error en predicción ML: {e}")
             # Fallback: usar promedio del alumno
@@ -148,6 +152,7 @@ async def predecir_nota(
         cod_persona=request.cod_persona,
         cod_curso=request.cod_curso,
         nota_estimada=round(nota_estimada, 1),
+        categoria_riesgo=categoria_riesgo,
         mensaje=mensaje
     )
 

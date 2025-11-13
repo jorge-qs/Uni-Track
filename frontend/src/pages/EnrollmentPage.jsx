@@ -283,18 +283,19 @@ export default function EnrollmentPage() {
         setLoadingPredictions(true);
         const predictions = await Promise.all(
           catalog.map(async (course) => {
-            const nota = await predecirNota(cod_persona, course.code);
-            return { code: course.code, nota };
+            const result = await predecirNota(cod_persona, course.code);
+            return { code: course.code, ...result };
           })
         );
 
-        // Actualizar catálogo con predicciones
+        // Actualizar catálogo con predicciones (ahora incluye categoría de riesgo)
         setCourseCatalog(prevCatalog =>
           prevCatalog.map(course => {
             const pred = predictions.find(p => p.code === course.code);
             return {
               ...course,
               estimatedGrade: pred ? pred.nota : 14.0,
+              riskCategory: pred ? pred.categoria : 'Normal',
             };
           })
         );
@@ -519,9 +520,13 @@ export default function EnrollmentPage() {
                       <span className="rounded-full bg-utec-blue/10 px-3 py-1 text-xs font-semibold text-utec-blue">
                         {course.credits} creditos
                       </span>
-                      {course.estimatedGrade !== null && (
-                        <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">
-                          Nota estimada: {formatGrade(course.estimatedGrade)}/20
+                      {course.riskCategory && (
+                        <span className={`rounded-full px-3 py-1 text-xs font-semibold ${
+                          course.riskCategory === 'Riesgo' ? 'bg-red-100 text-red-700' :
+                          course.riskCategory === 'Factible' ? 'bg-emerald-100 text-emerald-700' :
+                          'bg-amber-100 text-amber-700'
+                        }`}>
+                          {course.riskCategory}
                         </span>
                       )}
                     </div>
