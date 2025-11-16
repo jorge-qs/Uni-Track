@@ -55,6 +55,74 @@ const getScheduleDayLabel = (dayKey) => {
   return dayNameMap[dayKey] || dayNameMap[normalized] || dayKey;
 };
 
+const INDIVIDUAL_PREDICTIONS_KEY_PREFIX = 'unitrack.prediccionesIndividuales';
+const SCHEDULE_RECOMMENDATIONS_KEY_PREFIX = 'unitrack.recomendacionesHorarios';
+
+const getStudentStorageKey = (prefix, codPersona) =>
+  codPersona ? `${prefix}.${codPersona}` : null;
+
+const readJSONFromStorage = (key) => {
+  if (!key || typeof window === 'undefined' || !window.localStorage) return null;
+  const rawValue = window.localStorage.getItem(key);
+  if (!rawValue) return null;
+  try {
+    return JSON.parse(rawValue);
+  } catch (error) {
+    console.warn('Error parsing cached data for key', key, error);
+    window.localStorage.removeItem(key);
+    return null;
+  }
+};
+
+const writeJSONToStorage = (key, value) => {
+  if (!key || typeof window === 'undefined' || !window.localStorage) return;
+  try {
+    window.localStorage.setItem(key, JSON.stringify(value));
+  } catch (error) {
+    console.warn('Error saving cached data for key', key, error);
+  }
+};
+
+const getCachedIndividualPredictions = (codPersona) => {
+  const key = getStudentStorageKey(
+    INDIVIDUAL_PREDICTIONS_KEY_PREFIX,
+    codPersona,
+  );
+  const cached = readJSONFromStorage(key);
+  return cached?.predictions || null;
+};
+
+const saveCachedIndividualPredictions = (codPersona, predictionsMap) => {
+  const key = getStudentStorageKey(
+    INDIVIDUAL_PREDICTIONS_KEY_PREFIX,
+    codPersona,
+  );
+  writeJSONToStorage(key, {
+    updatedAt: new Date().toISOString(),
+    predictions: predictionsMap,
+  });
+};
+
+const getCachedScheduleRecommendations = (codPersona) => {
+  const key = getStudentStorageKey(
+    SCHEDULE_RECOMMENDATIONS_KEY_PREFIX,
+    codPersona,
+  );
+  const cached = readJSONFromStorage(key);
+  return cached?.schedules || null;
+};
+
+const saveCachedScheduleRecommendations = (codPersona, schedules) => {
+  const key = getStudentStorageKey(
+    SCHEDULE_RECOMMENDATIONS_KEY_PREFIX,
+    codPersona,
+  );
+  writeJSONToStorage(key, {
+    updatedAt: new Date().toISOString(),
+    schedules,
+  });
+};
+
 // Función para generar colores consistentes basados en el código del curso
 const generateCourseColor = (courseCode) => {
   const colors = [
@@ -174,6 +242,19 @@ export default function EnrollmentPage() {
       }),
     [selectedCourses],
   );
+
+  const applyPredictionsToCatalog = (predictionsMap) => {
+    setCourseCatalog((prevCatalog) =>
+      prevCatalog.map((course) => {
+        const prediction = predictionsMap?.[course.code];
+        return {
+          ...course,
+          estimatedGrade: prediction ? prediction.nota : 14.0,
+          riskCategory: prediction ? prediction.categoria : 'Normal',
+        };
+      }),
+    );
+  };
 
   // Cargar datos del API al montar el componente
   useEffect(() => {
@@ -305,28 +386,45 @@ export default function EnrollmentPage() {
       setCourseCatalog(catalog);
       setLoading(false);
 
-      // Cargar predicciones en paralelo
+      if (cod_persona) {
+        const cachedSchedules = getCachedScheduleRecommendations(cod_persona);
+        if (cachedSchedules?.length) {
+          setSavedSchedules(cachedSchedules);
+        }
+      }
+
+      // Cargar predicciones en paralelo con soporte de cache
       if (cod_persona && catalog.length > 0) {
         setLoadingPredictions(true);
-        const predictions = await Promise.all(
-          catalog.map(async (course) => {
-            const result = await predecirNota(cod_persona, course.code);
-            return { code: course.code, ...result };
-          })
-        );
+        try {
+          const cachedPredictions = getCachedIndividualPredictions(cod_persona);
+          const hasAllCached =
+            cachedPredictions &&
+            catalog.every((course) => Boolean(cachedPredictions[course.code]));
 
-        // Actualizar catálogo con predicciones (ahora incluye categoría de riesgo)
-        setCourseCatalog(prevCatalog =>
-          prevCatalog.map(course => {
-            const pred = predictions.find(p => p.code === course.code);
-            return {
-              ...course,
-              estimatedGrade: pred ? pred.nota : 14.0,
-              riskCategory: pred ? pred.categoria : 'Normal',
-            };
-          })
-        );
-        setLoadingPredictions(false);
+          if (hasAllCached) {
+            applyPredictionsToCatalog(cachedPredictions);
+          } else {
+            const predictions = await Promise.all(
+              catalog.map(async (course) => {
+                const result = await predecirNota(cod_persona, course.code);
+                return { code: course.code, ...result };
+              }),
+            );
+
+            const predictionsMap = predictions.reduce((acc, pred) => {
+              acc[pred.code] = { nota: pred.nota, categoria: pred.categoria };
+              return acc;
+            }, {});
+
+            saveCachedIndividualPredictions(cod_persona, predictionsMap);
+            applyPredictionsToCatalog(predictionsMap);
+          }
+        } catch (error) {
+          console.error('Error al obtener predicciones individuales:', error);
+        } finally {
+          setLoadingPredictions(false);
+        }
       }
     };
 
@@ -507,7 +605,7 @@ export default function EnrollmentPage() {
   const handleRecommendBestSchedule = async () => {
     const loginData = getStoredLogin();
     if (!loginData?.cod_persona) {
-      alert('No se encontró información del estudiante');
+      alert('No se encontro informacion del estudiante');
       return;
     }
 
@@ -519,7 +617,7 @@ export default function EnrollmentPage() {
     setLoadingRecommendation(true);
 
     try {
-      const periodo = "2025-01"; // TODO: Obtener período dinámicamente
+      const periodo = "2025-01"; // TODO: Obtener periodo dinamicamente
 
       const resultado = await recomendarMejorHorario(
         loginData.cod_persona,
@@ -528,16 +626,22 @@ export default function EnrollmentPage() {
       );
 
       if (resultado) {
-        setSavedSchedules(resultado.todos_los_resultados?.slice(0, 3) ?? []);
+        const topSchedules = resultado.todos_los_resultados?.slice(0, 3) ?? [];
+        setSavedSchedules(topSchedules);
+        saveCachedScheduleRecommendations(loginData.cod_persona, topSchedules);
         setRecommendationModal(resultado);
       } else {
-        setSavedSchedules([]);
-        alert('Error al obtener recomendación. Intenta de nuevo.');
+        const fallbackSchedules =
+          getCachedScheduleRecommendations(loginData.cod_persona) || [];
+        setSavedSchedules(fallbackSchedules);
+        alert('Error al obtener recomendacion. Intenta de nuevo.');
       }
     } catch (error) {
-      console.error('Error al obtener recomendación:', error);
-      setSavedSchedules([]);
-      alert('Error al procesar la recomendación. Verifica tu conexión.');
+      console.error('Error al obtener recomendacion:', error);
+      const fallbackSchedules =
+        getCachedScheduleRecommendations(loginData.cod_persona) || [];
+      setSavedSchedules(fallbackSchedules);
+      alert('Error al procesar la recomendacion. Verifica tu conexion.');
     } finally {
       setLoadingRecommendation(false);
     }
@@ -1212,6 +1316,12 @@ export default function EnrollmentPage() {
                             event.start,
                             event.end,
                           );
+                          const predictedGrade = matriculaPredictions[event.code];
+                          const gradeLabel = loadingMatriculaPredictions
+                            ? '--/20'
+                            : predictedGrade != null
+                              ? `${formatGrade(predictedGrade)}/20`
+                              : '--/20';
                           return (
                             <button
                               key={`${event.code}-${event.start}-${event.end}-${eventIdx}`}
@@ -1223,7 +1333,7 @@ export default function EnrollmentPage() {
                                 {event.code}
                               </p>
                               <p className="font-mono text-[10px] opacity-90">
-                                {event.start}
+                                {gradeLabel}
                               </p>
                             </button>
                           );
