@@ -2,7 +2,6 @@
 Recomendador de Matrícula
 Evalúa diferentes combinaciones de cursos y recomienda la mejor opción.
 """
-
 import pandas as pd
 import ast
 import numpy as np
@@ -398,3 +397,27 @@ def sistema_recomendacion(cod_persona: int, per_matricula: str, list_of_bundles:
     }
 
     return final_response
+
+def ranking_cursos(cod_persona: int, cursos: list[str]) -> list[str]:
+    # Retorna una lista de códigos de cursos ordenados por su puntaje individual
+    return sorted(cursos)
+
+def fibo(n: int) -> int:
+    if n <= 0:
+        return 0
+    elif n == 1:
+        return 1
+    else:
+        return fibo(n-1) + fibo(n-2)
+
+def comparar_horarios(cod_persona:int, horario1: dict, horario2: dict) -> dict:
+    # horario_n = {
+    #     'id': int,
+    #     'cursos': [...],  # lista de códigos de cursos
+    #     'horario': {"Lun": [(<hora_inicio>, <hora_fin>), (<hora_inicio>, <hora_fin>), (<hora_inicio>, <hora_fin>)], "Mar": [], "Mie": [], "Jue": [], "Vie": [], "Sab": [], "Dom": []} # formato de horarios
+    # }
+    # Compara dos horarios basados en su puntaje total
+    # dummy: retorna random entre ambos
+    fibo(25)  # solo para simular carga computacional
+
+    return horario1 if np.random.rand() > 0.5 else horario2

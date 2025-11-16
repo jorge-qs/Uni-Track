@@ -2,8 +2,6 @@
 Endpoints de autenticación
 Login simplificado sin contraseña (solo código de estudiante)
 """
-import json as js
-
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
@@ -13,9 +11,9 @@ from app.models.alumno import Alumno
 from app.models.curso import Curso
 from app.models.seccion import Seccion
 from app.models.matricula import Matricula
+
+from app.utils.utils import str_to_dict, str_to_list, str_to_list_simple
 from collections import defaultdict
-import ast
-import csv
 
 router = APIRouter()
 
@@ -78,35 +76,6 @@ async def login(
         "distrito_res": alumno.distrito_res
     }
 
-    def str_to_list_simple(prereq_str: str) -> list[str]:
-        """Convertir cadena separada por comas a lista"""
-        if not prereq_str:
-            return []
-        prereq_str = prereq_str[1:-1]  # eliminar corchetes si existen
-        return [s.strip() for s in prereq_str.split(",") if s.strip()]
-
-    def str_to_list(prereq_str: str) -> list[str]:
-        """Convertir cadena de prerequisitos a lista, manejando comillas y formatos variados"""
-        if not prereq_str:
-            return []
-        if isinstance(prereq_str, (list, tuple)):
-            return [str(x) for x in prereq_str]
-
-        # Primero intentar parsear expresiones Python seguras como "['a','b,c','d']"
-        try:
-            parsed = ast.literal_eval(prereq_str)
-            if isinstance(parsed, (list, tuple)):
-                return [str(x) for x in parsed]
-        except (ValueError, SyntaxError):
-            pass
-
-        # Si falla, usar csv.reader para respetar comillas que contienen comas
-        try:
-            row = next(csv.reader([prereq_str], skipinitialspace=True))
-            return [s.strip().strip("\"'") for s in row if s.strip()]
-        except Exception:
-            # Fallback final: dividir por coma simple
-            return [s.strip().strip("\"'") for s in prereq_str.split(",") if s.strip()]
     
     # 2) cursos_info: dataframe de los cursos => lista de dicts
     cursos = db.query(Curso).all()
@@ -145,6 +114,7 @@ async def login(
         matricula_dict[m.per_matricula]["cursos"].append({
             "cod_curso": m.cod_curso,
             "curso": curso_nombres.get(m.cod_curso),
+            "creditos": cred_cursos.get(m.cod_curso),
             "nota": m.nota,
             "hrs_inasistencia": m.hrs_inasistencia
         })
@@ -157,8 +127,8 @@ async def login(
             1 for m in matricula_dict[per]["cursos"] if m["nota"] is not None and round(m["nota"]) >= 12
         )
         matricula_dict[per]["promedio_periodo"] = round(
-            sum(m["nota"] for m in matricula_dict[per]["cursos"] if m["nota"] is not None) /
-            sum(1 for m in matricula_dict[per]["cursos"] if m["nota"] is not None), 2
+            sum(m["nota"]*cred_cursos.get(m["cod_curso"], 0) for m in matricula_dict[per]["cursos"] if m["nota"] is not None) /
+            sum(cred_cursos.get(m["cod_curso"], 0) for m in matricula_dict[per]["cursos"] if m["nota"] is not None), 2
         ) if any(m["nota"] is not None for m in matricula_dict[per]["cursos"]) else None
 
         
@@ -174,8 +144,8 @@ async def login(
             cred_cursos.get(m.cod_curso, 0) for m in matriculas if m.nota is not None and round(m.nota) >= 12
         ),
         "promedio_general": round(
-            sum(m.nota for m in matriculas if m.nota is not None) / 
-            sum(1 for m in matriculas if m.nota is not None), 2
+            sum(m.nota*cred_cursos.get(m.cod_curso, 0) for m in matriculas if m.nota is not None) /
+            sum(cred_cursos.get(m.cod_curso, 0) for m in matriculas if m.nota is not None), 2
         ) if any(m.nota is not None for m in matriculas) else None
     }
 
@@ -187,7 +157,9 @@ async def login(
     ]
 
     # Cursos que ya llevó (aprobados o no)
-    cursos_llevados = [m.cod_curso for m in matriculas]
+    cursos_llevados = [
+        m.cod_curso for m in matriculas if m.nota is not None and m.nota >= 11.5
+    ]
 
 
     cursos_disponibles = []
@@ -211,15 +183,34 @@ async def login(
         if abierto:
             cursos_disponibles.append(i.cod_curso)
 
+            
+    # si lleve algun curso que tiene como prerequisito a otro curso, entonces ya cumplo ese prerequisito
+    
+    for c in cursos:
+        if c.cod_curso in cursos_llevados:
+            prereqs = str_to_list_simple(c.prerequisito_cod)
+            for pre in prereqs:
+                if pre in cursos_disponibles:
+                    cursos_disponibles.remove(pre)
+
+    print(f"Cursos disponibles para el alumno {alumno.cod_persona}: {len(cursos_disponibles)}")
+
     # 5) sacar de la tabla Seccion los recursos asociados a los cursos disponibles
+    secciones = db.query(Seccion).filter(
+        Seccion.cod_curso.in_(cursos_disponibles)
+    ).all()
 
-    with open('./data/secciones_playground.json', 'r', encoding='utf-8') as f:
-        secciones = js.load(f)
+    secciones_info = {}
 
-
-
-    secciones_info = {curso: horarios for curso, horarios in secciones.items() if curso in cursos_disponibles}
-
+    for s in secciones:
+        if s.cod_curso not in cursos_disponibles:
+            continue
+        if s.cod_curso not in secciones_info:
+            secciones_info[s.cod_curso] = {
+                "curso": s.curso,
+                "horarios": {}
+            }
+        secciones_info[s.cod_curso]["horarios"][s.seccion_key] = [str_to_dict(i) for i in str_to_list(s.horarios)]
     # 6) resources_info: diccionario { cod_curso: [resources] }
 
     resources_info = {}

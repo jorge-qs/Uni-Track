@@ -43,7 +43,6 @@ class PrediccionResponse(BaseModel):
     success: bool
     cod_persona: str
     cod_curso: str
-    nota_estimada: float
     categoria_riesgo: Optional[str] = None  # "Riesgo", "Normal", "Factible"
     mensaje: Optional[str] = None
 
@@ -155,12 +154,10 @@ async def predecir_nota(
     if PREDICTOR_AVAILABLE:
         try:
             predictor = get_predictor()
-            nota_estimada, categoria_riesgo = predictor.predecir_nota(
+            categoria_riesgo = predictor.predecir_nota(
                 request.cod_persona,
                 request.cod_curso,
                 per_matricula=request.per_matricula,
-                alumno_data=alumno_data,
-                curso_data=curso_data,
                 historial_academico=historial_academico
             )
             mensaje = f"Clasificación: {categoria_riesgo}"
@@ -178,7 +175,6 @@ async def predecir_nota(
         success=True,
         cod_persona=request.cod_persona,
         cod_curso=request.cod_curso,
-        nota_estimada=round(nota_estimada, 1),
         categoria_riesgo=categoria_riesgo,
         mensaje=mensaje
     )
@@ -211,7 +207,7 @@ async def predecir_notas_multiples(
             )
             predicciones.append({
                 'cod_curso': cod_curso,
-                'nota_estimada': prediccion.nota_estimada,
+                'prediccion': prediccion,
                 'success': True
             })
         except Exception as e:
