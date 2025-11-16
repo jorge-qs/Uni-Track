@@ -96,3 +96,25 @@ with open('secciones_playground.json', 'w', encoding='utf-8') as f:
 print("JSON file created: secciones_playground.json")
 
 
+import pandas as pd
+
+# pasar de json -> csv como [cod_curso, info]
+
+data_for_csv = []
+for cod_curso, info in json.items():
+    nombre_curso = info['curso']
+    ite = 0
+    for horario_key, horarios in info['horarios'].items():
+        if ite > 4:
+            break
+        data_for_csv.append({
+            'cod_curso': cod_curso,
+            'curso': nombre_curso,
+            'seccion_key': horario_key,
+            'horarios': js.dumps(horarios, ensure_ascii=False)
+        })
+        ite += 1
+
+df = pd.DataFrame(data_for_csv)
+df.to_csv('secciones_playground.csv', index=False, encoding='utf-8')
+print("CSV file created: secciones_playground.csv")

@@ -91,13 +91,14 @@ def main():
     df = df[[cols[0], 'NOMBRE', 'APELLIDO', 'CARRERA'] + cols[1:]]
     
 
-    
-    print(df.head())
+    # quitar a los que entrarons despues de 2019-1
+    set_2019_1_as_limit = df[df['PER_INGRESO'] <= '2019-01'].copy()
+    print(set_2019_1_as_limit.head())
 
     new_path = "df_estudiante_final.csv"
 
     # Guardar el CSV actualizado con el NOMBRE original
-    df.to_csv(new_path, index=False, quoting=csv.QUOTE_MINIMAL)
+    set_2019_1_as_limit.to_csv(new_path, index=False, quoting=csv.QUOTE_MINIMAL)
 
 if __name__ == "__main__":
     main()

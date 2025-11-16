@@ -159,8 +159,8 @@ def import_csv_tables(engine: Engine) -> None:
     mapping = {
         "df_curso_final_con_recursos.csv": "curso",
         "df_estudiante_final.csv": "alumno",
-        "df_matricula.csv": "matricula",
-        "unitrack-secciones.csv": "seccion",
+        "df_matricula_1.csv": "matricula",
+        "secciones_playground.csv": "seccion",
     }
     
     for fname, tname in mapping.items():
