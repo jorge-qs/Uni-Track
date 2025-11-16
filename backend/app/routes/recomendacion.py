@@ -19,7 +19,7 @@ from app.models.seccion import Seccion
 from app.utils.utils import str_to_dict, str_to_list, str_to_list_simple
 
 try:
-    from app.recomendador_matricula import ranking_cursos, comparar_horarios
+    from app.ml_models.recomendador_matricula import ranking_cursos, comparar_horarios
     RECOMENDADOR_AVAILABLE = True
     print("Sistema de recomendacion cargado exitosamente")
 except ImportError as e:

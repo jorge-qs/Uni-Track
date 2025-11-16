@@ -6,7 +6,7 @@ import pandas as pd
 import ast
 import numpy as np
 from pathlib import Path
-from app.predictor_nota_x_matricula import get_predictor_matricula
+from app.ml_models.predictor_nota_x_matricula import get_predictor_matricula
 
 # Rutas de archivos
 DATA_DIR = Path(__file__).parent.parent / "data"

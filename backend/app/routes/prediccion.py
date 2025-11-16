@@ -15,7 +15,7 @@ from app.models.curso import Curso
 from app.models.matricula import Matricula
 
 try:
-    from app.predictor_nota import get_predictor
+    from app.ml_models.predictor_nota import get_predictor
     PREDICTOR_AVAILABLE = True
     print("Modelo ML cargado exitosamente")
 except ImportError as e:
@@ -23,7 +23,7 @@ except ImportError as e:
     PREDICTOR_AVAILABLE = False
 
 try:
-    from app.predictor_nota_x_matricula import get_predictor_matricula
+    from app.ml_models.predictor_nota_x_matricula import get_predictor_matricula
     PREDICTOR_MATRICULA_AVAILABLE = True
     print("Modelo de prediccion por matricula cargado")
 except ImportError as e:
