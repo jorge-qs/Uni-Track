@@ -370,7 +370,8 @@ export interface RecomendacionResponse {
 export async function recomendarMejorHorario(
   codPersona: string,
   perMatricula: string,
-  bundles: string[][]
+  bundles: string[][],
+  max_time: number = 30
 ): Promise<RecomendacionResponse | null> {
   try {
     const response = await fetch(`${API_BASE_URL}/recomendacion/mejor-horario`, {
@@ -382,6 +383,7 @@ export async function recomendarMejorHorario(
         cod_persona: codPersona,
         per_matricula: perMatricula,
         bundles: bundles,
+        max_time: max_time,
       }),
     });
 

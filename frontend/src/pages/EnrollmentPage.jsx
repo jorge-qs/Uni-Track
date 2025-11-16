@@ -325,7 +325,7 @@ export default function EnrollmentPage() {
 
       try {
         const cursosSeleccionados = selectedCourses.map(c => c.code);
-        const periodo = "2025-01"; // TODO: Obtener período actual dinámicamente
+        const periodo = "2019-02"; // TODO: Obtener período actual dinámicamente
 
         const resultado = await predecirNotasPorMatricula(
           loginData.cod_persona,
@@ -496,54 +496,12 @@ export default function EnrollmentPage() {
     setLoadingRecommendation(true);
 
     try {
-      // Generar diferentes combinaciones de cursos (bundles)
-      // Por simplicidad, generamos 3 bundles:
-      // 1. Cursos actualmente seleccionados (si hay)
-      // 2. Primeros 4-5 cursos del catálogo
-      // 3. Combinación variada
-
-      const bundles = [];
-
-      // Bundle 1: Cursos seleccionados actuales (si hay al menos 2)
-      if (selectedCourses.length >= 2) {
-        bundles.push(selectedCourses.map(c => c.code));
-      }
-
-      // Bundle 2: Primeros 4-5 cursos disponibles
-      const bundle2 = courseCatalog.slice(0, Math.min(5, courseCatalog.length)).map(c => c.code);
-      if (bundle2.length >= 2) {
-        bundles.push(bundle2);
-      }
-
-      // Bundle 3: Combinación de cursos obligatorios y de mayor prioridad
-      const bundle3 = courseCatalog
-        .filter(c => c.credits >= 3) // Cursos con buenos créditos
-        .slice(0, Math.min(4, courseCatalog.length))
-        .map(c => c.code);
-      if (bundle3.length >= 2 && bundle3.join(',') !== bundle2.join(',')) {
-        bundles.push(bundle3);
-      }
-
-      // Bundle 4: Variación con cursos diferentes
-      const bundle4 = courseCatalog
-        .filter((_, idx) => idx % 2 === 0) // Cursos alternados
-        .slice(0, Math.min(5, courseCatalog.length))
-        .map(c => c.code);
-      if (bundle4.length >= 2 && bundle4.join(',') !== bundle2.join(',') && bundle4.join(',') !== bundle3.join(',')) {
-        bundles.push(bundle4);
-      }
-
-      if (bundles.length === 0) {
-        alert('No se pudieron generar suficientes opciones de matrícula para comparar');
-        return;
-      }
-
       const periodo = "2025-01"; // TODO: Obtener período dinámicamente
 
       const resultado = await recomendarMejorHorario(
         loginData.cod_persona,
         periodo,
-        bundles
+        loginData.cursos_disponibles
       );
 
       if (resultado) {

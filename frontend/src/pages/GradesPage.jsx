@@ -193,6 +193,7 @@ export default function GradesPage() {
               <th className="px-4 py-3 font-semibold">Codigo</th>
               <th className="px-4 py-3 font-semibold">Curso</th>
               <th className="px-4 py-3 font-semibold">Nota</th>
+              <th className="px-4 py-3 font-semibold">Creditos</th>
               <th className="px-4 py-3 font-semibold">
                 Inasistencia
               </th>
@@ -229,6 +230,11 @@ export default function GradesPage() {
                 >
                   {typeof course.nota === "number"
                   ? course.nota.toFixed(1)
+                  : "--"}
+                </td>
+                <td className="px-4 py-3 text-utec-text">
+                  {typeof course.creditos === "number"
+                  ? course.creditos
                   : "--"}
                 </td>
                 <td className="px-4 py-3 text-utec-muted">
