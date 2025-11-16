@@ -71,6 +71,7 @@ async def recomendar_mejor_horario(
     Returns:
         Recomendación con el mejor bundle y análisis detallado de todas las opciones
     """
+    # MANEJO DE ERRORES
 
     # Verificar que el alumno existe
     alumno = db.query(Alumno).filter(
@@ -118,15 +119,16 @@ async def recomendar_mejor_horario(
             mensaje="Sistema de recomendación no disponible"
         )
 
+    # INICIO DEL CODIGO
+
     # crear horarios posibles dado los cursos disponibles
     secciones = db.query(Seccion).filter(
         Seccion.cod_curso.in_(request.bundles)
     ).all()
 
     cod_persona_int = int(request.cod_persona)
-    cursos_disp = ranking_cursos(cod_persona=cod_persona_int, cursos=request.bundles)
-    cursos_hor: Dict[str, Dict[str, List[tuple[str, str, str]]]] = {i: {} for i in cursos_disp}
-
+    cursos_disp: List[str] = ranking_cursos(cod_persona=cod_persona_int, per_matricula=request.per_matricula, cursos=request.bundles)
+    cursos_hor: Dict[str, Dict[str, List[tuple[str, str, str]]]] = {i: {} for i in cursos_disp}    
     for seccion in secciones:
         hors = seccion.horarios
         sec = seccion.seccion_key
@@ -422,3 +424,9 @@ async def recomendar_mejor_horario(
         todos_los_resultados=top_horarios,
         mensaje=mensaje
     )
+
+
+@router.get("/debug")
+async def healthcheck():
+    from app.tests.recomendador import run_tests_recomendador
+    return run_tests_recomendador()

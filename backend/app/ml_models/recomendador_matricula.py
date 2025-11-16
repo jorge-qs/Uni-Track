@@ -398,9 +398,107 @@ def sistema_recomendacion(cod_persona: int, per_matricula: str, list_of_bundles:
 
     return final_response
 
-def ranking_cursos(cod_persona: int, cursos: list[str]) -> list[str]:
-    # Retorna una lista de códigos de cursos ordenados por su puntaje individual
-    return sorted(cursos)
+# --- DEPENDENCIAS ASUMIDAS ---
+# (Se asume que estas funciones y variables globales existen en el mismo contexto)
+#
+# from some_utils import (
+#     create_course_cluster_map, 
+#     build_comprehensive_db, 
+#     score_enrollment_bundle
+# )
+# 
+# CSV_INFO_PATH = "path/to/info.csv"
+# CSV_PREREQS_PATH = "path/to/prereqs.csv"
+# CSV_GRAPH_PATH = "path/to/graph.csv"
+#
+# --- FIN DE DEPENDENCIAS ASUMIDAS ---
+
+
+def ranking_cursos(cod_persona: int, per_matricula: str, cursos: list[str]) -> list[str]:
+    """
+    Toma una lista de cursos y los ordena de mejor a peor según su
+    puntuación de heurística individual.
+
+    Parámetros:
+    - cod_persona: Código del alumno (int)
+    - per_matricula: Período de matrícula (str), e.g., "2019-02"
+    - cursos: Lista de códigos de cursos a evaluar (list[str])
+
+    Retorna:
+    - Lista de códigos de cursos (list[str]) ordenada por su puntaje.
+    """
+    
+    # --- 1. CONFIGURACIONES INICIALES (Copiadas de sistema_recomendacion) ---
+    # Estas configuraciones son necesarias para llamar a score_enrollment_bundle
+    # con el mismo contexto que la función original.
+    
+    semestre_alumno = 0  # Fijo
+
+    CLUSTERS_RAW = {
+        0: ['COMPUTACION GRAFICA', 'COMPUTACION MOLECULAR BIOLOGICA', 'INTELIGENCIA ARTIFICIAL', 'LENGUAJES DE PROGRAMACION', 'ROBOTICA', 'SISTEMAS DE INFORMACION', 'TOPICOS AVANZADOS EN INGENIERIA DE SOFTWARE', 'TOPICOS EN COMPUTACION GRAFICA'],
+        1: ['ALGEBRA ABSTRACTA', 'ALGORITMOS Y ESTRUCTURAS DE DATOS', 'CALCULO I', 'CALCULO II', 'CIENCIA DE LA COMPUTACION I', 'CIENCIA DE LA COMPUTACION II', 'ESTRUCTURAS DISCRETAS I', 'ESTRUCTURAS DISCRETAS II', 'MATEMATICA I', 'MATEMATICA II', 'PROGRAMACION DE VIDEO JUEGOS', 'TEORIA DE LA COMPUTACION'],
+        2: ['APRECIACION ARTISTICA', 'APRECIACION MUSICAL', 'INTRODUCCION A LA VIDA UNIVERSITARIA', 'LIDERAZGO', 'MORAL', 'ORATORIA', 'PERSONA, MATRIMONIO Y FAMILIA', 'TEATRO', 'TEOLOGIA'],
+        3: ['ANALISIS DE LA REALIDAD PERUANA', 'BASES DE DATOS II', 'CLOUD COMPUTING', 'INGENIERIA DE SOFTWARE III', 'INTERACCION HUMANO COMPUTADOR', 'METODOLOGIA DE LA INVESTIGACION EN COMPUTACION', 'REDES Y COMUNICACION'],
+        4: ['BIG DATA', 'COMPUTACION EN LA SOCIEDAD', 'ENSENANZA SOCIAL DE LA IGLESIA', 'ETICA PROFESIONAL', 'FORMACION DE EMPRESAS DE BASE TECNOLOGICA I', 'FORMACION DE EMPRESAS DE BASE TECNOLOGICA II', 'HISTORIA DE LA CIENCIA Y TECNOLOGIA', 'HISTORIA DE LA CULTURA', 'INGLES TECNICO PROFESIONAL'],
+        5: ['ANALISIS Y DISENO DE ALGORITMOS', 'BASES DE DATOS I', 'COMPILADORES', 'COMPUTACION PARALELA Y DISTRIBUIDA', 'ESTADISTICA Y PROBABILIDADES', 'ESTRUCTURAS DE DATOS AVANZADAS', 'FISICA COMPUTACIONAL', 'INGENIERIA DE SOFTWARE I', 'INGENIERIA DE SOFTWARE II', 'MATEMATICA APLICADA A LA COMPUTACION', 'PROGRAMACION COMPETITIVA', 'SEGURIDAD EN COMPUTACION', 'SISTEMAS OPERATIVOS', 'TOPICOS EN INTELIGENCIA ARTIFICIAL'],
+        6: ['ANALISIS NUMERICO', 'ANTROPOLOGIA FILOSOFICA Y TEOLOGICA', 'APRECIACION LITERARIA', 'ARQUITECTURA DE COMPUTADORES', 'COMUNICACION', 'DESARROLLO BASADO EN PLATAFORMAS', 'INTRODUCCION A LA FILOSIA', 'INTRODUCCION DE CIENCIA DE LA COMPUTACION', 'METODOLOGIA DEL ESTUDIO'],
+        7: ['PROYECTO FINAL DE CARRERA I', 'PROYECTO FINAL DE CARRERA II', 'PROYECTO FINAL DE CARRERA III']
+    }
+    course_map = create_course_cluster_map(CLUSTERS_RAW)
+
+    SCORE_MAP = {
+        0: 8.0, 1: 10.0, 2: 1.0, 3: 7.0, 4: 3.0, 5: 10.0, 6: 9.0, 7: 5.0
+    }
+
+    pesos_individuales = [
+        0.05,  # w_atraso
+        0.05,  # w_eficiencia
+        0.05,  # w_simplicidad
+        0.25,  # w_obligatorio
+        0.10,  # w_familia
+        0.10,  # w_cluster
+        0.20,  # w_dependientes
+        0.20,  # w_profundidad
+        0.30   # w_prediction
+    ]
+
+    familia_map = {'CS': 1.0, 'MA': 0.5, 'FG': 0.1, 'ET': 0.3, 'ID': 0.3, 'CB': 0.2}
+
+    # Cargar DB
+    db = build_comprehensive_db(str(CSV_INFO_PATH), str(CSV_PREREQS_PATH), str(CSV_GRAPH_PATH))
+
+    if not db:
+        print("Error: No se pudo cargar la base de datos de cursos. Retornando lista original.")
+        return cursos # Fallback
+
+    # --- 2. ITERACIÓN Y EVALUACIÓN INDIVIDUAL ---
+    course_scores = {}
+
+    for curso_code in cursos:
+        # Se evalúa el curso como un "bundle" de un solo ítem
+        bundle = [curso_code]
+
+        # Llamamos a la misma función de scoring
+        score_info = score_enrollment_bundle(
+            bundle, db, semestre_alumno,
+            pesos_individuales, familia_map, cod_persona, per_matricula, course_map, SCORE_MAP
+        )
+
+        # Guardamos el puntaje total del bundle (que es el puntaje del curso)
+        course_scores[curso_code] = score_info['bundle_score']
+
+    # --- 3. ORDENAR Y RETORNAR ---
+    
+    # Ordenamos la lista 'cursos' original basándonos en los puntajes
+    # que calculamos y guardamos en 'course_scores'.
+    # Usamos reverse=True para que el puntaje más alto quede primero.
+    sorted_cursos = sorted(
+        cursos,
+        key=lambda curso: course_scores.get(curso, -float('inf')),
+        reverse=True
+    )
+
+    return sorted_cursos
 
 def fibo(n: int) -> int:
     if n <= 0:
@@ -410,14 +508,89 @@ def fibo(n: int) -> int:
     else:
         return fibo(n-1) + fibo(n-2)
 
-def comparar_horarios(cod_persona:int, horario1: dict, horario2: dict) -> dict:
-    # horario_n = {
-    #     'id': int,
-    #     'cursos': [...],  # lista de códigos de cursos
-    #     'horario': {"Lun": [(<hora_inicio>, <hora_fin>), (<hora_inicio>, <hora_fin>), (<hora_inicio>, <hora_fin>)], "Mar": [], "Mie": [], "Jue": [], "Vie": [], "Sab": [], "Dom": []} # formato de horarios
-    # }
-    # Compara dos horarios basados en su puntaje total
-    # dummy: retorna random entre ambos
-    fibo(25)  # solo para simular carga computacional
+def comparar_horarios(cod_persona: int, horario1: dict, horario2: dict) -> dict:
+    """
+    Compara dos horarios (diccionarios) y determina cuál es el mejor
+    basándose en la heurística de sistema_recomendacion.
 
-    return horario1 if np.random.rand() > 0.5 else horario2
+    Se asume que cada diccionario 'horario' contiene:
+    1. 'cursos': Una lista de códigos de curso (el "bundle").
+    2. 'per_matricula': El período de matrícula (ej: "2019-02").
+       Se usará el 'per_matricula' de horario1.
+    """
+    
+    # --- 1. Extraer los datos necesarios de los diccionarios ---
+    try:
+        # Extraer la lista de cursos (el "bundle") de cada horario
+        bundle1 = horario1['cursos']
+        bundle2 = horario2['cursos']
+        
+        # Extraer el período de matrícula. Asumimos que ambos horarios
+        # se comparan para el mismo período, así que tomamos el de horario1.
+        per_matricula = horario1['per_matricula']
+        
+    except KeyError as e:
+        return {
+            "error": f"El diccionario de horario no tiene la clave requerida ('cursos' o 'per_matricula'). Detalle: {e}",
+            "horario_ganador": None,
+            "score_ganador": -float('inf')
+        }
+    except TypeError:
+         return {
+            "error": "Los horarios deben ser diccionarios válidos.",
+            "horario_ganador": None,
+            "score_ganador": -float('inf')
+        }
+
+    # --- 2. Crear la lista de bundles para la función original ---
+    # Pasamos una lista donde el índice 0 es bundle1 y el índice 1 es bundle2
+    list_of_bundles_a_evaluar = [bundle1, bundle2]
+    
+    # --- 3. Llamar a la función de recomendación original ---
+    # Esta función hará todo el trabajo: cargar la DB, calcular los scores
+    # y encontrar el mejor.
+    resultados = sistema_recomendacion(
+        cod_persona=cod_persona,
+        per_matricula=per_matricula,
+        list_of_bundles=list_of_bundles_a_evaluar
+    )
+    
+    # --- 4. Analizar la respuesta de sistema_recomendacion ---
+    
+    # Manejar si la función base (sistema_recomendacion) falla
+    if "error" in resultados:
+        return {
+            "error": f"Error al ejecutar sistema_recomendacion: {resultados['error']}",
+            "horario_ganador": None,
+            "score_ganador": -float('inf')
+        }
+        
+    # 'mejor_opcion_index' nos dirá si ganó el índice 0 (horario1) o 1 (horario2)
+    mejor_index = resultados['meta']['mejor_opcion_index']
+    mejor_score = resultados['mejor_recomendacion']['score']
+    
+    horario_ganador = None
+    if mejor_index == 0:
+        horario_ganador = "horario1"
+    elif mejor_index == 1:
+        horario_ganador = "horario2"
+    else:
+        # Esto puede pasar si ambos bundles son inválidos
+        return {
+            "error": "No se pudo determinar un ganador (posiblemente ambas opciones son inválidas).",
+            "horario_ganador": None,
+            "score_ganador": mejor_score,
+            "detalle_comparativo": resultados.get("todos_los_resultados", [])
+        }
+
+    # --- 5. Construir la respuesta final ---
+    respuesta = {
+        "horario_ganador": horario_ganador,
+        "score_ganador": mejor_score,
+        "cod_persona": cod_persona,
+        "per_matricula": per_matricula,
+        # Incluimos los detalles de ambas evaluaciones para transparencia
+        "detalle_comparativo": resultados["todos_los_resultados"]
+    }
+    
+    return respuesta
