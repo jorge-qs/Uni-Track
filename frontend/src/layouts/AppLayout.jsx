@@ -12,6 +12,18 @@ const primaryNav = [
   { path: '/resources', label: 'Academic Resources', icon: 'library_books' },
 ];
 
+const INDIVIDUAL_PREDICTIONS_KEY_PREFIX = 'unitrack.prediccionesIndividuales';
+const SCHEDULE_RECOMMENDATIONS_KEY_PREFIX = 'unitrack.recomendacionesHorarios';
+
+const clearStudentPlanningCache = (codPersona) => {
+  if (!codPersona || typeof window === 'undefined' || !window.localStorage) {
+    return;
+  }
+  [INDIVIDUAL_PREDICTIONS_KEY_PREFIX, SCHEDULE_RECOMMENDATIONS_KEY_PREFIX].forEach(
+    (prefix) => window.localStorage.removeItem(`${prefix}.${codPersona}`),
+  );
+};
+
 export default function AppLayout() {
   const navigate = useNavigate();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -106,7 +118,12 @@ export default function AppLayout() {
             </button>
             <button
               type="button"
-              onClick={() => navigate('/login')}
+              onClick={() => {
+                if (storedLogin?.cod_persona) {
+                  clearStudentPlanningCache(storedLogin.cod_persona);
+                }
+                navigate('/login');
+              }}
               className={clsx(
                 'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-utec-muted transition-colors hover:bg-gray-100',
                 sidebarCollapsed && 'justify-center'
