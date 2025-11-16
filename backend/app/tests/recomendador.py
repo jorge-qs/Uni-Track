@@ -164,18 +164,3 @@ def run_tests_recomendador():
         test_report["status"] = "Recomendador tests FAILED: Al menos una prueba falló."
 
     return test_report
-
-# --- Ejemplo de cómo ejecutarlo ---
-if __name__ == "__main__":
-    # Para ejecutar este test, necesitarías tener:
-    # 1. El módulo 'app.ml_models.recomendador_matricula' accesible.
-    # 2. Todas las dependencias de ese módulo (ej: pandas, y las funciones
-    #    create_course_cluster_map, build_comprehensive_db, score_enrollment_bundle).
-    # 3. Los archivos CSV (CSV_INFO_PATH, etc.) en las rutas correctas.
-    
-    print("Ejecutando pruebas del recomendador...")
-    reporte_final = run_tests_recomendador()
-    
-    # Imprimir el reporte en formato JSON "bonito"
-    import json
-    print(json.dumps(reporte_final, indent=2))
