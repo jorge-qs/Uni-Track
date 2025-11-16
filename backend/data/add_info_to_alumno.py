@@ -92,13 +92,40 @@ def main():
     
 
     # quitar a los que entrarons despues de 2019-1
-    set_2019_1_as_limit = df[df['PER_INGRESO'] <= '2019-01'].copy()
+    set_2019_1_as_limit = df[(df['PER_INGRESO'] >= '2016-01') & (df['PER_INGRESO'] <= '2019-01')].copy()
     print(set_2019_1_as_limit.head())
+
+
+    # join con 3.data_desercion_CCOMP.csv
+    desercion_path ="3.data_desercion_CCOMP.csv"
+
+    df_desercion = pd.read_csv(
+        desercion_path,
+        sep=';',              # delimitador correcto
+        quotechar='"',        # campos entre comillas
+        encoding='latin1'    # compatible con acentos
+        # on_bad_lines='skip'   # ignora líneas problemáticas (por si acaso)
+    )
+
+    #eliminar en set_2019_1_as_limit si en df_desercion el cod_persona tiene COD_PLAN diferente a 71, sin añadir nuevas columnas
+    set_2019_1_as_limit = set_2019_1_as_limit.merge(
+        df_desercion[['COD_PERSONA', 'COD_PLAN']],
+        on='COD_PERSONA',
+        how='left',
+        suffixes=('', '_desercion')
+    )
+    print(set_2019_1_as_limit['COD_PLAN'].unique())
+    set_2019_1_as_limit = set_2019_1_as_limit[set_2019_1_as_limit['COD_PLAN'] == 79]
+    set_2019_1_as_limit = set_2019_1_as_limit.drop(columns=['COD_PLAN'])
+    #drop duplicates based on COD_PERSONA
+    set_2019_1_as_limit = set_2019_1_as_limit.drop_duplicates(subset=['COD_PERSONA'])
 
     new_path = "df_estudiante_final.csv"
 
     # Guardar el CSV actualizado con el NOMBRE original
     set_2019_1_as_limit.to_csv(new_path, index=False, quoting=csv.QUOTE_MINIMAL)
+
+
 
 if __name__ == "__main__":
     main()
