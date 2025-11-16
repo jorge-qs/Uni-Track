@@ -33,6 +33,28 @@ const dayMap = {
   'Sab': 'saturday',
 };
 
+const dayNameMap = {
+  Lun: 'Lunes',
+  Mar: 'Martes',
+  Mie: 'Miercoles',
+  Jue: 'Jueves',
+  Vie: 'Viernes',
+  Sab: 'Sabado',
+  'Sab.': 'Sabado',
+  'Sáb': 'Sabado',
+  'Sáb.': 'Sabado',
+  Dom: 'Domingo',
+  'Dom.': 'Domingo',
+};
+
+const scheduleDaysOrder = ['Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab', 'Dom'];
+
+const getScheduleDayLabel = (dayKey) => {
+  if (!dayKey) return 'Dia';
+  const normalized = dayKey.replace('.', '');
+  return dayNameMap[dayKey] || dayNameMap[normalized] || dayKey;
+};
+
 // Función para generar colores consistentes basados en el código del curso
 const generateCourseColor = (courseCode) => {
   const colors = [
@@ -122,6 +144,7 @@ export default function EnrollmentPage() {
   const [loadingMatriculaPredictions, setLoadingMatriculaPredictions] = useState(false);
   const [recommendationModal, setRecommendationModal] = useState(null);
   const [loadingRecommendation, setLoadingRecommendation] = useState(false);
+  const [savedSchedules, setSavedSchedules] = useState([]);
 
   const selectedCodes = useMemo(
     () => new Set(selectedCourses.map((course) => course.code)),
@@ -505,29 +528,175 @@ export default function EnrollmentPage() {
       );
 
       if (resultado) {
+        setSavedSchedules(resultado.todos_los_resultados?.slice(0, 3) ?? []);
         setRecommendationModal(resultado);
       } else {
+        setSavedSchedules([]);
         alert('Error al obtener recomendación. Intenta de nuevo.');
       }
     } catch (error) {
       console.error('Error al obtener recomendación:', error);
+      setSavedSchedules([]);
       alert('Error al procesar la recomendación. Verifica tu conexión.');
     } finally {
       setLoadingRecommendation(false);
     }
   };
 
-  const applyRecommendation = (cursosCodigos) => {
-    // Limpiar selección actual
-    setSelectedCourses([]);
+  const normalizeSectionIdValue = (value) =>
+    (value ?? '').toString().trim().toLowerCase();
 
-    // Agregar los cursos recomendados
-    const cursosAgregar = courseCatalog.filter(c => cursosCodigos.includes(c.code));
+  const findSectionIndexForCourse = (course, targetSectionId) => {
+    if (!course?.allSections?.length || !targetSectionId) {
+      return course?.selectedSectionIndex || 0;
+    }
+    const normalizedTarget = normalizeSectionIdValue(targetSectionId);
+    const byId = course.allSections.findIndex(
+      (section) => normalizeSectionIdValue(section.sectionId) === normalizedTarget
+    );
+    if (byId !== -1) return byId;
+
+    const byName = course.allSections.findIndex((section) => {
+      const normalizedName = normalizeSectionIdValue(section.sectionName);
+      return (
+        normalizedName === normalizedTarget ||
+        normalizedName.includes(normalizedTarget) ||
+        normalizedTarget.includes(normalizedName)
+      );
+    });
+    return byName !== -1 ? byName : course.selectedSectionIndex || 0;
+  };
+
+  const applyRecommendation = (plan) => {
+    const isArrayPlan = Array.isArray(plan);
+    const courseList = isArrayPlan ? plan : plan?.cursos || [];
+    if (!courseList.length) {
+      alert('No hay cursos para aplicar en este horario.');
+      return;
+    }
+
+    const courseSectionMap = new Map();
+    if (!isArrayPlan && Array.isArray(plan?.cursos_secciones)) {
+      plan.cursos_secciones.forEach((entry) => {
+        if (Array.isArray(entry) && entry.length >= 2) {
+          courseSectionMap.set(entry[0], entry[1]);
+        }
+      });
+    }
+
+    const cursosAgregar = [];
+    courseList.forEach((code) => {
+      const courseData = courseCatalog.find((course) => course.code === code);
+      if (!courseData) {
+        return;
+      }
+      const targetSectionId = courseSectionMap.get(code);
+      const selectedSectionIndex = targetSectionId
+        ? findSectionIndexForCourse(courseData, targetSectionId)
+        : courseData.selectedSectionIndex || 0;
+
+      cursosAgregar.push({
+        ...courseData,
+        selectedSectionIndex,
+      });
+    });
+
+    if (!cursosAgregar.length) {
+      alert('Ninguno de los cursos recomendados esta disponible en el catalogo actual.');
+      return;
+    }
+
     setSelectedCourses(cursosAgregar);
-
-    // Cerrar modal
     setRecommendationModal(null);
   };
+
+  const bestRecommendedSchedule =
+    recommendationModal?.mejor_recomendacion ??
+    recommendationModal?.todos_los_resultados?.[0] ??
+    null;
+
+  const otherRecommendedSchedules = recommendationModal?.todos_los_resultados
+    ? recommendationModal.todos_los_resultados.filter(
+        (plan) =>
+          !bestRecommendedSchedule || plan.id !== bestRecommendedSchedule.id
+      )
+    : [];
+
+  const planHasScheduleBlocks = (schedule) => {
+    if (!schedule) return false;
+    return Object.values(schedule).some(
+      (blocks) => Array.isArray(blocks) && blocks.length > 0
+    );
+  };
+
+  const normalizeScheduleBlocks = (schedule) => {
+    if (!schedule) return [];
+    return scheduleDaysOrder.map((day) => {
+      const blocks = schedule[day];
+      return [day, Array.isArray(blocks) ? blocks : []];
+    });
+  };
+
+  const resolveScheduleBlock = (block) => {
+    if (Array.isArray(block)) {
+      return {
+        start: block[0] ?? '--:--',
+        end: block[1] ?? '--:--',
+      };
+    }
+    if (block && typeof block === 'object') {
+      const start = Object.prototype.hasOwnProperty.call(block, 'inicio')
+        ? block.inicio
+        : block.start;
+      const end = Object.prototype.hasOwnProperty.call(block, 'fin')
+        ? block.fin
+        : block.end;
+      return {
+        start: start ?? '--:--',
+        end: end ?? '--:--',
+      };
+    }
+    return { start: '--:--', end: '--:--' };
+  };
+
+  const renderSchedulePreview = (schedule) => {
+    if (!planHasScheduleBlocks(schedule)) {
+      return (
+        <p className="text-sm text-utec-muted mt-2">
+          Horarios detallados no disponibles para esta opcion.
+        </p>
+      );
+    }
+
+    return (
+      <div className="grid grid-cols-2 gap-3">
+        {normalizeScheduleBlocks(schedule).map(([day, blocks]) => {
+          if (!blocks.length) return null;
+          return (
+            <div key={day} className="rounded-lg bg-white/80 p-2 shadow-sm">
+              <p className="text-xs font-semibold text-utec-muted uppercase">
+                {getScheduleDayLabel(day)}
+              </p>
+              {blocks.map((block, idx) => {
+                const { start, end } = resolveScheduleBlock(block);
+                return (
+                  <p
+                    key={`${day}-${idx}`}
+                    className="text-sm font-semibold text-utec-text"
+                  >
+                    {start} - {end}
+                  </p>
+                );
+              })}
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
+
+  const formatPlanHours = (hours) =>
+    typeof hours === 'number' ? hours.toFixed(1) : '0.0';
 
   if (loading) {
     return (
@@ -540,7 +709,7 @@ export default function EnrollmentPage() {
     );
   }
 
-  if (courseCatalog.length === 0) {
+  if (courseCatalog.length === 0) {s
     return (
       <div className="space-y-8">
         <header className="space-y-2">
@@ -561,6 +730,177 @@ export default function EnrollmentPage() {
   }
 
   return (
+    <div>
+    {/* Modal de recomendación de horario */}
+      {recommendationModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+          onClick={() => setRecommendationModal(null)}
+        >
+          <div
+        className="max-h-[90vh] overflow-y-auto rounded-2xl border border-purple-200 bg-white p-6 shadow-[0_20px_60px_rgba(147,51,234,0.3)] mx-auto"
+        style={{ width: '90%', maxWidth: '1200px' }}
+        onClick={(e) => e.stopPropagation()}
+          >
+        <div className="mb-4 flex items-start gap-3">
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-purple-100">
+            <span className="material-symbols-outlined text-2xl text-purple-600">auto_awesome</span>
+          </div>
+          <div className="flex-1">
+            <h3 className="text-xl font-bold text-purple-600">Mejor Horario Recomendado</h3>
+            <p className="text-sm text-utec-muted mt-1">
+          Analizamos {recommendationModal.meta?.total_evaluados ?? 0} opciones usando IA
+            </p>
+          </div>
+          <button
+            onClick={() => setRecommendationModal(null)}
+            className="rounded-full p-1 hover:bg-gray-100 transition"
+          >
+            <span className="material-symbols-outlined text-utec-muted">close</span>
+          </button>
+        </div>
+
+        {/* Mejor horario */}
+                  <div className="mb-6 rounded-xl border-2 border-purple-200 bg-purple-50 p-4">
+                    {bestRecommendedSchedule ? (
+                    <>
+                      <div className="mb-3 flex items-center justify-between">
+                      <div>
+                        <h4 className="text-lg font-bold text-purple-700">
+                        Horario #{bestRecommendedSchedule.rank ?? 1}
+                        </h4>
+                        <p className="text-sm text-purple-600">
+                        {(bestRecommendedSchedule.total_cursos ?? bestRecommendedSchedule.cursos.length)} cursos - {formatPlanHours(bestRecommendedSchedule.total_horas)} h semanales
+                        </p>
+                      </div>
+                      <span className="rounded-full bg-purple-100 px-3 py-1 text-xs font-semibold text-purple-700">
+                        TOP
+                      </span>
+                      </div>
+
+                      <div className="mb-3 space-y-2">
+                      <p className="text-sm font-semibold text-purple-700">
+                        Cursos incluidos:
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {bestRecommendedSchedule.cursos.length > 0 ? (
+                        bestRecommendedSchedule.cursos.map((codigo, idx) => {
+                          const courseName = courseCatalog.find(c => c.code === codigo)?.name || codigo;
+                          return (
+                          <span
+                            key={`${codigo}-${idx}`}
+                            className="rounded-lg bg-white px-3 py-1 text-sm font-semibold text-purple-700 shadow-sm"
+                          >
+                            {courseName}
+                          </span>
+                          );
+                        })
+                        ) : (
+                        <span className="text-sm text-purple-600">
+                          Sin cursos sugeridos
+                        </span>
+                        )}
+                      </div>
+                      </div>
+
+                      <div className="mb-4">
+                      {renderSchedulePreview(bestRecommendedSchedule.horario)}
+                      </div>
+
+                    <button
+                      onClick={() => applyRecommendation(bestRecommendedSchedule)}
+                      className="w-full rounded-lg bg-purple-600 px-4 py-2 font-semibold text-white hover:bg-purple-700 transition"
+                      >
+                      Aplicar este horario
+                      </button>
+                    </>
+                    ) : (
+                    <p className="text-sm text-utec-muted">
+                      No se encontraron horarios recomendados para los cursos disponibles.
+                    </p>
+                    )}
+                  </div>
+
+                  {otherRecommendedSchedules.length > 0 && (
+                    <div className="mb-6 space-y-4">
+                    <p className="text-sm font-semibold text-utec-text">
+                      Otras opciones destacadas
+                    </p>
+                    {otherRecommendedSchedules.map((plan) => (
+                      <div
+                      key={plan.id}
+                      className="rounded-xl border border-utec-border bg-white p-4 shadow-sm"
+                      >
+                      <div className="flex items-center justify-between">
+                        <div>
+                        <p className="text-base font-bold text-utec-text">
+                          Horario #{plan.rank ?? 'N/A'}
+                        </p>
+                        <p className="text-sm text-utec-muted">
+                          {plan.cursos.length} cursos - {formatPlanHours(plan.total_horas)} h semanales
+                        </p>
+                        </div>
+                        <span className="text-xs font-semibold uppercase text-utec-muted">
+                        Opcion
+                        </span>
+                      </div>
+
+                      <div className="mt-3 space-y-2">
+                        <p className="text-xs font-semibold text-utec-muted uppercase">
+                        Cursos:
+                        </p>
+                        {plan.cursos.length > 0 ? (
+                        <div className="flex flex-wrap gap-2">
+                          {plan.cursos.map((codigo) => {
+                          const courseName = courseCatalog.find(c => c.code === codigo)?.name || codigo;
+                          return (
+                            <span
+                            key={`${plan.id}-${codigo}`}
+                            className="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-utec-text"
+                            >
+                            {courseName}
+                            </span>
+                          );
+                          })}
+                        </div>
+                        ) : (
+                        <p className="text-sm text-utec-muted">
+                          Sin cursos asignados.
+                        </p>
+                        )}
+                      </div>
+
+                      <div className="mt-3">
+                        {renderSchedulePreview(plan.horario)}
+                      </div>
+
+                      <button
+                        onClick={() => applyRecommendation(plan)}
+                        className="mt-4 w-full rounded-lg border border-purple-200 px-4 py-2 text-sm font-semibold text-purple-700 hover:bg-purple-50 transition"
+                      >
+                        Aplicar este horario
+                      </button>
+                      </div>
+                    ))}
+                    </div>
+                  )}
+
+                  {/* Mensaje del sistema */}
+            {recommendationModal.mensaje && (
+              <div className="mb-4 rounded-lg bg-blue-50 p-3">
+                <p className="text-sm text-utec-text">{recommendationModal.mensaje}</p>
+              </div>
+            )}
+
+            <button
+              onClick={() => setRecommendationModal(null)}
+              className="w-full rounded-lg border border-utec-border px-4 py-2 font-semibold text-utec-text hover:bg-gray-50 transition"
+            >
+              Cerrar
+            </button>
+          </div>
+        </div>
+      )}
     <div className="space-y-8">
       <header className="space-y-2">
         <h1 className="text-3xl font-bold text-utec-text">Matricula IA</h1>
@@ -570,8 +910,14 @@ export default function EnrollmentPage() {
         </p>
       </header>
 
-      <section className="grid grid-cols-1 gap-6 lg:grid-cols-[380px_1fr] lg:items-start">
-        <div className="flex flex-col rounded-2xl border border-utec-border bg-white shadow-[0_10px_40px_rgba(0,0,0,0.15)] overflow-hidden" style={{height: 'calc(100vh - 220px)'}}>
+      <section
+        className="flex w-full flex-col gap-6 lg:flex-row lg:items-start"
+        style={{ width: '100%', maxWidth: 'min(90vw, 1400px)', margin: '24px auto 0' }}
+      >
+        <div
+          className="flex w-full flex-col rounded-2xl border border-utec-border bg-white shadow-[0_10px_40px_rgba(0,0,0,0.15)] overflow-hidden lg:flex-[0.35]"
+          style={{ height: 'calc(100vh - 220px)' }}
+        >
           <div className="flex items-center justify-between p-6 pb-4">
             <div>
               <h2 className="text-lg font-semibold text-utec-text">Cursos disponibles</h2>
@@ -590,6 +936,63 @@ export default function EnrollmentPage() {
             </div>
           )}
           <div className="flex-1 overflow-y-auto px-6 pb-6 space-y-4" style={{maxHeight: 'calc(100vh - 280px)'}}>
+            {savedSchedules.length > 0 && (
+              <div className="rounded-xl border border-purple-100 bg-purple-50/70 p-4">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <p className="text-sm font-semibold text-purple-700">Horarios recomendados</p>
+                    <p className="text-xs text-purple-600">Ultimo analisis IA</p>
+                  </div>
+                  <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-purple-700">
+                    TOP 3
+                  </span>
+                </div>
+                <div className="mt-3 space-y-3">
+                  {savedSchedules.map((plan, idx) => (
+                    <div
+                      key={plan.id ?? `${plan.rank ?? 'plan'}-${idx}`}
+                      className="rounded-lg bg-white/90 p-3 shadow-sm"
+                    >
+                      <div className="flex items-center justify-between gap-3">
+                        <div>
+                          <p className="text-sm font-bold text-utec-text">
+                            Horario #{plan.rank ?? plan.id ?? idx + 1}
+                          </p>
+                          <p className="text-xs text-utec-muted">
+                            {plan.cursos?.length ?? 0} cursos - {formatPlanHours(plan.total_horas)} h semanales
+                          </p>
+                        </div>
+                        <button
+                          onClick={() => applyRecommendation(plan)}
+                          className="rounded-lg border border-purple-200 px-3 py-1 text-xs font-semibold text-purple-700 hover:bg-purple-50 transition"
+                        >
+                          Aplicar
+                        </button>
+                      </div>
+                      {plan.cursos?.length ? (
+                        <div className="mt-2 flex flex-wrap gap-2">
+                          {plan.cursos.slice(0, 4).map((codigo) => (
+                            <span
+                              key={`${plan.id ?? idx}-${codigo}`}
+                              className="rounded-full bg-purple-100/70 px-3 py-1 text-xs font-semibold text-purple-700"
+                            >
+                              {codigo}
+                            </span>
+                          ))}
+                          {plan.cursos.length > 4 && (
+                            <span className="text-xs font-semibold text-purple-600">
+                              +{plan.cursos.length - 4} mas
+                            </span>
+                          )}
+                        </div>
+                      ) : (
+                        <p className="mt-2 text-xs text-utec-muted">Sin cursos asignados</p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
             {courseCatalog.map((course) => {
               const isSelected = selectedCodes.has(course.code);
               return (
@@ -727,7 +1130,10 @@ export default function EnrollmentPage() {
           )}
         </div>
 
-        <div className="space-y-4 rounded-2xl border border-utec-border bg-white p-6 shadow-[0_10px_40px_rgba(0,0,0,0.15)]">
+        <div
+          className="space-y-4 overflow-y-auto rounded-2xl border border-utec-border bg-white p-6 shadow-[0_10px_40px_rgba(0,0,0,0.15)] w-full lg:flex-[0.65]"
+          style={{ maxHeight: 'calc(100vh - 120px)' }}
+        >
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-lg font-semibold text-utec-text">Calendario tentativo</h2>
@@ -829,13 +1235,6 @@ export default function EnrollmentPage() {
               </div>
             </div>
           )}
-          <div className="rounded-xl bg-blue-50 p-4 text-sm text-utec-secondary">
-            <p className="font-semibold text-utec-blue">Consejo:</p>
-            <p>
-              Deja al menos una tarde libre para proyectos interdisciplinarios y evita
-              sobrecargar los dias consecutivos con laboratorios extensos.
-            </p>
-          </div>
         </div>
       </section>
 
@@ -1104,134 +1503,9 @@ export default function EnrollmentPage() {
           </div>
         </div>
       )}
-
-      {/* Modal de recomendación de horario */}
-      {recommendationModal && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 overflow-y-auto"
-          onClick={() => setRecommendationModal(null)}
-        >
-          <div
-            className="w-full max-w-2xl rounded-2xl border border-purple-200 bg-white p-6 shadow-[0_20px_60px_rgba(147,51,234,0.3)] my-8"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="mb-4 flex items-start gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-purple-100">
-                <span className="material-symbols-outlined text-2xl text-purple-600">auto_awesome</span>
-              </div>
-              <div className="flex-1">
-                <h3 className="text-xl font-bold text-purple-600">Mejor Horario Recomendado</h3>
-                <p className="text-sm text-utec-muted mt-1">
-                  Analizamos {recommendationModal.meta.total_evaluados} opciones usando IA
-                </p>
-              </div>
-              <button
-                onClick={() => setRecommendationModal(null)}
-                className="rounded-full p-1 hover:bg-gray-100 transition"
-              >
-                <span className="material-symbols-outlined text-utec-muted">close</span>
-              </button>
-            </div>
-
-            {/* Mejor opción */}
-            <div className="mb-6 rounded-xl border-2 border-purple-200 bg-purple-50 p-4">
-              <div className="mb-3 flex items-center justify-between">
-                <div>
-                  <h4 className="text-lg font-bold text-purple-700">Opción Recomendada</h4>
-                  <p className="text-sm text-purple-600">
-                    Score: {recommendationModal.mejor_recomendacion.score.toFixed(1)} puntos
-                  </p>
-                </div>
-                {recommendationModal.mejor_recomendacion.detalle?.is_valid ? (
-                  <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">
-                    ✓ Válido
-                  </span>
-                ) : (
-                  <span className="rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-700">
-                    ⚠ Advertencia
-                  </span>
-                )}
-              </div>
-
-              <div className="mb-3 grid grid-cols-3 gap-3 text-center">
-                <div className="rounded-lg bg-white p-2">
-                  <p className="text-xs text-utec-muted">Créditos</p>
-                  <p className="text-lg font-bold text-purple-700">
-                    {recommendationModal.mejor_recomendacion.detalle?.total_credits}
-                  </p>
-                </div>
-                <div className="rounded-lg bg-white p-2">
-                  <p className="text-xs text-utec-muted">Cursos</p>
-                  <p className="text-lg font-bold text-purple-700">
-                    {recommendationModal.mejor_recomendacion.cursos.length}
-                  </p>
-                </div>
-                <div className="rounded-lg bg-white p-2">
-                  <p className="text-xs text-utec-muted">En riesgo</p>
-                  <p className="text-lg font-bold text-purple-700">
-                    {recommendationModal.mejor_recomendacion.detalle?.cursos_desaprobados_predichos || 0}
-                  </p>
-                </div>
-              </div>
-
-              <div className="mb-3 space-y-2">
-                <p className="text-sm font-semibold text-purple-700">Cursos incluidos:</p>
-                <div className="flex flex-wrap gap-2">
-                  {recommendationModal.mejor_recomendacion.cursos.map((codigo) => (
-                    <span
-                      key={codigo}
-                      className="rounded-lg bg-white px-3 py-1 text-sm font-semibold text-purple-700 shadow-sm"
-                    >
-                      {codigo}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              {recommendationModal.mejor_recomendacion.detalle?.course_details && (
-                <div className="mt-3 max-h-48 space-y-2 overflow-y-auto rounded-lg bg-white p-3">
-                  <p className="text-xs font-semibold text-utec-muted uppercase">Detalles por curso:</p>
-                  {recommendationModal.mejor_recomendacion.detalle.course_details.map((curso) => (
-                    <div key={curso.codigo} className="flex items-center justify-between border-b border-purple-100 pb-2 last:border-0">
-                      <div>
-                        <p className="text-sm font-semibold text-utec-text">{curso.codigo}</p>
-                        <p className="text-xs text-utec-muted truncate max-w-xs">{curso.nombre}</p>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-sm font-bold text-purple-600">
-                          {formatGrade(curso.nota_predicha)}/20
-                        </p>
-                        <p className="text-xs text-utec-muted">{curso.creditos} créd.</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              <button
-                onClick={() => applyRecommendation(recommendationModal.mejor_recomendacion.cursos)}
-                className="mt-4 w-full rounded-lg bg-purple-600 px-4 py-2 font-semibold text-white hover:bg-purple-700 transition"
-              >
-                Aplicar esta recomendación
-              </button>
-            </div>
-
-            {/* Mensaje del sistema */}
-            {recommendationModal.mensaje && (
-              <div className="mb-4 rounded-lg bg-blue-50 p-3">
-                <p className="text-sm text-utec-text">{recommendationModal.mensaje}</p>
-              </div>
-            )}
-
-            <button
-              onClick={() => setRecommendationModal(null)}
-              className="w-full rounded-lg border border-utec-border px-4 py-2 font-semibold text-utec-text hover:bg-gray-50 transition"
-            >
-              Cerrar
-            </button>
-          </div>
-        </div>
-      )}
     </div>
+    </div>
+    
+    
   );
 }

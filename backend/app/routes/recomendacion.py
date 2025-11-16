@@ -5,11 +5,12 @@ Endpoints para el sistema de recomendación de matrícula
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
-from typing import Optional, List
+from typing import Optional, List, Dict
 import sys
 from itertools import combinations
 from pathlib import Path
 import heapq
+import time
 
 from app.db.database import get_db
 from app.models.alumno import Alumno
@@ -38,7 +39,7 @@ class RecomendacionRequest(BaseModel):
 class RecomendacionResponse(BaseModel):
     success: bool
     meta: dict
-    mejor_recomendacion: dict
+    mejor_recomendacion: Optional[dict] = None
     todos_los_resultados: List[dict]
     mensaje: Optional[str] = None
 
@@ -96,8 +97,8 @@ async def recomendar_mejor_horario(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail=f"El curso en la posición {i} está vacío"
             )
-        
-        # Verificar que el sistema de recomendación está disponible
+
+    # Verificar que el sistema de recomendación está disponible
     if not RECOMENDADOR_AVAILABLE:
         return RecomendacionResponse(
             success=False,
@@ -117,15 +118,14 @@ async def recomendar_mejor_horario(
             mensaje="Sistema de recomendación no disponible"
         )
 
-        
-   # crear horarios posibles dado los cursos disponibles
+    # crear horarios posibles dado los cursos disponibles
     secciones = db.query(Seccion).filter(
         Seccion.cod_curso.in_(request.bundles)
     ).all()
-    
+
     cod_persona_int = int(request.cod_persona)
     cursos_disp = ranking_cursos(cod_persona=cod_persona_int, cursos=request.bundles)
-    cursos_hor = {i: {} for i in cursos_disp}
+    cursos_hor: Dict[str, Dict[str, List[tuple[str, str, str]]]] = {i: {} for i in cursos_disp}
 
     for seccion in secciones:
         hors = seccion.horarios
@@ -140,28 +140,134 @@ async def recomendar_mejor_horario(
                 cursos_hor[seccion.cod_curso][sec] = []
             cursos_hor[seccion.cod_curso][sec].append((dia, hi, hf))
 
-    dict_default = {"Lun": [], "Mar": [], "Mie": [], "Jue": [], "Vie": [], "Sab": [], "Dom": []}
+    dict_default: Dict[str, List[tuple[str, str]]] = {
+        "Lun": [],
+        "Mar": [],
+        "Mie": [],
+        "Jue": [],
+        "Vie": [],
+        "Sab": [],
+        "Dom": [],
+    }
 
-    def is_conflict(horarios: dict, new_entry: tuple[str, str, str]) -> bool:
-        dia, inicio_new, fin_new = new_entry
-        for inicio_exist, fin_exist in horarios[dia]:
-            # solapamiento si no se cumple que uno termina antes de que empiece el otro
-            if not (fin_new <= inicio_exist or inicio_new >= fin_exist):
-                return True
-        return False
+    class Horario:
+        """
+        Encapsula un horario:
+        - bloques: dict[dia] -> list[(inicio, fin)]
+        - cursos_secciones: lista de (cod_curso, seccion_key) para saber qué sección exacta se tomó.
+        """
 
-    def copiar_horario(horario: dict) -> dict:
-        # copia profunda "simple": copia diccionario y cada lista
-        return {dia: bloques[:] for dia, bloques in horario.items()}
+        def __init__(
+            self,
+            base: Optional[Dict[str, List[tuple[str, str]]]] = None,
+            cursos_secciones: Optional[List[tuple[str, str]]] = None,
+        ):
+            if base is None:
+                base = dict_default
 
+            # copia profunda "simple" del diccionario de bloques
+            self.bloques: Dict[str, List[tuple[str, str]]] = {
+                dia: bloques[:] for dia, bloques in base.items()
+            }
+            # lista de (curso, seccion)
+            self.cursos_secciones: List[tuple[str, str]] = (
+                list(cursos_secciones) if cursos_secciones else []
+            )
+
+        def copy(self) -> "Horario":
+            """Devuelve una copia independiente del horario."""
+            return Horario(self.bloques, self.cursos_secciones)
+
+        def is_conflict(self, dia: str, inicio_new: str, fin_new: str) -> bool:
+            """
+            Verifica si el bloque [inicio_new, fin_new] en 'dia' choca
+            con algún bloque ya almacenado.
+            """
+            for inicio_exist, fin_exist in self.bloques.get(dia, []):
+                # solapamiento si no se cumple que uno termina antes de que empiece el otro
+                if not (fin_new <= inicio_exist or inicio_new >= fin_exist):
+                    return True
+            return False
+
+        def add_seccion(
+            self,
+            cod_curso: str,
+            seccion_key: str,
+            sec_hors: List[tuple[str, str, str]],
+        ) -> None:
+            """
+            Añade TODAS las sesiones de una sección al horario y
+            registra (curso, seccion) en cursos_secciones.
+            sec_hors: lista de (dia, hora_inicio, hora_fin)
+            """
+            for dia, hora_inicio, hora_fin in sec_hors:
+                self.bloques[dia].append((hora_inicio, hora_fin))
+            self.cursos_secciones.append((cod_curso, seccion_key))
+
+        def as_dict(self) -> Dict[str, List[tuple[str, str]]]:
+            """
+            Devuelve solo la estructura de bloques como dict, útil
+            para funciones que todavía esperan un dict (como comparar_horarios).
+            """
+            return self.bloques
+
+    def serialize_horario_publico(
+        bloques: Dict[str, List[tuple[str, str]]]
+    ) -> Dict[str, List[Dict[str, str]]]:
+        dias = ["Lun", "Mar", "Mie", "Jue", "Vie", "Sab", "Dom"]
+        serializado: Dict[str, List[Dict[str, str]]] = {}
+        for dia in dias:
+            lista = bloques.get(dia, [])
+            bloques_ordenados = sorted(lista, key=lambda bloque: bloque[0])
+            serializado[dia] = [
+                {"inicio": inicio, "fin": fin}
+                for inicio, fin in bloques_ordenados
+            ]
+        return serializado
+
+    def _a_minutos(valor: str) -> int:
+        horas, minutos = valor.split(":")
+        return int(horas) * 60 + int(minutos)
+
+    def calcular_total_horas(
+        horario_serializado: Dict[str, List[Dict[str, str]]]
+    ) -> float:
+        total_minutos = 0
+        for bloques in horario_serializado.values():
+            for bloque in bloques:
+                inicio = bloque["inicio"]
+                fin = bloque["fin"]
+                total_minutos += max(_a_minutos(fin) - _a_minutos(inicio), 0)
+        return round(total_minutos / 60.0, 2)
+
+    def construir_resumen_horario(registro: dict, rank: int) -> dict:
+        horario_obj: Horario = registro["horario"]
+        horario_serializado = serialize_horario_publico(horario_obj.bloques)
+
+        total_bloques = sum(len(bloques) for bloques in horario_serializado.values())
+        dias_con_clases = [
+            dia for dia, bloques in horario_serializado.items() if bloques
+        ]
+        total_horas = calcular_total_horas(horario_serializado)
+
+        return {
+            "id": registro["id"],
+            "rank": rank,
+            "cursos": registro["cursos"],  # solo códigos de curso
+            "cursos_secciones": horario_obj.cursos_secciones,  # [(curso, seccion)]
+            "horario": horario_serializado,
+            "total_cursos": len(registro["cursos"]),
+            "total_bloques": total_bloques,
+            "total_horas": total_horas,
+            "dias_con_clases": dias_con_clases,
+        }
 
     time_limit = request.max_time if request.max_time else 30  # segundos
     print(f"Iniciando búsqueda de horarios con límite de tiempo {time_limit} segundos...")
-    import time
 
     #---------- horarios ------------------
     # TOP 3 de mejores horarios para la persona
-    mejores_horarios = []   # cada elemento: {"id": int, "cursos": [...], "horario": dict}
+    mejores_horarios = []   # cada elemento: {"id": int, "cursos": [...], "horario": Horario}
     id_now = 0              # contador de horarios evaluados
     start_time = time.time()
 
@@ -177,14 +283,13 @@ async def recomendar_mejor_horario(
         """
         mejor_dict = comparar_horarios(
             cod_persona_int,
-            candidato["horario"],
-            otro["horario"]
+            candidato["horario"].as_dict(),
+            otro["horario"].as_dict(),
         )
         # asumimos que comparar_horarios devuelve exactamente el dict de horario "ganador"
-        # y que los horarios son comparables por igualdad
-        return mejor_dict == candidato["horario"]
+        return mejor_dict == candidato["horario"].as_dict()
 
-    def append_horario(cursos_tomados: list, horario_ite: dict):
+    def append_horario(cursos_tomados: list, horario_ite: Horario):
         """
         Inserta el horario en la lista de mejores_horarios manteniendo
         solo el TOP 3 ordenado (posición 0 = mejor).
@@ -193,8 +298,8 @@ async def recomendar_mejor_horario(
 
         nuevo = {
             "id": get_horario_id(),
-            "cursos": cursos_tomados[:],          # copiar lista
-            "horario": copiar_horario(horario_ite)
+            "cursos": cursos_tomados[:],          # copiar lista de cursos
+            "horario": horario_ite.copy(),        # copiar objeto Horario
         }
 
         # Caso 1: lista vacía
@@ -219,7 +324,7 @@ async def recomendar_mejor_horario(
         if len(mejores_horarios) > 3:
             mejores_horarios = mejores_horarios[:3]
 
-    def backtrack(ite: int, horario_ite: dict, cursos_tomados: list):
+    def backtrack(ite: int, horario_ite: Horario, cursos_tomados: list):
         # cortar si nos pasamos del tiempo
         if time.time() - start_time > time_limit:
             return
@@ -237,15 +342,12 @@ async def recomendar_mejor_horario(
 
         curso = cursos_disp[ite]
 
-        # Opción 1: NO tomar este curso
-        backtrack(ite + 1, horario_ite, cursos_tomados)
-
-        # Opción 2: Tomar una de sus secciones
+        # Opción 1: Tomar una de sus secciones
         for sec_key, sec_hors in cursos_hor[curso].items():
             # Primero verificamos que TODAS las sesiones de esa sección no choquen
             conflicto = False
             for dia, hora_inicio, hora_fin in sec_hors:
-                if is_conflict(horario_ite, (dia, hora_inicio, hora_fin)):
+                if horario_ite.is_conflict(dia, hora_inicio, hora_fin):
                     conflicto = True
                     break
 
@@ -253,42 +355,70 @@ async def recomendar_mejor_horario(
                 continue  # esta sección no se puede
 
             # Si no hay conflicto, copiamos el horario y añadimos TODAS las sesiones de la sección
-            nuevo_horario = copiar_horario(horario_ite)
-            for dia, hora_inicio, hora_fin in sec_hors:
-                nuevo_horario[dia].append((hora_inicio, hora_fin))
+            nuevo_horario = horario_ite.copy()
+            nuevo_horario.add_seccion(curso, sec_key, sec_hors)
 
-            # solo guardamos el curso (no la sección)
             cursos_tomados.append(curso)
             backtrack(ite + 1, nuevo_horario, cursos_tomados)
             cursos_tomados.pop()
 
+        # Opción 2: No tomar este curso
+        backtrack(ite + 1, horario_ite, cursos_tomados)
+
     # iniciar con un horario vacío
-    backtrack(0, copiar_horario(dict_default), [])
+    backtrack(0, Horario(dict_default), [])
 
-    print(f"Se evaluaron {id_now} horarios válidos dentro del límite de tiempo.")
-    print("Top 3 mejores horarios encontrados (del mejor al peor dentro del top):")
-    for h in mejores_horarios:
-        print(f"- ID {h['id']} con cursos: {h['cursos']}")
+    elapsed_time = time.time() - start_time
 
-
-
-    mensaje = (
-            f"Se evaluaron {id_now} opciones. "
-            "Top 3 mejores horarios encontrados (del mejor al peor dentro del top):"
-            f"- ID {mejores_horarios[0]['id']} con cursos: {mejores_horarios[0]['cursos']}"
-            f"- ID {mejores_horarios[1]['id']} con cursos: {mejores_horarios[1]['cursos']}"
-            f"- ID {mejores_horarios[2]['id']} con cursos: {mejores_horarios[2]['cursos']}"
+    if not mejores_horarios:
+        mensaje = (
+            f"Se evaluaron {id_now} combinaciones en {round(elapsed_time, 2)} segundos "
+            "pero no se encontraron horarios compatibles con los cursos proporcionados."
         )
+        print(mensaje)
+        return RecomendacionResponse(
+            success=False,
+            meta={
+                "cod_persona": request.cod_persona,
+                "per_matricula": request.per_matricula,
+                "total_evaluados": id_now,
+                "horarios_encontrados": 0,
+                "tiempo_procesamiento": round(elapsed_time, 2)
+            },
+            mejor_recomendacion=None,
+            todos_los_resultados=[],
+            mensaje=mensaje
+        )
+
+    top_horarios = [
+        construir_resumen_horario(horario, idx + 1)
+        for idx, horario in enumerate(mejores_horarios)
+    ]
+
+    print(f"Se evaluaron {id_now} horarios validos dentro del limite de tiempo.")
+    print("Top horarios encontrados (del mejor al peor dentro del top):")
+    for horario in top_horarios:
+        print(f"- #{horario['rank']} con cursos: {horario['cursos']}")
+
+    resumen_lineas = [
+        f"#{horario['rank']} ({', '.join(horario['cursos']) or 'Sin cursos'})"
+        for horario in top_horarios
+    ]
+    mensaje = (
+        f"Se evaluaron {id_now} combinaciones en {round(elapsed_time, 2)} segundos.\n"
+        f"Top {len(top_horarios)} horarios: \n" + "\n".join(resumen_lineas)
+    )
 
     return RecomendacionResponse(
         success=True,
-        meta={},
-        mejor_recomendacion={
-            "index": mejores_horarios[0]['id'],
-            "score": None,
-            "cursos": mejores_horarios[0]['cursos'],
-            "detalle": mejores_horarios[0]['horario']
+        meta={
+            "cod_persona": request.cod_persona,
+            "per_matricula": request.per_matricula,
+            "total_evaluados": id_now,
+            "horarios_encontrados": len(top_horarios),
+            "tiempo_procesamiento": round(elapsed_time, 2)
         },
-        todos_los_resultados=mejores_horarios,
+        mejor_recomendacion=top_horarios[0],
+        todos_los_resultados=top_horarios,
         mensaje=mensaje
     )
