@@ -26,8 +26,20 @@ const clearStudentPlanningCache = (codPersona) => {
 
 export default function AppLayout() {
   const navigate = useNavigate();
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
   const storedLogin = getStoredLogin();
+  
+  const cod_persona = storedLogin?.cod_persona; 
+  const [isModalOpen, setIsModalOpen] = useState(() => {
+    if (!cod_persona) {
+      // Si no hay un ID de usuario, no mostramos el modal (no podríamos guardarlo).
+      return false;
+    }
+    // ya ha visto el modal. Si no lo ha visto, devuelve 'true'.
+    return localStorage.getItem(`modalVisto_${cod_persona}`) !== 'true';
+  });
+  // --- FIN DE LA MODIFICACIÓN ---
+
   const alumnoInfo = storedLogin?.alumno_info ?? {};
   const fullName = [alumnoInfo.nombre, alumnoInfo.apellido]
     .filter(Boolean)
@@ -136,10 +148,46 @@ export default function AppLayout() {
         </div>
       </aside>
       <main className="flex-1 overflow-y-auto">
-        <div className="mx-auto flex w-full max-w-[1400px] flex-col gap-8 px-8 py-10">
+        <div className="mx-auto flex w-full max-w-[1800px] flex-col gap-8 px-8 py-10">
           <Outlet />
         </div>
       </main>
+
+      {/* --- BLOQUE POP UP TEMPORAL --- */}
+      {isModalOpen && (
+        // Overlay: fondo oscuro que cubre toda la pantalla
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+          {/* Contenedor del Modal: centrado y con estilos */}
+          <div className="mx-4 w-full max-w-md rounded-2xl bg-white p-8 shadow-2xl">
+            <h2 className="mb-4 text-2xl font-semibold text-gray-900">
+              Mensaje Importante
+            </h2>
+            <p className="mb-6 text-gray-700">
+              Aquí puedes poner el contenido de tu pop-up. El resto de la
+              interfaz está bloqueada hasta que presiones "Omitir".
+            </p>
+            <div className="flex justify-end">
+              <button
+                type="button"
+                onClick={() => {
+                  // --- INICIO DE LA MODIFICACIÓN ---
+                  // 1. Guardar en localStorage que *este usuario* ya vio el modal.
+                  if (cod_persona) {
+                    localStorage.setItem(`modalVisto_${cod_persona}`, 'true');
+                  }
+                  // 2. Cerrar el modal.
+                  setIsModalOpen(false);
+                  // --- FIN DE LA MODIFICACIÓN ---
+                }} // Cierra el modal al hacer clic
+                className="rounded-lg bg-utec-blue px-6 py-2 text-sm font-medium text-white transition-colors hover:bg-utec-blue/80 focus:outline-none focus:ring-2 focus:ring-utec-blue/50"
+              >
+                Omitir
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* --- BLOQUE POP UP TEMPORAL --- */}
     </div>
   );
 }

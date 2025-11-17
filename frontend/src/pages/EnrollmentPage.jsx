@@ -1016,7 +1016,7 @@ export default function EnrollmentPage() {
 
       <section
         className="flex w-full flex-col gap-6 lg:flex-row lg:items-start"
-        style={{ width: '100%', maxWidth: 'min(90vw, 1400px)', margin: '24px auto 0' }}
+        style={{ width: '100%', maxWidth: 'min(90vw, 1800px)', margin: '24px auto 0' }}
       >
         <div
           className="flex w-full flex-col rounded-2xl border border-utec-border bg-white shadow-[0_10px_40px_rgba(0,0,0,0.15)] overflow-hidden lg:flex-[0.35]"
