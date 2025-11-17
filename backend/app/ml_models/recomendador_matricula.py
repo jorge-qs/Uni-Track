@@ -14,10 +14,18 @@ CSV_INFO_PATH = DATA_DIR / "df_curso.csv"
 CSV_PREREQS_PATH = DATA_DIR / "malla_curricular_2016.csv"
 CSV_GRAPH_PATH = Path(__file__).parent / "cursos_analisis_grafo.csv"
 
-print(f"Buscando archivos para recomendador:")
-print(f"  - CSV Info: {CSV_INFO_PATH}")
-print(f"  - CSV Prereqs: {CSV_PREREQS_PATH}")
-print(f"  - CSV Graph: {CSV_GRAPH_PATH}")
+
+CLUSTERS_RAW = {
+    0: ['COMPUTACION GRAFICA', 'COMPUTACION MOLECULAR BIOLOGICA', 'INTELIGENCIA ARTIFICIAL', 'LENGUAJES DE PROGRAMACION', 'ROBOTICA', 'SISTEMAS DE INFORMACION', 'TOPICOS AVANZADOS EN INGENIERIA DE SOFTWARE', 'TOPICOS EN COMPUTACION GRAFICA'],
+    1: ['ALGEBRA ABSTRACTA', 'ALGORITMOS Y ESTRUCTURAS DE DATOS', 'CALCULO I', 'CALCULO II', 'CIENCIA DE LA COMPUTACION I', 'CIENCIA DE LA COMPUTACION II', 'ESTRUCTURAS DISCRETAS I', 'ESTRUCTURAS DISCRETAS II', 'MATEMATICA I', 'MATEMATICA II', 'PROGRAMACION DE VIDEO JUEGOS', 'TEORIA DE LA COMPUTACION'],
+    2: ['APRECIACION ARTISTICA', 'APRECIACION MUSICAL', 'INTRODUCCION A LA VIDA UNIVERSITARIA', 'LIDERAZGO', 'MORAL', 'ORATORIA', 'PERSONA, MATRIMONIO Y FAMILIA', 'TEATRO', 'TEOLOGIA'],
+    3: ['ANALISIS DE LA REALIDAD PERUANA', 'BASES DE DATOS II', 'CLOUD COMPUTING', 'INGENIERIA DE SOFTWARE III', 'INTERACCION HUMANO COMPUTADOR', 'METODOLOGIA DE LA INVESTIGACION EN COMPUTACION', 'REDES Y COMUNICACION'],
+    4: ['BIG DATA', 'COMPUTACION EN LA SOCIEDAD', 'ENSENANZA SOCIAL DE LA IGLESIA', 'ETICA PROFESIONAL', 'FORMACION DE EMPRESAS DE BASE TECNOLOGICA I', 'FORMACION DE EMPRESAS DE BASE TECNOLOGICA II', 'HISTORIA DE LA CIENCIA Y TECNOLOGIA', 'HISTORIA DE LA CULTURA', 'INGLES TECNICO PROFESIONAL'],
+    5: ['ANALISIS Y DISENO DE ALGORITMOS', 'BASES DE DATOS I', 'COMPILADORES', 'COMPUTACION PARALELA Y DISTRIBUIDA', 'ESTADISTICA Y PROBABILIDADES', 'ESTRUCTURAS DE DATOS AVANZADAS', 'FISICA COMPUTACIONAL', 'INGENIERIA DE SOFTWARE I', 'INGENIERIA DE SOFTWARE II', 'MATEMATICA APLICADA A LA COMPUTACION', 'PROGRAMACION COMPETITIVA', 'SEGURIDAD EN COMPUTACION', 'SISTEMAS OPERATIVOS', 'TOPICOS EN INTELIGENCIA ARTIFICIAL'],
+    6: ['ANALISIS NUMERICO', 'ANTROPOLOGIA FILOSOFICA Y TEOLOGICA', 'APRECIACION LITERARIA', 'ARQUITECTURA DE COMPUTADORES', 'COMUNICACION', 'DESARROLLO BASADO EN PLATAFORMAS', 'INTRODUCCION A LA FILOSIA', 'INTRODUCCION DE CIENCIA DE LA COMPUTACION', 'METODOLOGIA DEL ESTUDIO'],
+    7: ['PROYECTO FINAL DE CARRERA I', 'PROYECTO FINAL DE CARRERA II', 'PROYECTO FINAL DE CARRERA III']
+}
+
 
 
 def create_course_cluster_map(cluster_dict):
@@ -80,6 +88,24 @@ def build_comprehensive_db(csv_info_path, csv_prereqs_path, csv_graph_path):
         print(f"Error en build_comprehensive_db: {e}")
         print(list(DATA_DIR.iterdir()))
         return {}
+
+
+
+
+
+
+
+DB = build_comprehensive_db(str(CSV_INFO_PATH), str(CSV_PREREQS_PATH), str(CSV_GRAPH_PATH))
+
+
+
+
+
+
+
+
+
+
 
 
 def calculate_course_metrics(data, student_semester, familia_map, course_map, SCORE_MAP):
@@ -294,16 +320,6 @@ def ranking_cursos(cod_persona: int, per_matricula: str, cursos: list[str]) -> l
     
     semestre_alumno = 0  # Fijo
 
-    CLUSTERS_RAW = {
-        0: ['COMPUTACION GRAFICA', 'COMPUTACION MOLECULAR BIOLOGICA', 'INTELIGENCIA ARTIFICIAL', 'LENGUAJES DE PROGRAMACION', 'ROBOTICA', 'SISTEMAS DE INFORMACION', 'TOPICOS AVANZADOS EN INGENIERIA DE SOFTWARE', 'TOPICOS EN COMPUTACION GRAFICA'],
-        1: ['ALGEBRA ABSTRACTA', 'ALGORITMOS Y ESTRUCTURAS DE DATOS', 'CALCULO I', 'CALCULO II', 'CIENCIA DE LA COMPUTACION I', 'CIENCIA DE LA COMPUTACION II', 'ESTRUCTURAS DISCRETAS I', 'ESTRUCTURAS DISCRETAS II', 'MATEMATICA I', 'MATEMATICA II', 'PROGRAMACION DE VIDEO JUEGOS', 'TEORIA DE LA COMPUTACION'],
-        2: ['APRECIACION ARTISTICA', 'APRECIACION MUSICAL', 'INTRODUCCION A LA VIDA UNIVERSITARIA', 'LIDERAZGO', 'MORAL', 'ORATORIA', 'PERSONA, MATRIMONIO Y FAMILIA', 'TEATRO', 'TEOLOGIA'],
-        3: ['ANALISIS DE LA REALIDAD PERUANA', 'BASES DE DATOS II', 'CLOUD COMPUTING', 'INGENIERIA DE SOFTWARE III', 'INTERACCION HUMANO COMPUTADOR', 'METODOLOGIA DE LA INVESTIGACION EN COMPUTACION', 'REDES Y COMUNICACION'],
-        4: ['BIG DATA', 'COMPUTACION EN LA SOCIEDAD', 'ENSENANZA SOCIAL DE LA IGLESIA', 'ETICA PROFESIONAL', 'FORMACION DE EMPRESAS DE BASE TECNOLOGICA I', 'FORMACION DE EMPRESAS DE BASE TECNOLOGICA II', 'HISTORIA DE LA CIENCIA Y TECNOLOGIA', 'HISTORIA DE LA CULTURA', 'INGLES TECNICO PROFESIONAL'],
-        5: ['ANALISIS Y DISENO DE ALGORITMOS', 'BASES DE DATOS I', 'COMPILADORES', 'COMPUTACION PARALELA Y DISTRIBUIDA', 'ESTADISTICA Y PROBABILIDADES', 'ESTRUCTURAS DE DATOS AVANZADAS', 'FISICA COMPUTACIONAL', 'INGENIERIA DE SOFTWARE I', 'INGENIERIA DE SOFTWARE II', 'MATEMATICA APLICADA A LA COMPUTACION', 'PROGRAMACION COMPETITIVA', 'SEGURIDAD EN COMPUTACION', 'SISTEMAS OPERATIVOS', 'TOPICOS EN INTELIGENCIA ARTIFICIAL'],
-        6: ['ANALISIS NUMERICO', 'ANTROPOLOGIA FILOSOFICA Y TEOLOGICA', 'APRECIACION LITERARIA', 'ARQUITECTURA DE COMPUTADORES', 'COMUNICACION', 'DESARROLLO BASADO EN PLATAFORMAS', 'INTRODUCCION A LA FILOSIA', 'INTRODUCCION DE CIENCIA DE LA COMPUTACION', 'METODOLOGIA DEL ESTUDIO'],
-        7: ['PROYECTO FINAL DE CARRERA I', 'PROYECTO FINAL DE CARRERA II', 'PROYECTO FINAL DE CARRERA III']
-    }
     course_map = create_course_cluster_map(CLUSTERS_RAW)
 
     SCORE_MAP = {
@@ -325,9 +341,9 @@ def ranking_cursos(cod_persona: int, per_matricula: str, cursos: list[str]) -> l
     familia_map = {'CS': 1.0, 'MA': 0.5, 'FG': 0.1, 'ET': 0.3, 'ID': 0.3, 'CB': 0.2}
 
     # Cargar DB
-    db = build_comprehensive_db(str(CSV_INFO_PATH), str(CSV_PREREQS_PATH), str(CSV_GRAPH_PATH))
+    
 
-    if not db:
+    if not DB:
         print("Error: No se pudo cargar la base de datos de cursos. Retornando lista original.")
         return cursos # Fallback
 
@@ -340,7 +356,7 @@ def ranking_cursos(cod_persona: int, per_matricula: str, cursos: list[str]) -> l
 
         # Llamamos a la misma función de scoring
         score_info = score_enrollment_bundle(
-            bundle, db, semestre_alumno,
+            bundle, DB, semestre_alumno,
             pesos_individuales, familia_map, cod_persona, per_matricula, course_map, SCORE_MAP
         )
 
@@ -411,10 +427,7 @@ def sistema_recomendacion(cod_persona: int, per_matricula: str, list_of_bundles:
 
     familia_map = {'CS': 1.0, 'MA': 0.5, 'FG': 0.1, 'ET': 0.3, 'ID': 0.3, 'CB': 0.2}
 
-    # Cargar DB una sola vez para eficiencia
-    db = build_comprehensive_db(str(CSV_INFO_PATH), str(CSV_PREREQS_PATH), str(CSV_GRAPH_PATH))
-
-    if not db:
+    if not DB:
         return {
             "meta": {
                 "cod_persona": cod_persona,
@@ -439,7 +452,7 @@ def sistema_recomendacion(cod_persona: int, per_matricula: str, list_of_bundles:
     for i, bundle in enumerate(list_of_bundles):
         # Calcular score para el bundle actual
         score_info = score_enrollment_bundle(
-            bundle, db, semestre_alumno,
+            bundle, DB, semestre_alumno,
             pesos_individuales, familia_map, cod_persona, per_matricula, course_map, SCORE_MAP
         )
 
@@ -506,9 +519,6 @@ def sistema_recomendacion(cod_persona: int, per_matricula: str, list_of_bundles:
 
 
 
-
-import random
-
 def calcular_score_bundle(cod_persona: int, per_matricula: str, bundle: list) -> float:
     """
     Evalúa un único bundle y retorna su puntaje (score).
@@ -525,16 +535,6 @@ def calcular_score_bundle(cod_persona: int, per_matricula: str, bundle: list) ->
     semestre_alumno = 0  # Valor fijo según lógica original
 
     # --- 1. CONFIGURACIONES (Mapeos y Pesos) ---
-    CLUSTERS_RAW = {
-        0: ['COMPUTACION GRAFICA', 'COMPUTACION MOLECULAR BIOLOGICA', 'INTELIGENCIA ARTIFICIAL', 'LENGUAJES DE PROGRAMACION', 'ROBOTICA', 'SISTEMAS DE INFORMACION', 'TOPICOS AVANZADOS EN INGENIERIA DE SOFTWARE', 'TOPICOS EN COMPUTACION GRAFICA'],
-        1: ['ALGEBRA ABSTRACTA', 'ALGORITMOS Y ESTRUCTURAS DE DATOS', 'CALCULO I', 'CALCULO II', 'CIENCIA DE LA COMPUTACION I', 'CIENCIA DE LA COMPUTACION II', 'ESTRUCTURAS DISCRETAS I', 'ESTRUCTURAS DISCRETAS II', 'MATEMATICA I', 'MATEMATICA II', 'PROGRAMACION DE VIDEO JUEGOS', 'TEORIA DE LA COMPUTACION'],
-        2: ['APRECIACION ARTISTICA', 'APRECIACION MUSICAL', 'INTRODUCCION A LA VIDA UNIVERSITARIA', 'LIDERAZGO', 'MORAL', 'ORATORIA', 'PERSONA, MATRIMONIO Y FAMILIA', 'TEATRO', 'TEOLOGIA'],
-        3: ['ANALISIS DE LA REALIDAD PERUANA', 'BASES DE DATOS II', 'CLOUD COMPUTING', 'INGENIERIA DE SOFTWARE III', 'INTERACCION HUMANO COMPUTADOR', 'METODOLOGIA DE LA INVESTIGACION EN COMPUTACION', 'REDES Y COMUNICACION'],
-        4: ['BIG DATA', 'COMPUTACION EN LA SOCIEDAD', 'ENSENANZA SOCIAL DE LA IGLESIA', 'ETICA PROFESIONAL', 'FORMACION DE EMPRESAS DE BASE TECNOLOGICA I', 'FORMACION DE EMPRESAS DE BASE TECNOLOGICA II', 'HISTORIA DE LA CIENCIA Y TECNOLOGIA', 'HISTORIA DE LA CULTURA', 'INGLES TECNICO PROFESIONAL'],
-        5: ['ANALISIS Y DISENO DE ALGORITMOS', 'BASES DE DATOS I', 'COMPILADORES', 'COMPUTACION PARALELA Y DISTRIBUIDA', 'ESTADISTICA Y PROBABILIDADES', 'ESTRUCTURAS DE DATOS AVANZADAS', 'FISICA COMPUTACIONAL', 'INGENIERIA DE SOFTWARE I', 'INGENIERIA DE SOFTWARE II', 'MATEMATICA APLICADA A LA COMPUTACION', 'PROGRAMACION COMPETITIVA', 'SEGURIDAD EN COMPUTACION', 'SISTEMAS OPERATIVOS', 'TOPICOS EN INTELIGENCIA ARTIFICIAL'],
-        6: ['ANALISIS NUMERICO', 'ANTROPOLOGIA FILOSOFICA Y TEOLOGICA', 'APRECIACION LITERARIA', 'ARQUITECTURA DE COMPUTADORES', 'COMUNICACION', 'DESARROLLO BASADO EN PLATAFORMAS', 'INTRODUCCION A LA FILOSIA', 'INTRODUCCION DE CIENCIA DE LA COMPUTACION', 'METODOLOGIA DEL ESTUDIO'],
-        7: ['PROYECTO FINAL DE CARRERA I', 'PROYECTO FINAL DE CARRERA II', 'PROYECTO FINAL DE CARRERA III']
-    }
 
     SCORE_MAP = {0: 8.0, 1: 10.0, 2: 1.0, 3: 7.0, 4: 3.0, 5: 10.0, 6: 9.0, 7: 5.0}
 
@@ -558,16 +558,15 @@ def calcular_score_bundle(cod_persona: int, per_matricula: str, bundle: list) ->
     # --- 2. CARGA DE DATOS ---
     # NOTA: Si vas a llamar a esta función muchas veces en un bucle,
     # es recomendable sacar la carga de la DB fuera de esta función.
-    db = build_comprehensive_db(str(CSV_INFO_PATH), str(CSV_PREREQS_PATH), str(CSV_GRAPH_PATH))
 
-    if not db:
+    if not DB:
         # Retornamos un valor muy bajo para indicar error o fallo crítico
         return -float('inf')
 
     # --- 3. CÁLCULO DE SCORE ---
     score_info = score_enrollment_bundle(
         bundle, 
-        db, 
+        DB, 
         semestre_alumno,
         pesos_individuales, 
         familia_map, 

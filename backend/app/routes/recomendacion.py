@@ -273,6 +273,7 @@ async def recomendar_mejor_horario(
     id_now = 0              
     count = 0               # contador de horarios evaluados
     start_time = time.time()
+    
 
     def get_horario_id() -> int:
         nonlocal id_now
