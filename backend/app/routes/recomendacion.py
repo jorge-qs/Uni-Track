@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from typing import Optional, List, Dict
 import sys
-from itertools import combinations
+from itertools import combinations, count
 from pathlib import Path
 import heapq
 import time
@@ -19,7 +19,7 @@ from app.models.seccion import Seccion
 from app.utils.utils import str_to_dict, str_to_list, str_to_list_simple
 
 try:
-    from app.ml_models.recomendador_matricula import ranking_cursos, comparar_horarios
+    from app.ml_models.recomendador_matricula import ranking_cursos, calcular_score_bundle
     RECOMENDADOR_AVAILABLE = True
     print("Sistema de recomendacion cargado exitosamente")
 except ImportError as e:
@@ -270,61 +270,62 @@ async def recomendar_mejor_horario(
     #---------- horarios ------------------
     # TOP 3 de mejores horarios para la persona
     mejores_horarios = []   # cada elemento: {"id": int, "cursos": [...], "horario": Horario}
-    id_now = 0              # contador de horarios evaluados
+    id_now = 0              
+    count = 0               # contador de horarios evaluados
     start_time = time.time()
 
     def get_horario_id() -> int:
         nonlocal id_now
         id_now += 1
         return id_now
+    
+    def conteo() -> int:
+        nonlocal count
+        count += 1
 
-    def es_mejor(candidato: dict, otro: dict) -> bool:
-        """
-        Usa comparar_horarios(cod_persona, horario1, horario2)
-        y devuelve True si 'candidato' es mejor que 'otro'.
-        """
-        mejor_dict = comparar_horarios(
-            cod_persona_int,
-            candidato["horario"].as_dict(),
-            otro["horario"].as_dict(),
-        )
-        # asumimos que comparar_horarios devuelve exactamente el dict de horario "ganador"
-        return mejor_dict == candidato["horario"].as_dict()
 
     def append_horario(cursos_tomados: list, horario_ite: Horario):
         """
-        Inserta el horario en la lista de mejores_horarios manteniendo
-        solo el TOP 3 ordenado (posición 0 = mejor).
+        Calcula el score del bundle actual, lo agrega a la lista y mantiene
+        solo el TOP K (default 3) ordenado por score descendente.
         """
+        conteo()
         nonlocal mejores_horarios
+        # Si 'cod_persona' y 'per_matricula' no están en los argumentos, 
+        # asumimos que están disponibles en el scope padre (closure).
+        # Si no, agrégalos a la definición de la función.
+        
+        TOP_K = 3
 
-        nuevo = {
-            "id": get_horario_id(),
-            "cursos": cursos_tomados[:],          # copiar lista de cursos
-            "horario": horario_ite.copy(),        # copiar objeto Horario
-        }
+        # 1. Calcular el score usando la función refactorizada
+        #    (Asume que cursos_tomados es una lista de códigos ['CS101', ...])
+        current_score = calcular_score_bundle(cod_persona_int, request.per_matricula, cursos_tomados)
 
-        # Caso 1: lista vacía
-        if not mejores_horarios:
-            mejores_horarios.append(nuevo)
+        # 2. Optimización rápida: 
+        #    Si ya tenemos K elementos y el score actual es peor que el último (el peor de los mejores),
+        #    no tiene sentido agregarlo ni ordenar.
+        if len(mejores_horarios) >= TOP_K and current_score <= mejores_horarios[-1]['score']:
             return
 
-        # Caso general: insertar en posición correcta usando el comparador
-        insertado = False
-        for i in range(len(mejores_horarios)):
-            # si nuevo es mejor que el i-ésimo, va antes
-            if es_mejor(nuevo, mejores_horarios[i]):
-                mejores_horarios.insert(i, nuevo)
-                insertado = True
-                break
+        # 3. Crear el objeto nuevo incluyendo el score calculado
+        nuevo = {
+            "id": get_horario_id(),
+            "cursos": cursos_tomados[:],      # Copia de lista
+            "horario": horario_ite.copy(),    # Copia de objeto Horario
+            "score": current_score            # Guardamos el score
+        }
 
-        # Si no fue mejor que ninguno y todavía hay espacio (<3), va al final
-        if not insertado and len(mejores_horarios) < 3:
-            mejores_horarios.append(nuevo)
+        # 4. Agregar a la lista
+        mejores_horarios.append(nuevo)
 
-        # Recortar a top 3 en caso de que ahora haya 4
-        if len(mejores_horarios) > 3:
-            mejores_horarios = mejores_horarios[:3]
+        # 5. Ordenar y Recortar
+        #    Ordenamos por 'score' de mayor a menor (reverse=True).
+        #    Como la lista es pequeña (tamaño ~4), esto es extremadamente rápido.
+        mejores_horarios.sort(key=lambda x: x['score'], reverse=True)
+        
+        #    Mantenemos solo los K mejores
+        if len(mejores_horarios) > TOP_K:
+            mejores_horarios = mejores_horarios[:TOP_K]
 
     def backtrack(ite: int, horario_ite: Horario, cursos_tomados: list):
         # cortar si nos pasamos del tiempo
@@ -374,7 +375,7 @@ async def recomendar_mejor_horario(
 
     if not mejores_horarios:
         mensaje = (
-            f"Se evaluaron {id_now} combinaciones en {round(elapsed_time, 2)} segundos "
+            f"Se evaluaron {count} combinaciones en {round(elapsed_time, 2)} segundos "
             "pero no se encontraron horarios compatibles con los cursos proporcionados."
         )
         print(mensaje)
@@ -383,7 +384,7 @@ async def recomendar_mejor_horario(
             meta={
                 "cod_persona": request.cod_persona,
                 "per_matricula": request.per_matricula,
-                "total_evaluados": id_now,
+                "total_evaluados": count,
                 "horarios_encontrados": 0,
                 "tiempo_procesamiento": round(elapsed_time, 2)
             },
@@ -397,7 +398,7 @@ async def recomendar_mejor_horario(
         for idx, horario in enumerate(mejores_horarios)
     ]
 
-    print(f"Se evaluaron {id_now} horarios validos dentro del limite de tiempo.")
+    print(f"Se evaluaron {count} horarios validos dentro del limite de tiempo.")
     print("Top horarios encontrados (del mejor al peor dentro del top):")
     for horario in top_horarios:
         print(f"- #{horario['rank']} con cursos: {horario['cursos']}")
@@ -407,7 +408,7 @@ async def recomendar_mejor_horario(
         for horario in top_horarios
     ]
     mensaje = (
-        f"Se evaluaron {id_now} combinaciones en {round(elapsed_time, 2)} segundos.\n"
+        f"Se evaluaron {count} combinaciones en {round(elapsed_time, 2)} segundos.\n"
         f"Top {len(top_horarios)} horarios: \n" + "\n".join(resumen_lineas)
     )
 
@@ -416,7 +417,7 @@ async def recomendar_mejor_horario(
         meta={
             "cod_persona": request.cod_persona,
             "per_matricula": request.per_matricula,
-            "total_evaluados": id_now,
+            "total_evaluados": count,
             "horarios_encontrados": len(top_horarios),
             "tiempo_procesamiento": round(elapsed_time, 2)
         },
