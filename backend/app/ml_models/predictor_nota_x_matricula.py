@@ -11,7 +11,7 @@ from pathlib import Path
 # Rutas de archivos
 MODEL_PATH = Path(__file__).parent / "modelo_produccion_x_matricula.pkl"
 DATA_PATH = Path(__file__).parent / "predictor_nota_data.csv"
-
+df_predicciones = pd.read_csv(DATA_PATH) # Mejora de velocidad x17
 print(f"Buscando modelo de prediccion por matricula en: {MODEL_PATH}")
 print(f"Buscando datos en: {DATA_PATH}")
 
@@ -30,7 +30,7 @@ def buscar_fila_prediccion(cod_persona, lista_cod_curso, per_matricula):
         DataFrame con las filas encontradas
     """
     try:
-        df_predicciones = pd.read_csv(DATA_PATH)
+        
         lista_filas_encontradas = []
 
         for cod_curso in lista_cod_curso:
