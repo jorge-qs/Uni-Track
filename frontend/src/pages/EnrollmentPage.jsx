@@ -213,6 +213,8 @@ export default function EnrollmentPage() {
   const [recommendationModal, setRecommendationModal] = useState(null);
   const [loadingRecommendation, setLoadingRecommendation] = useState(false);
   const [savedSchedules, setSavedSchedules] = useState([]);
+  const [customPlanSelections, setCustomPlanSelections] = useState([]);
+  const [activeScheduleTab, setActiveScheduleTab] = useState('custom');
 
   const selectedCodes = useMemo(
     () => new Set(selectedCourses.map((course) => course.code)),
@@ -222,6 +224,32 @@ export default function EnrollmentPage() {
   const totalCredits = useMemo(
     () => selectedCourses.reduce((acc, course) => acc + course.credits, 0),
     [selectedCourses],
+  );
+
+  const scheduleTabs = useMemo(() => {
+    const baseTabs = [{
+      id: 'custom',
+      label: 'Personalizado',
+      type: 'custom',
+    }];
+    const recommendedTabs = savedSchedules.map((plan, idx) => ({
+      id: `plan-${plan.id ?? idx}`,
+      label: `Horario #${plan.rank ?? idx + 1}`,
+      type: 'recommendation',
+      plan,
+    }));
+    return [...baseTabs, ...recommendedTabs];
+  }, [savedSchedules]);
+
+  useEffect(() => {
+    if (!scheduleTabs.some((tab) => tab.id === activeScheduleTab)) {
+      setActiveScheduleTab('custom');
+    }
+  }, [scheduleTabs, activeScheduleTab]);
+
+  const activeTabMeta = useMemo(
+    () => scheduleTabs.find((tab) => tab.id === activeScheduleTab) ?? scheduleTabs[0],
+    [scheduleTabs, activeScheduleTab],
   );
 
   const calendarEvents = useMemo(
@@ -671,7 +699,109 @@ export default function EnrollmentPage() {
     return byName !== -1 ? byName : course.selectedSectionIndex || 0;
   };
 
-  const applyRecommendation = (plan) => {
+  const syncCourseCatalogWithSelection = (selectionList) => {
+    if (!selectionList?.length) return;
+    const sectionMap = new Map(
+      selectionList.map((course) => [course.code, course.selectedSectionIndex || 0]),
+    );
+
+    setCourseCatalog((prevCatalog) =>
+      prevCatalog.map((course) =>
+        sectionMap.has(course.code)
+          ? { ...course, selectedSectionIndex: sectionMap.get(course.code) }
+          : course,
+      ),
+    );
+  };
+
+  const rememberCustomPlan = () => {
+    setCustomPlanSelections(
+      selectedCourses.map((course) => {
+        const sectionIndex = course.selectedSectionIndex || 0;
+        const section =
+          course.allSections?.[sectionIndex] || course.allSections?.[0] || null;
+        return {
+          code: course.code,
+          sectionIndex,
+          sectionId: section?.sectionId || null,
+        };
+      }),
+    );
+  };
+
+  const restoreCustomPlan = () => {
+    if (!customPlanSelections.length) {
+      setSelectedCourses([]);
+      return;
+    }
+
+    const restoredCourses = [];
+    customPlanSelections.forEach(({ code, sectionId, sectionIndex }) => {
+      const courseData = courseCatalog.find((course) => course.code === code);
+      if (!courseData) {
+        return;
+      }
+
+      let resolvedIndex =
+        typeof sectionIndex === 'number' ? sectionIndex : courseData.selectedSectionIndex || 0;
+      if (sectionId) {
+        resolvedIndex = findSectionIndexForCourse(courseData, sectionId);
+      }
+      const maxIndex = Math.max((courseData.allSections?.length || 1) - 1, 0);
+      resolvedIndex = Math.min(Math.max(resolvedIndex, 0), maxIndex);
+
+      restoredCourses.push({
+        ...courseData,
+        selectedSectionIndex: resolvedIndex,
+      });
+    });
+
+    setSelectedCourses(restoredCourses);
+    syncCourseCatalogWithSelection(restoredCourses);
+  };
+
+  const displayedCalendarEvents = useMemo(() => {
+    if (!activeTabMeta || activeTabMeta.type === 'custom') {
+      return calendarEvents;
+    }
+    const plan = activeTabMeta.plan;
+    if (!plan) return [];
+
+    const sectionMap = new Map(
+      Array.isArray(plan.cursos_secciones) ? plan.cursos_secciones : [],
+    );
+
+    const planEvents = [];
+    (plan.cursos || []).forEach((code) => {
+      const course = courseCatalog.find((item) => item.code === code);
+      if (!course?.allSections?.length) {
+        return;
+      }
+
+      const sectionKey = sectionMap.get(code);
+      const sectionIndex = sectionKey
+        ? findSectionIndexForCourse(course, sectionKey)
+        : course.selectedSectionIndex || 0;
+      const section = course.allSections[sectionIndex];
+      if (!section) return;
+
+      section.sessions.forEach((session) => {
+        planEvents.push({
+          ...session,
+          code,
+          name: course.name,
+          color: generateCourseColor(`${plan.id ?? 'plan'}-${code}`),
+          grade: course.estimatedGrade,
+          sectionName: section.sectionName,
+        });
+      });
+    });
+
+    return planEvents;
+  }, [activeTabMeta, calendarEvents, courseCatalog]);
+
+  const applyRecommendation = (plan, options = {}) => {
+    const { stayOnPlanTab = false } = options;
     const isArrayPlan = Array.isArray(plan);
     const courseList = isArrayPlan ? plan : plan?.cursos || [];
     if (!courseList.length) {
@@ -711,7 +841,37 @@ export default function EnrollmentPage() {
     }
 
     setSelectedCourses(cursosAgregar);
+    syncCourseCatalogWithSelection(cursosAgregar);
     setRecommendationModal(null);
+    if (!stayOnPlanTab) {
+      setActiveScheduleTab('custom');
+    }
+  };
+
+  const handleScheduleTabClick = (tab) => {
+    if (!tab) return;
+
+    if (tab.id === activeScheduleTab) {
+      if (tab.type === 'recommendation' && tab.plan) {
+        applyRecommendation(tab.plan, { stayOnPlanTab: true });
+      }
+      return;
+    }
+
+    if (tab.type === 'custom') {
+      setActiveScheduleTab('custom');
+      restoreCustomPlan();
+      return;
+    }
+
+    if (activeTabMeta?.type === 'custom') {
+      rememberCustomPlan();
+    }
+
+    setActiveScheduleTab(tab.id);
+    if (tab.type === 'recommendation' && tab.plan) {
+      applyRecommendation(tab.plan, { stayOnPlanTab: true });
+    }
   };
 
   const bestRecommendedSchedule =
@@ -1040,63 +1200,6 @@ export default function EnrollmentPage() {
             </div>
           )}
           <div className="flex-1 overflow-y-auto px-6 pb-6 space-y-4" style={{maxHeight: 'calc(100vh - 280px)'}}>
-            {savedSchedules.length > 0 && (
-              <div className="rounded-xl border border-purple-100 bg-purple-50/70 p-4">
-                <div className="flex items-center justify-between gap-3">
-                  <div>
-                    <p className="text-sm font-semibold text-purple-700">Horarios recomendados</p>
-                    <p className="text-xs text-purple-600">Ultimo analisis IA</p>
-                  </div>
-                  <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-purple-700">
-                    TOP 3
-                  </span>
-                </div>
-                <div className="mt-3 space-y-3">
-                  {savedSchedules.map((plan, idx) => (
-                    <div
-                      key={plan.id ?? `${plan.rank ?? 'plan'}-${idx}`}
-                      className="rounded-lg bg-white/90 p-3 shadow-sm"
-                    >
-                      <div className="flex items-center justify-between gap-3">
-                        <div>
-                          <p className="text-sm font-bold text-utec-text">
-                            Horario #{plan.rank ?? plan.id ?? idx + 1}
-                          </p>
-                          <p className="text-xs text-utec-muted">
-                            {plan.cursos?.length ?? 0} cursos - {formatPlanHours(plan.total_horas)} h semanales
-                          </p>
-                        </div>
-                        <button
-                          onClick={() => applyRecommendation(plan)}
-                          className="rounded-lg border border-purple-200 px-3 py-1 text-xs font-semibold text-purple-700 hover:bg-purple-50 transition"
-                        >
-                          Aplicar
-                        </button>
-                      </div>
-                      {plan.cursos?.length ? (
-                        <div className="mt-2 flex flex-wrap gap-2">
-                          {plan.cursos.slice(0, 4).map((codigo) => (
-                            <span
-                              key={`${plan.id ?? idx}-${codigo}`}
-                              className="rounded-full bg-purple-100/70 px-3 py-1 text-xs font-semibold text-purple-700"
-                            >
-                              {codigo}
-                            </span>
-                          ))}
-                          {plan.cursos.length > 4 && (
-                            <span className="text-xs font-semibold text-purple-600">
-                              +{plan.cursos.length - 4} mas
-                            </span>
-                          )}
-                        </div>
-                      ) : (
-                        <p className="mt-2 text-xs text-utec-muted">Sin cursos asignados</p>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
             {courseCatalog.map((course) => {
               const isSelected = selectedCodes.has(course.code);
               return (
@@ -1270,7 +1373,33 @@ export default function EnrollmentPage() {
             para detectar choques y balancear tu carga academica.
           </p>
 
-          {calendarEvents.length === 0 ? (
+          <div className="flex flex-wrap items-center gap-2 border-b border-utec-border/60 pb-3">
+            {scheduleTabs.map((tab) => {
+              const isActive = activeTabMeta?.id === tab.id;
+              const baseClasses =
+                'flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold transition';
+              const className = isActive
+                ? `${baseClasses} bg-utec-blue text-white shadow`
+                : `${baseClasses} bg-gray-100 text-utec-muted hover:text-utec-text`;
+              return (
+                <button
+                  key={tab.id}
+                  type="button"
+                  onClick={() => handleScheduleTabClick(tab)}
+                  className={className}
+                >
+                  <span>{tab.label}</span>
+                  {tab.type === 'recommendation' && (
+                    <span className="rounded-full bg-white/20 px-2 py-[1px] text-[10px] uppercase tracking-wide">
+                      IA
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+
+          {displayedCalendarEvents.length === 0 ? (
             <div className="rounded-xl border border-dashed border-utec-border bg-gray-50 p-6 text-center text-sm text-utec-muted">
               Aun no hay cursos en el plan. Agrega cursos desde la columna izquierda para
               llenar el calendario.
@@ -1290,7 +1419,7 @@ export default function EnrollmentPage() {
                   ))}
                 </div>
                 {daysOfWeek.map((day) => {
-                  const dayEvents = calendarEvents.filter(
+                  const dayEvents = displayedCalendarEvents.filter(
                     (event) => event.day === day.key,
                   );
                   return (
@@ -1318,10 +1447,10 @@ export default function EnrollmentPage() {
                           );
                           const predictedGrade = matriculaPredictions[event.code];
                           const gradeLabel = loadingMatriculaPredictions
-                            ? '--/20'
+                            ? ''
                             : predictedGrade != null
-                              ? `${formatGrade(predictedGrade)}/20`
-                              : '--/20';
+                              ? `${formatGrade(predictedGrade)}`
+                              : '';
                           return (
                             <button
                               key={`${event.code}-${event.start}-${event.end}-${eventIdx}`}
