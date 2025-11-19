@@ -3,7 +3,7 @@ Endpoints para el sistema de recomendación de matrícula
 """
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from backend.app.models.curso import Curso
+from app.models.curso import Curso
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from typing import Optional, List, Dict
