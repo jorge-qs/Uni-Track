@@ -3,6 +3,7 @@ Endpoints para el sistema de recomendación de matrícula
 """
 
 from fastapi import APIRouter, Depends, HTTPException, status
+from backend.app.models.curso import Curso
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from typing import Optional, List, Dict
@@ -125,6 +126,10 @@ async def recomendar_mejor_horario(
     secciones = db.query(Seccion).filter(
         Seccion.cod_curso.in_(request.bundles)
     ).all()
+
+
+    cursos = db.query(Curso).all()
+    cred_cursos = {c.cod_curso: c.creditos for c in cursos}
 
     cod_persona_int = int(request.cod_persona)
     cursos_disp: List[str] = ranking_cursos(cod_persona=cod_persona_int, per_matricula=request.per_matricula, cursos=request.bundles)
@@ -328,19 +333,30 @@ async def recomendar_mejor_horario(
         if len(mejores_horarios) > TOP_K:
             mejores_horarios = mejores_horarios[:TOP_K]
 
+    def cant_cred(cursos: list) -> int:
+        """Calcula la cantidad de créditos de una lista de códigos de curso."""
+        total = 0
+        for curso in cursos:
+            total += cred_cursos.get(curso, 0)
+        return total
+
+
+    MIN_CREDITOS = 14
+    MAX_CREDITOS = 26
+
     def backtrack(ite: int, horario_ite: Horario, cursos_tomados: list):
         # cortar si nos pasamos del tiempo
         if time.time() - start_time > time_limit:
             return
 
         # poda: máximo 7 cursos
-        if len(cursos_tomados) > 7:
+        if cant_cred(cursos_tomados) >= MAX_CREDITOS:
             return
 
         # caso base: ya vimos todos los cursos del ranking
         if ite >= len(cursos_disp):
             # solo considerar combos con más de 3 cursos
-            if len(cursos_tomados) > 3:
+            if cant_cred(cursos_tomados) >= MIN_CREDITOS:
                 append_horario(cursos_tomados, horario_ite)
             return
 
