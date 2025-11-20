@@ -1180,7 +1180,7 @@ export default function EnrollmentPage() {
       >
         <div
           className="flex w-full flex-col rounded-2xl border border-utec-border bg-white shadow-[0_10px_40px_rgba(0,0,0,0.15)] overflow-hidden lg:flex-[0.35]"
-          style={{ height: 'calc(100vh - 220px)' }}
+          style={{ height: 'calc(100vh - 150px)' }}
         >
           <div className="flex items-center justify-between p-6 pb-4">
             <div>
@@ -1368,10 +1368,6 @@ export default function EnrollmentPage() {
               )}
             </button>
           </div>
-          <p className="text-sm text-utec-muted">
-            Visualiza los cursos seleccionados en una cuadrilla de 7 dias. Usa esta vista
-            para detectar choques y balancear tu carga academica.
-          </p>
 
           <div className="flex flex-wrap items-center gap-2 border-b border-utec-border/60 pb-3">
             {scheduleTabs.map((tab) => {
