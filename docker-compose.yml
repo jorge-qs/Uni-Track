@@ -52,7 +52,7 @@ services:
       VITE_API_BASE: http://localhost:8000/api/v1
       CHOKIDAR_USEPOLLING: "true"
       CHOKIDAR_INTERVAL: "100"
-    command: sh -c "npm ci && npm run dev -- --host 0.0.0.0 --port 5173"
+    command: sh -c "npm ci --legacy-peer-deps && npm run dev -- --host 0.0.0.0 --port 5173"
     depends_on:
       - backend
     restart: unless-stopped

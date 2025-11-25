@@ -76,7 +76,7 @@ export default function ResourcesPage() {
   if (resourceGroups.length === 0) {
     return (
       <div className="space-y-8">
-        <header className="space-y-2">
+        <header data-tour="resources" className="space-y-2">
           <h1 className="text-3xl font-bold text-utec-text">
             Recursos Académicos
           </h1>
@@ -101,7 +101,7 @@ export default function ResourcesPage() {
 
   return (
     <div className="space-y-8">
-      <header className="space-y-2">
+      <header data-tour="resources" className="space-y-2">
         <h1 className="text-3xl font-bold text-utec-text">
           Recursos Académicos
         </h1>

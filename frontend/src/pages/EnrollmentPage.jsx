@@ -1179,6 +1179,7 @@ export default function EnrollmentPage() {
         style={{ width: '100%', maxWidth: 'min(90vw, 1800px)', margin: '24px auto 0' }}
       >
         <div
+          data-tour="ai-predictor"
           className="flex w-full flex-col rounded-2xl border border-utec-border bg-white shadow-[0_10px_40px_rgba(0,0,0,0.15)] overflow-hidden lg:flex-[0.35]"
           style={{ height: 'calc(100vh - 150px)' }}
         >
@@ -1338,6 +1339,7 @@ export default function EnrollmentPage() {
         </div>
 
         <div
+          data-tour="schedule-recommender"
           className="space-y-4 overflow-y-auto rounded-2xl border border-utec-border bg-white p-6 shadow-[0_10px_40px_rgba(0,0,0,0.15)] w-full lg:flex-[0.65]"
           style={{ maxHeight: 'calc(100vh - 120px)' }}
         >
@@ -1710,31 +1712,22 @@ export default function EnrollmentPage() {
             className="w-full max-w-md rounded-2xl border border-green-200 bg-white p-6 shadow-[0_20px_60px_rgba(22,163,74,0.3)]"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="mb-6 text-center">
+            <div className="text-center">
               <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
                 <span className="material-symbols-outlined text-4xl text-green-600">check_circle</span>
               </div>
               <h3 className="text-2xl font-bold text-green-600">¡Matrícula Exitosa!</h3>
-              <p className="mt-2 text-sm text-utec-muted">
+              <p className="mt-2 mb-6 text-sm text-utec-muted">
                 Has sido matriculado en <span className="font-semibold">{selectedCourses.length}</span> curso(s) con un total de <span className="font-semibold">{totalCredits}</span> créditos.
               </p>
-            </div>
 
-            <div className="mb-6 rounded-lg bg-blue-50 p-4">
-              <div className="flex items-start gap-2">
-                <span className="material-symbols-outlined text-utec-blue">info</span>
-                <p className="text-sm text-utec-text">
-                  Puedes ver los recursos recomendados para tus cursos en la sección <span className="font-semibold">"Recursos Académicos"</span>.
-                </p>
-              </div>
+              <button
+                onClick={() => setEnrollmentSuccessModal(false)}
+                className="w-full rounded-lg bg-green-600 px-4 py-2 font-semibold text-white hover:bg-green-700 transition"
+              >
+                Entendido
+              </button>
             </div>
-
-            <button
-              onClick={() => setEnrollmentSuccessModal(false)}
-              className="w-full rounded-lg bg-green-600 px-4 py-2 font-semibold text-white hover:bg-green-700 transition"
-            >
-              Entendido
-            </button>
           </div>
         </div>
       )}

@@ -138,7 +138,7 @@ export default function CurriculumPage() {
   );
 
   return (
-    <div className="space-y-8">
+    <div data-tour="curriculum-view" className="space-y-8">
       <header className="flex flex-wrap items-start justify-between gap-4">
       <div>
         <h1 className="text-3xl font-bold text-utec-text">Curriculum</h1>
