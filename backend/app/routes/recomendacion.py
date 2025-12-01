@@ -53,6 +53,7 @@ class RecomendacionResponse(BaseModel):
     meta: dict
     mejor_recomendacion: Optional[dict] = None
     todos_los_resultados: List[dict]
+    all_scores: List[float] = []
     mensaje: Optional[str] = None
 
 
@@ -128,6 +129,7 @@ async def recomendar_mejor_horario(
                 "detalle": None
             },
             todos_los_resultados=[],
+            all_scores=[],
             mensaje="Sistema de recomendación no disponible"
         )
 
@@ -271,6 +273,7 @@ async def recomendar_mejor_horario(
         return {
             "id": registro["id"],
             "rank": rank,
+            "score": registro["score"], # Agregamos el score
             "cursos": registro["cursos"],  # solo códigos de curso
             "cursos_secciones": horario_obj.cursos_secciones,  # [(curso, seccion)]
             "horario": horario_serializado,
@@ -286,6 +289,7 @@ async def recomendar_mejor_horario(
     #---------- horarios ------------------
     # TOP 3 de mejores horarios para la persona
     mejores_horarios = []   # cada elemento: {"id": int, "cursos": [...], "horario": Horario}
+    all_scores = []         # Lista de todos los scores calculados
     id_now = 0              
     count = 0               # contador de horarios evaluados
     start_time = time.time()
@@ -308,6 +312,7 @@ async def recomendar_mejor_horario(
         """
         conteo()
         nonlocal mejores_horarios
+        nonlocal all_scores
         # Si 'cod_persona' y 'per_matricula' no están en los argumentos, 
         # asumimos que están disponibles en el scope padre (closure).
         # Si no, agrégalos a la definición de la función.
@@ -317,6 +322,9 @@ async def recomendar_mejor_horario(
         # 1. Calcular el score usando la función refactorizada
         #    (Asume que cursos_tomados es una lista de códigos ['CS101', ...])
         current_score = calcular_score_bundle(cod_persona_int, request.per_matricula, cursos_tomados)
+        
+        # Guardamos el score en la lista global
+        all_scores.append(current_score)
 
         # 2. Optimización rápida: 
         #    Si ya tenemos K elementos y el score actual es peor que el último (el peor de los mejores),
@@ -418,6 +426,7 @@ async def recomendar_mejor_horario(
             },
             mejor_recomendacion=None,
             todos_los_resultados=[],
+            all_scores=[],
             mensaje=mensaje
         )
 
@@ -451,10 +460,9 @@ async def recomendar_mejor_horario(
         },
         mejor_recomendacion=top_horarios[0],
         todos_los_resultados=top_horarios,
+        all_scores=all_scores,
         mensaje=mensaje
     )
-
-
 
 
 class SesionInput(BaseModel):
@@ -644,9 +652,30 @@ async def recommend_ai(cursos: List[CursoInput]):
         }
 
 
+class ScoreRequest(BaseModel):
+    cod_persona: str
+    per_matricula: str
+    cursos: List[str]
 
-
-
+@router.post("/score")
+async def calculate_score(request: ScoreRequest):
+    """
+    Calcula el score para una lista específica de cursos.
+    """
+    try:
+        cod_persona_int = int(request.cod_persona)
+        score = calcular_score_bundle(
+            cod_persona_int, 
+            request.per_matricula, 
+            request.cursos
+        )
+        return {"success": True, "score": score}
+    except Exception as e:
+        print(f"Error calculating score: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=str(e)
+        )
 
 @router.get("/debug")
 async def healthcheck():

@@ -189,7 +189,7 @@ export async function getTodosRecursos(): Promise<RecursoRecomendado[]> {
 /**
  * Obtiene los recursos para una lista de cursos matriculados
  */
-export async function getRecursosMatriculados(cursos: Array<{code: string, name: string}>): Promise<RecursosMatriculadosResponse | null> {
+export async function getRecursosMatriculados(cursos: Array<{ code: string, name: string }>): Promise<RecursosMatriculadosResponse | null> {
   try {
     const response = await fetch(`${API_BASE_URL}/recursos/matriculados`, {
       method: 'POST',
@@ -430,6 +430,44 @@ export async function getRecomendacionIA(cursosSeleccionados: any[]): Promise<Re
     return await response.json();
   } catch (error) {
     console.error('Error al obtener la recomendación de IA:', error);
+    return null;
+  }
+}
+
+export interface ScoreResponse {
+  success: boolean;
+  score: number;
+}
+
+/**
+ * Calcula el score para una lista de cursos específica.
+ */
+export async function calculateScore(
+  codPersona: string,
+  perMatricula: string,
+  cursos: string[]
+): Promise<ScoreResponse | null> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/recomendacion/score`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        cod_persona: codPersona,
+        per_matricula: perMatricula,
+        cursos: cursos,
+      }),
+    });
+
+    if (!response.ok) {
+      console.error('Error al calcular score');
+      return null;
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error al calcular score:', error);
     return null;
   }
 }

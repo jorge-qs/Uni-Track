@@ -1,13 +1,13 @@
 import { useMemo, useState, useEffect } from 'react';
-import { getStoredLogin, predecirNota, predecirNotasPorMatricula, recomendarMejorHorario, getRecomendacionIA } from '../api/api';
+import { getStoredLogin, predecirNota, predecirNotasPorMatricula, recomendarMejorHorario, getRecomendacionIA, calculateScore } from '../api/api';
 import HorarioModal from './AiPage';
-
-const HOUR_HEIGHT = 60;
-const START_HOUR = 7;
-const END_HOUR = 22;
-
-const hourLabels = Array.from({ length: END_HOUR - START_HOUR }, (_, idx) => START_HOUR + idx);
-const gridLines = Array.from({ length: END_HOUR - START_HOUR + 1 }, (_, idx) => idx);
+import CourseCatalog from '../components/enrollment/CourseCatalog';
+import ScheduleCalendar from '../components/enrollment/ScheduleCalendar';
+import RecommendationModal from '../components/enrollment/RecommendationModal';
+import EventDetailModal from '../components/enrollment/EventDetailModal';
+import ConflictModal from '../components/enrollment/ConflictModal';
+import EnrollmentConfirmModal from '../components/enrollment/EnrollmentConfirmModal';
+import EnrollmentSuccessModal from '../components/enrollment/EnrollmentSuccessModal';
 
 const daysOfWeek = [
   { key: 'monday', label: 'Lunes', shortLabel: 'Lun' },
@@ -32,28 +32,6 @@ const dayMap = {
   'Jue': 'thursday',
   'Vie': 'friday',
   'Sab': 'saturday',
-};
-
-const dayNameMap = {
-  Lun: 'Lunes',
-  Mar: 'Martes',
-  Mie: 'Miercoles',
-  Jue: 'Jueves',
-  Vie: 'Viernes',
-  Sab: 'Sabado',
-  'Sab.': 'Sabado',
-  'Sáb': 'Sabado',
-  'Sáb.': 'Sabado',
-  Dom: 'Domingo',
-  'Dom.': 'Domingo',
-};
-
-const scheduleDaysOrder = ['Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab', 'Dom'];
-
-const getScheduleDayLabel = (dayKey) => {
-  if (!dayKey) return 'Dia';
-  const normalized = dayKey.replace('.', '');
-  return dayNameMap[dayKey] || dayNameMap[normalized] || dayKey;
 };
 
 const INDIVIDUAL_PREDICTIONS_KEY_PREFIX = 'unitrack.prediccionesIndividuales';
@@ -110,10 +88,13 @@ const getCachedScheduleRecommendations = (codPersona) => {
     codPersona,
   );
   const cached = readJSONFromStorage(key);
-  return cached?.schedules || null;
+  return {
+    schedules: cached?.schedules || null,
+    allScores: cached?.allScores || []
+  };
 };
 
-const saveCachedScheduleRecommendations = (codPersona, schedules) => {
+const saveCachedScheduleRecommendations = (codPersona, schedules, allScores = []) => {
   const key = getStudentStorageKey(
     SCHEDULE_RECOMMENDATIONS_KEY_PREFIX,
     codPersona,
@@ -121,6 +102,7 @@ const saveCachedScheduleRecommendations = (codPersona, schedules) => {
   writeJSONToStorage(key, {
     updatedAt: new Date().toISOString(),
     schedules,
+    allScores,
   });
 };
 
@@ -137,44 +119,6 @@ const generateCourseColor = (courseCode) => {
     hash = courseCode.charCodeAt(i) + ((hash << 5) - hash);
   }
   return colors[Math.abs(hash) % colors.length];
-};
-
-const parseTimeToMinutes = (time) => {
-  const [hours, minutes] = time.split(':').map(Number);
-  return hours * 60 + minutes;
-};
-
-const formatHourLabel = (hour) => {
-  const suffix = hour >= 12 ? 'pm' : 'am';
-  const displayHour = hour % 12 === 0 ? 12 : hour % 12;
-  return `${displayHour}:00 ${suffix}`;
-};
-
-const formatEventRange = (start, end) => {
-  const toReadable = (time) => {
-    const [h, m] = time.split(':').map(Number);
-    const suffix = h >= 12 ? 'pm' : 'am';
-    const hour = h % 12 === 0 ? 12 : h % 12;
-    return `${hour}:${m.toString().padStart(2, '0')} ${suffix}`;
-  };
-  return `${toReadable(start)} - ${toReadable(end)}`;
-};
-
-const computeEventPosition = (start, end) => {
-  const startMinutes = parseTimeToMinutes(start);
-  const endMinutes = parseTimeToMinutes(end);
-  const startOffset = Math.max(startMinutes - START_HOUR * 60, 0);
-  const eventDuration = Math.max(endMinutes - startMinutes, 30);
-
-  const top = (startOffset / 60) * HOUR_HEIGHT;
-  const height = Math.max((eventDuration / 60) * HOUR_HEIGHT - 6, 44);
-
-  return { top, height };
-};
-
-const formatGrade = (grade) => {
-  if (grade == null) return '-';
-  return Number.isInteger(grade) ? grade : Number(grade).toFixed(1);
 };
 
 // Parsear horario del formato "Lun. 11:00 - 13:00" a {day, start, end}
@@ -219,6 +163,8 @@ export default function EnrollmentPage() {
   const [showExplanation, setShowExplanation] = useState(false);
   const [analisisData, setAnalisisData] = useState(null);
   const [loadingAnalisisData, setLoadingAnalisisData] = useState(false);
+  const [allScores, setAllScores] = useState([]);
+  const [currentScore, setCurrentScore] = useState(null);
 
   const cargarAnalisis = async () => {
     // Validación simple
@@ -234,7 +180,7 @@ export default function EnrollmentPage() {
     const payload = selectedCourses.map(course => {
       const sectionIndex = course.selectedSectionIndex || 0;
       const section = course.allSections[sectionIndex];
-      
+
       return {
         code: course.code,
         name: course.name,
@@ -250,12 +196,12 @@ export default function EnrollmentPage() {
 
     // 2. Llamamos a la API pasando el payload
     const data = await getRecomendacionIA(payload);
-    
+
     if (data) {
       setAnalisisData(data);
       setShowExplanation(true);
     }
-    
+
     setLoading(false); // Apaga el spinner
   };
 
@@ -458,9 +404,12 @@ export default function EnrollmentPage() {
       setLoading(false);
 
       if (cod_persona) {
-        const cachedSchedules = getCachedScheduleRecommendations(cod_persona);
-        if (cachedSchedules?.length) {
-          setSavedSchedules(cachedSchedules);
+        const cachedData = getCachedScheduleRecommendations(cod_persona);
+        if (cachedData?.schedules?.length) {
+          setSavedSchedules(cachedData.schedules);
+        }
+        if (cachedData?.allScores?.length) {
+          setAllScores(cachedData.allScores);
         }
       }
 
@@ -540,6 +489,44 @@ export default function EnrollmentPage() {
     };
 
     updateMatriculaPredictions();
+  }, [selectedCourses]);
+
+  // Calcular score en tiempo real cuando cambian los cursos seleccionados
+  useEffect(() => {
+    const updateScore = async () => {
+      if (selectedCourses.length === 0) {
+        setCurrentScore(null);
+        return;
+      }
+
+      const loginData = getStoredLogin();
+      if (!loginData?.cod_persona) return;
+
+      try {
+        const cursosSeleccionados = selectedCourses.map(c => c.code);
+        const periodo = "2025-01"; // TODO: Obtener periodo dinamicamente
+
+        const result = await calculateScore(
+          loginData.cod_persona,
+          periodo,
+          cursosSeleccionados
+        );
+
+        if (result && result.success) {
+          setCurrentScore(result.score);
+          setAllScores(prev => [...prev, result.score]);
+        }
+      } catch (error) {
+        console.error('Error al calcular score:', error);
+      }
+    };
+
+    // Debounce para no llamar a la API en cada cambio rápido
+    const timeoutId = setTimeout(() => {
+      updateScore();
+    }, 500);
+
+    return () => clearTimeout(timeoutId);
   }, [selectedCourses]);
 
   // Función para verificar si dos sesiones se solapan
@@ -843,6 +830,40 @@ export default function EnrollmentPage() {
     return planEvents;
   }, [activeTabMeta, calendarEvents, courseCatalog]);
 
+  const recommendationLevel = useMemo(() => {
+    let currentScoreValue = null;
+
+    if (activeTabMeta && activeTabMeta.type === 'recommendation' && activeTabMeta.plan) {
+      currentScoreValue = activeTabMeta.plan.score;
+    } else if (activeTabMeta && activeTabMeta.type === 'custom') {
+      currentScoreValue = currentScore;
+    }
+
+    if (typeof currentScoreValue !== 'number' || allScores.length === 0) {
+      return { label: 'Recomendado', color: 'bg-blue-100 text-blue-700' };
+    }
+
+    // Incluimos el score actual en la comparación para calcular el percentil
+    const scoresToCompare = [...allScores, currentScoreValue].sort((a, b) => a - b);
+    const rank = scoresToCompare.findIndex(s => s >= currentScoreValue);
+    const percentile = (rank / scoresToCompare.length) * 100;
+    console.log(percentile)
+    console.log(allScores)
+    console.log(currentScoreValue)
+    console.log(scoresToCompare)
+    console.log(rank)
+    console.log("=============")
+    if (percentile >= 75) {
+      return { label: 'Muy Recomendado', color: 'bg-emerald-100 text-emerald-700' };
+    } else if (percentile >= 50) {
+      return { label: 'Recomendado', color: 'bg-blue-100 text-blue-700' };
+    } else if (percentile >= 25) {
+      return { label: 'No recomendado', color: 'bg-orange-100 text-orange-700' };
+    } else {
+      return { label: 'Inviable', color: 'bg-red-100 text-red-700' };
+    }
+  }, [activeTabMeta, allScores, currentScore]);
+
   const applyRecommendation = (plan, options = {}) => {
     const { stayOnPlanTab = false } = options;
     const isArrayPlan = Array.isArray(plan);
@@ -917,94 +938,6 @@ export default function EnrollmentPage() {
     }
   };
 
-  const bestRecommendedSchedule =
-    recommendationModal?.mejor_recomendacion ??
-    recommendationModal?.todos_los_resultados?.[0] ??
-    null;
-
-  const otherRecommendedSchedules = recommendationModal?.todos_los_resultados
-    ? recommendationModal.todos_los_resultados.filter(
-        (plan) =>
-          !bestRecommendedSchedule || plan.id !== bestRecommendedSchedule.id
-      )
-    : [];
-
-  const planHasScheduleBlocks = (schedule) => {
-    if (!schedule) return false;
-    return Object.values(schedule).some(
-      (blocks) => Array.isArray(blocks) && blocks.length > 0
-    );
-  };
-
-  const normalizeScheduleBlocks = (schedule) => {
-    if (!schedule) return [];
-    return scheduleDaysOrder.map((day) => {
-      const blocks = schedule[day];
-      return [day, Array.isArray(blocks) ? blocks : []];
-    });
-  };
-
-  const resolveScheduleBlock = (block) => {
-    if (Array.isArray(block)) {
-      return {
-        start: block[0] ?? '--:--',
-        end: block[1] ?? '--:--',
-      };
-    }
-    if (block && typeof block === 'object') {
-      const start = Object.prototype.hasOwnProperty.call(block, 'inicio')
-        ? block.inicio
-        : block.start;
-      const end = Object.prototype.hasOwnProperty.call(block, 'fin')
-        ? block.fin
-        : block.end;
-      return {
-        start: start ?? '--:--',
-        end: end ?? '--:--',
-      };
-    }
-    return { start: '--:--', end: '--:--' };
-  };
-
-  const renderSchedulePreview = (schedule) => {
-    if (!planHasScheduleBlocks(schedule)) {
-      return (
-        <p className="text-sm text-utec-muted mt-2">
-          Horarios detallados no disponibles para esta opcion.
-        </p>
-      );
-    }
-
-    return (
-      <div className="grid grid-cols-2 gap-3">
-        {normalizeScheduleBlocks(schedule).map(([day, blocks]) => {
-          if (!blocks.length) return null;
-          return (
-            <div key={day} className="rounded-lg bg-white/80 p-2 shadow-sm">
-              <p className="text-xs font-semibold text-utec-muted uppercase">
-                {getScheduleDayLabel(day)}
-              </p>
-              {blocks.map((block, idx) => {
-                const { start, end } = resolveScheduleBlock(block);
-                return (
-                  <p
-                    key={`${day}-${idx}`}
-                    className="text-sm font-semibold text-utec-text"
-                  >
-                    {start} - {end}
-                  </p>
-                );
-              })}
-            </div>
-          );
-        })}
-      </div>
-    );
-  };
-
-  const formatPlanHours = (hours) =>
-    typeof hours === 'number' ? hours.toFixed(1) : '0.0';
-
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -1016,7 +949,7 @@ export default function EnrollmentPage() {
     );
   }
 
-  if (courseCatalog.length === 0) {s
+  if (courseCatalog.length === 0) {
     return (
       <div className="space-y-8">
         <header className="space-y-2">
@@ -1038,805 +971,178 @@ export default function EnrollmentPage() {
 
   return (
     <div>
-    {/* Modal de recomendación de horario */}
-      {recommendationModal && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
-          onClick={() => setRecommendationModal(null)}
+      <RecommendationModal
+        isOpen={!!recommendationModal}
+        onClose={() => setRecommendationModal(null)}
+        recommendationData={recommendationModal}
+        onApply={applyRecommendation}
+        courseCatalog={courseCatalog}
+      />
+
+      <div className="space-y-8">
+        <header className="space-y-2">
+          <h1 className="text-3xl font-bold text-utec-text">Matricula IA</h1>
+          <p className="text-sm text-utec-muted">
+            Selecciona los cursos disponibles segun tus prerequisitos aprobados y organiza
+            tus horarios de manera eficiente.
+          </p>
+        </header>
+
+        <section
+          className="flex w-full flex-col gap-6 lg:flex-row lg:items-start"
+          style={{ width: '100%', maxWidth: 'min(90vw, 1800px)', margin: '24px auto 0' }}
         >
+          <CourseCatalog
+            courses={courseCatalog}
+            selectedCodes={selectedCodes}
+            onToggleCourse={handleToggleCourse}
+            onSectionChange={handleSectionChange}
+            loadingPredictions={loadingPredictions}
+            onEnroll={handleEnroll}
+            isEnrolling={enrolling}
+            totalCredits={totalCredits}
+            selectedCoursesCount={selectedCourses.length}
+          />
+
           <div
-        className="max-h-[90vh] overflow-y-auto rounded-2xl border border-purple-200 bg-white p-6 shadow-[0_20px_60px_rgba(147,51,234,0.3)] mx-auto"
-        style={{ width: '90%', maxWidth: '1200px' }}
-        onClick={(e) => e.stopPropagation()}
+            className="space-y-4 overflow-y-auto rounded-2xl border border-utec-border bg-white p-6 shadow-[0_10px_40px_rgba(0,0,0,0.15)] w-full lg:flex-[0.65]"
+            style={{ maxHeight: 'calc(100vh - 120px)' }}
           >
-        <div className="mb-4 flex items-start gap-3">
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-purple-100">
-            <span className="material-symbols-outlined text-2xl text-purple-600">auto_awesome</span>
-          </div>
-          <div className="flex-1">
-            <h3 className="text-xl font-bold text-purple-600">Mejor Horario Recomendado</h3>
-            <p className="text-sm text-utec-muted mt-1">
-          Analizamos {recommendationModal.meta?.total_evaluados ?? 0} opciones usando IA
-            </p>
-          </div>
-          <button
-            onClick={() => setRecommendationModal(null)}
-            className="rounded-full p-1 hover:bg-gray-100 transition"
-          >
-            <span className="material-symbols-outlined text-utec-muted">close</span>
-          </button>
-        </div>
-
-        {/* Mejor horario */}
-                  <div className="mb-6 rounded-xl border-2 border-purple-200 bg-purple-50 p-4">
-                    {bestRecommendedSchedule ? (
-                    <>
-                      <div className="mb-3 flex items-center justify-between">
-                      <div>
-                        <h4 className="text-lg font-bold text-purple-700">
-                        Horario #{bestRecommendedSchedule.rank ?? 1}
-                        </h4>
-                        <p className="text-sm text-purple-600">
-                        {(bestRecommendedSchedule.total_cursos ?? bestRecommendedSchedule.cursos.length)} cursos - {formatPlanHours(bestRecommendedSchedule.total_horas)} h semanales
-                        </p>
-                      </div>
-                      <span className="rounded-full bg-purple-100 px-3 py-1 text-xs font-semibold text-purple-700">
-                        TOP
-                      </span>
-                      </div>
-
-                      <div className="mb-3 space-y-2">
-                      <p className="text-sm font-semibold text-purple-700">
-                        Cursos incluidos:
-                      </p>
-                      <div className="flex flex-wrap gap-2">
-                        {bestRecommendedSchedule.cursos.length > 0 ? (
-                        bestRecommendedSchedule.cursos.map((codigo, idx) => {
-                          const courseName = courseCatalog.find(c => c.code === codigo)?.name || codigo;
-                          return (
-                          <span
-                            key={`${codigo}-${idx}`}
-                            className="rounded-lg bg-white px-3 py-1 text-sm font-semibold text-purple-700 shadow-sm"
-                          >
-                            {courseName}
-                          </span>
-                          );
-                        })
-                        ) : (
-                        <span className="text-sm text-purple-600">
-                          Sin cursos sugeridos
-                        </span>
-                        )}
-                      </div>
-                      </div>
-
-                      <div className="mb-4">
-                      {renderSchedulePreview(bestRecommendedSchedule.horario)}
-                      </div>
-
-                    <button
-                      onClick={() => applyRecommendation(bestRecommendedSchedule)}
-                      className="w-full rounded-lg bg-purple-600 px-4 py-2 font-semibold text-white hover:bg-purple-700 transition"
-                      >
-                      Aplicar este horario
-                      </button>
-                    </>
-                    ) : (
-                    <p className="text-sm text-utec-muted">
-                      No se encontraron horarios recomendados para los cursos disponibles.
-                    </p>
-                    )}
-                  </div>
-
-                  {otherRecommendedSchedules.length > 0 && (
-                    <div className="mb-6 space-y-4">
-                    <p className="text-sm font-semibold text-utec-text">
-                      Otras opciones destacadas
-                    </p>
-                    {otherRecommendedSchedules.map((plan) => (
-                      <div
-                      key={plan.id}
-                      className="rounded-xl border border-utec-border bg-white p-4 shadow-sm"
-                      >
-                      <div className="flex items-center justify-between">
-                        <div>
-                        <p className="text-base font-bold text-utec-text">
-                          Horario #{plan.rank ?? 'N/A'}
-                        </p>
-                        <p className="text-sm text-utec-muted">
-                          {plan.cursos.length} cursos - {formatPlanHours(plan.total_horas)} h semanales
-                        </p>
-                        </div>
-                        <span className="text-xs font-semibold uppercase text-utec-muted">
-                        Opcion
-                        </span>
-                      </div>
-
-                      <div className="mt-3 space-y-2">
-                        <p className="text-xs font-semibold text-utec-muted uppercase">
-                        Cursos:
-                        </p>
-                        {plan.cursos.length > 0 ? (
-                        <div className="flex flex-wrap gap-2">
-                          {plan.cursos.map((codigo) => {
-                          const courseName = courseCatalog.find(c => c.code === codigo)?.name || codigo;
-                          return (
-                            <span
-                            key={`${plan.id}-${codigo}`}
-                            className="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-utec-text"
-                            >
-                            {courseName}
-                            </span>
-                          );
-                          })}
-                        </div>
-                        ) : (
-                        <p className="text-sm text-utec-muted">
-                          Sin cursos asignados.
-                        </p>
-                        )}
-                      </div>
-
-                      <div className="mt-3">
-                        {renderSchedulePreview(plan.horario)}
-                      </div>
-
-                      <button
-                        onClick={() => applyRecommendation(plan)}
-                        className="mt-4 w-full rounded-lg border border-purple-200 px-4 py-2 text-sm font-semibold text-purple-700 hover:bg-purple-50 transition"
-                      >
-                        Aplicar este horario
-                      </button>
-                      </div>
-                    ))}
-                    </div>
-                  )}
-
-                  {/* Mensaje del sistema */}
-            {recommendationModal.mensaje && (
-              <div className="mb-4 rounded-lg bg-blue-50 p-3">
-                <p className="text-sm text-utec-text">{recommendationModal.mensaje}</p>
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-lg font-semibold text-utec-text">Calendario tentativo</h2>
+                <span className="text-sm text-utec-muted">Formato semanal - 7am a 10pm</span>
               </div>
-            )}
-
-            <button
-              onClick={() => setRecommendationModal(null)}
-              className="w-full rounded-lg border border-utec-border px-4 py-2 font-semibold text-utec-text hover:bg-gray-50 transition"
-            >
-              Cerrar
-            </button>
-          </div>
-        </div>
-      )}
-    <div className="space-y-8">
-      <header className="space-y-2">
-        <h1 className="text-3xl font-bold text-utec-text">Matricula IA</h1>
-        <p className="text-sm text-utec-muted">
-          Selecciona los cursos disponibles segun tus prerequisitos aprobados y organiza
-          tus horarios de manera eficiente.
-        </p>
-      </header>
-
-      <section
-        className="flex w-full flex-col gap-6 lg:flex-row lg:items-start"
-        style={{ width: '100%', maxWidth: 'min(90vw, 1800px)', margin: '24px auto 0' }}
-      >
-        <div
-          className="flex w-full flex-col rounded-2xl border border-utec-border bg-white shadow-[0_10px_40px_rgba(0,0,0,0.15)] overflow-hidden lg:flex-[0.35]"
-          style={{ height: 'calc(100vh - 220px)' }}
-        >
-          <div className="flex items-center justify-between p-6 pb-4">
-            <div>
-              <h2 className="text-lg font-semibold text-utec-text">Cursos disponibles</h2>
-              <p className="text-sm text-utec-muted">
-                {selectedCourses.length} en plan - {totalCredits} creditos seleccionados
-              </p>
-            </div>
-            <span className="text-sm text-utec-muted">
-              {courseCatalog.length} opciones
-            </span>
-          </div>
-          {loadingPredictions && (
-            <div className="mx-6 rounded-lg bg-blue-50 p-3 text-sm text-utec-blue">
-              <span className="material-symbols-outlined text-base mr-2 inline-block">info</span>
-              Calculando notas estimadas con IA...
-            </div>
-          )}
-          <div className="flex-1 overflow-y-auto px-6 pb-6 space-y-4" style={{maxHeight: 'calc(100vh - 280px)'}}>
-            {courseCatalog.map((course) => {
-              const isSelected = selectedCodes.has(course.code);
-              return (
-                <div
-                  key={course.code}
-                  className={`space-y-3 rounded-xl border p-4 transition ${
-                    isSelected ? 'border-utec-blue shadow-[0_8px_30px_rgba(37,99,235,0.25)]' : 'border-utec-border shadow-[0_4px_15px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_25px_rgba(0,0,0,0.12)]'
-                  }`}
-                >
-                  <div className="flex items-center justify-between gap-4">
-                    <div className="flex-1">
-                      <p className="text-sm font-semibold text-utec-muted">
-                        {course.code}
-                      </p>
-                      <p className="text-base font-semibold text-utec-text">
-                        {course.name}
-                      </p>
-                    </div>
-                    <div className="flex flex-col items-end gap-2">
-                      <span className="rounded-full bg-utec-blue/10 px-3 py-1 text-xs font-semibold text-utec-blue">
-                        {course.credits} creditos
-                      </span>
-                      {course.riskCategory && (
-                        <span className={`rounded-full px-3 py-1 text-xs font-semibold ${
-                          course.riskCategory === 'Riesgo' ? 'bg-red-100 text-red-700' :
-                          course.riskCategory === 'Factible' ? 'bg-emerald-100 text-emerald-700' :
-                          'bg-amber-100 text-amber-700'
-                        }`}>
-                          {course.riskCategory}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                  {course.prerequisites.length > 0 && (
-                    <div className="flex flex-wrap items-center gap-3 text-sm text-utec-muted">
-                      <span className="material-symbols-outlined text-base text-utec-blue">
-                        task_alt
-                      </span>
-                      Prerequisitos aprobados:
-                      {course.prerequisites.map((prereq, idx) => (
-                        <span
-                          key={`${course.code}-prereq-${idx}`}
-                          className="rounded-full bg-gray-100 px-2 py-1 text-xs font-semibold text-utec-muted"
-                        >
-                          {prereq}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* Selector de sección */}
-                  {course.allSections && course.allSections.length > 1 && (
-                    <div className="flex items-center gap-2">
-                      <label className="text-sm font-semibold text-utec-text">Sección:</label>
-                      <select
-                        value={course.selectedSectionIndex || 0}
-                        onChange={(e) => handleSectionChange(course.code, parseInt(e.target.value))}
-                        className="rounded-lg border border-utec-border bg-white px-3 py-1 text-sm text-utec-text focus:border-utec-blue focus:outline-none"
-                      >
-                        {course.allSections.map((section, idx) => (
-                          <option key={idx} value={idx}>
-                            {section.sectionName} ({section.sessions.length} horario{section.sessions.length !== 1 ? 's' : ''})
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  )}
-
-                  {/* Horarios de la sección seleccionada */}
-                  <div className="space-y-2 rounded-lg bg-gray-50 p-3 text-sm text-utec-muted">
-                    {(() => {
-                      const sectionIndex = course.selectedSectionIndex || 0;
-                      const section = course.allSections[sectionIndex];
-                      if (!section) return null;
-
-                      return section.sessions.map((session, index) => (
-                        <div key={`${course.code}-${session.day}-${index}`} className="flex items-center gap-2">
-                          <span className="material-symbols-outlined text-base text-utec-blue">
-                            schedule
-                          </span>
-                          <span className="font-medium capitalize">
-                            {daysOfWeek.find(d => d.key === session.day)?.label || session.day}
-                          </span>
-                          <span>- {formatEventRange(session.start, session.end)}</span>
-                          <span>- {session.location}</span>
-                        </div>
-                      ));
-                    })()}
-                  </div>
-                  <div className="flex items-center justify-between text-sm text-utec-muted">
-                    <p>Cupos disponibles: {course.slots}</p>
-                    <button
-                      type="button"
-                      onClick={() => handleToggleCourse(course)}
-                      className={`text-sm font-semibold transition ${
-                        isSelected
-                          ? 'text-utec-red hover:underline'
-                          : 'text-utec-blue hover:underline'
-                      }`}
-                    >
-                      {isSelected ? 'Quitar del plan' : 'Añadir al plan'}
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Botón de Matrícula */}
-          {selectedCourses.length > 0 && (
-            <div className="px-6 pb-6 pt-4 border-t border-utec-border">
-              <button
-                type="button"
-                onClick={handleEnroll}
-                disabled={enrolling}
-                className={`w-full rounded-lg px-6 py-3 text-center font-semibold text-white transition ${
-                  enrolling
-                    ? 'bg-gray-400 cursor-not-allowed'
-                    : 'bg-utec-blue hover:bg-blue-700'
-                }`}
-              >
-                {enrolling ? (
-                  <span className="flex items-center justify-center gap-2">
-                    <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-white border-r-transparent"></span>
-                    Procesando matrícula...
-                  </span>
-                ) : (
-                  <span className="flex items-center justify-center gap-2">
-                    <span className="material-symbols-outlined text-xl">check_circle</span>
-                    Confirmar matrícula ({selectedCourses.length} curso{selectedCourses.length !== 1 ? 's' : ''} - {totalCredits} créditos)
-                  </span>
-                )}
-              </button>
-            </div>
-          )}
-        </div>
-
-        <div
-          className="space-y-4 overflow-y-auto rounded-2xl border border-utec-border bg-white p-6 shadow-[0_10px_40px_rgba(0,0,0,0.15)] w-full lg:flex-[0.65]"
-          style={{ maxHeight: 'calc(100vh - 120px)' }}
-        >
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-lg font-semibold text-utec-text">Calendario tentativo</h2>
-              <span className="text-sm text-utec-muted">Formato semanal - 7am a 10pm</span>
-            </div>
-            <div className="flex items-center justify-between p-4 rounded-lg bg-white gap-6">
-              {/* Sección Izquierda */}
+              <div className="flex items-center justify-between p-4 rounded-lg bg-white gap-6">
                 <div className="flex flex-col items-start gap-2">
                   <span className="text-sm font-medium text-gray-600">
                     Nivel de recomendación
                   </span>
-                  <span className="rounded-full px-3 py-1 text-xs font-semibold bg-emerald-100 text-emerald-700">
-                    Muy Recomendado
-                  </span>
+                  {recommendationLevel ? (
+                    <span className={`rounded-full px-3 py-1 text-xs font-semibold ${recommendationLevel.color}`}>
+                      {recommendationLevel.label}
+                    </span>
+                  ) : (
+                    <span className="text-xs text-gray-400 italic">
+                      (Selecciona un horario)
+                    </span>
+                  )}
                 </div>
 
-                {/* Círculo con el estilo solicitado (Fondo azul, texto blanco) */}
                 <button
-                  // 1. Aquí conectas la función que creamos antes
                   onClick={cargarAnalisis}
-                  
-                  // 2. Deshabilitamos el botón mientras carga para evitar doble click
-                  disabled={loading} 
-                  
+                  disabled={loading}
                   className="group flex flex-col items-center gap-1 disabled:opacity-70 disabled:cursor-not-allowed"
-                > 
-                  {/* Texto inferior: Cambia si está cargando */}
+                >
                   <span className={`text-[10px] font-medium text-utec-blue transition-opacity duration-200 
                     ${loading ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
                     {loading ? 'Analizando...' : '¿Por qué?'}
                   </span>
 
-                  {/* Icono: Círculo azul */}
                   <div className="flex h-8 w-8 items-center justify-center rounded-full bg-utec-blue text-white shadow transition-all duration-200 group-hover:scale-110 group-hover:shadow-md">
-                    
-                    {/* 3. Lógica visual: Si carga muestra spinner, si no muestra "?" */}
                     {loading ? (
-                      // Icono de carga (Spinner simple con Tailwind)
                       <span className="material-symbols-outlined animate-spin text-sm">
                         sync
                       </span>
                     ) : (
-                      // Tu icono original
                       <span className="font-bold text-sm">?</span>
                     )}
-                    
                   </div>
-                  
                 </button>
-              
-              <HorarioModal 
-                showExplanation={showExplanation} 
-                setShowExplanation={setShowExplanation}
-                data={analisisData} 
-              />
 
-            </div>
+                <HorarioModal
+                  showExplanation={showExplanation}
+                  setShowExplanation={setShowExplanation}
+                  data={analisisData}
+                />
+              </div>
 
-            <button
-              onClick={handleRecommendBestSchedule}
-              disabled={loadingRecommendation || courseCatalog.length === 0}
-              className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition ${
-                loadingRecommendation || courseCatalog.length === 0
+              <button
+                onClick={handleRecommendBestSchedule}
+                disabled={loadingRecommendation || courseCatalog.length === 0}
+                className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition ${loadingRecommendation || courseCatalog.length === 0
                   ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                   : 'bg-purple-600 text-white hover:bg-purple-700 shadow-lg hover:shadow-xl'
-              }`}
-            >
-              {loadingRecommendation ? (
-                <>
-                  <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-white border-r-transparent"></span>
-                  <span>Analizando...</span>
-                </>
-              ) : (
-                <>
-                  <span className="material-symbols-outlined text-xl">auto_awesome</span>
-                  <span>Recomendar Mejor Horario</span>
-                </>
-              )}
-            </button>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-2 border-b border-utec-border/60 pb-3">
-            {scheduleTabs.map((tab) => {
-              const isActive = activeTabMeta?.id === tab.id;
-              const baseClasses =
-                'flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold transition';
-              const className = isActive
-                ? `${baseClasses} bg-utec-blue text-white shadow`
-                : `${baseClasses} bg-gray-100 text-utec-muted hover:text-utec-text`;
-              return (
-                <button
-                  key={tab.id}
-                  type="button"
-                  onClick={() => handleScheduleTabClick(tab)}
-                  className={className}
-                >
-                  <span>{tab.label}</span>
-                  {tab.type === 'recommendation' && (
-                    <span className="rounded-full bg-white/20 px-2 py-[1px] text-[10px] uppercase tracking-wide">
-                      IA
-                    </span>
-                  )}
-                </button>
-              );
-            })}
-          </div>
-
-          {displayedCalendarEvents.length === 0 ? (
-            <div className="rounded-xl border border-dashed border-utec-border bg-gray-50 p-6 text-center text-sm text-utec-muted">
-              Aun no hay cursos en el plan. Agrega cursos desde la columna izquierda para
-              llenar el calendario.
-            </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <div className="flex min-w-[900px] rounded-xl border border-utec-border">
-                <div className="w-20 border-r border-utec-border bg-gray-50">
-                  <div className="h-12 border-b border-utec-border" />
-                  {hourLabels.map((hour) => (
-                    <div
-                      key={`label-${hour}`}
-                      className="flex h-[60px] items-start justify-end pr-2 text-[11px] font-semibold uppercase text-utec-muted"
-                    >
-                      {formatHourLabel(hour)}
-                    </div>
-                  ))}
-                </div>
-                {daysOfWeek.map((day) => {
-                  const dayEvents = displayedCalendarEvents.filter(
-                    (event) => event.day === day.key,
-                  );
-                  return (
-                    <div key={day.key} className="flex-1 border-l border-utec-border">
-                      <div className="flex h-12 items-center justify-center border-b border-utec-border bg-gray-50 text-xs font-semibold uppercase text-utec-muted">
-                        {day.label}
-                      </div>
-                      <div
-                        className="relative"
-                        style={{ height: `${(END_HOUR - START_HOUR) * HOUR_HEIGHT}px` }}
-                      >
-                        <div className="absolute inset-0">
-                          {gridLines.map((line) => (
-                            <div
-                              key={`${day.key}-line-${line}`}
-                              className="absolute left-0 right-0 border-t border-dashed border-utec-border/70"
-                              style={{ top: `${line * HOUR_HEIGHT}px` }}
-                            />
-                          ))}
-                        </div>
-                        {dayEvents.map((event, eventIdx) => {
-                          const { top, height } = computeEventPosition(
-                            event.start,
-                            event.end,
-                          );
-                          const predictedGrade = matriculaPredictions[event.code];
-                          const gradeLabel = loadingMatriculaPredictions
-                            ? ''
-                            : predictedGrade != null
-                              ? `${formatGrade(predictedGrade)}`
-                              : '';
-                          return (
-                            <button
-                              key={`${event.code}-${event.start}-${event.end}-${eventIdx}`}
-                              onClick={() => setSelectedEventDetail(event)}
-                              className="absolute left-[8%] right-[8%] rounded-xl p-2 text-xs text-white shadow-lg hover:shadow-xl transition cursor-pointer"
-                              style={{ top, height, backgroundColor: event.color }}
-                            >
-                              <p className="text-sm font-bold truncate">
-                                {event.code}
-                              </p>
-                              <p className="font-mono text-[10px] opacity-90">
-                                {gradeLabel}
-                              </p>
-                            </button>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-        </div>
-      </section>
-
-      {/* Modal de detalles del evento */}
-      {selectedEventDetail && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
-          onClick={() => setSelectedEventDetail(null)}
-        >
-          <div
-            className="w-full max-w-md rounded-2xl border border-utec-border bg-white p-6 shadow-[0_20px_60px_rgba(0,0,0,0.3)]"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="mb-4 flex items-start justify-between">
-              <div>
-                <h3 className="text-xl font-bold text-utec-text">
-                  {selectedEventDetail.code}
-                </h3>
-                <p className="text-sm text-utec-muted">{selectedEventDetail.name}</p>
-              </div>
-              <button
-                onClick={() => setSelectedEventDetail(null)}
-                className="rounded-full p-1 hover:bg-gray-100 transition"
+                  }`}
               >
-                <span className="material-symbols-outlined text-utec-muted">close</span>
+                {loadingRecommendation ? (
+                  <>
+                    <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-white border-r-transparent"></span>
+                    <span>Analizando...</span>
+                  </>
+                ) : (
+                  <>
+                    <span className="material-symbols-outlined text-xl">auto_awesome</span>
+                    <span>Recomendar Mejor Horario</span>
+                  </>
+                )}
               </button>
             </div>
 
-            <div className="space-y-3">
-              <div className="rounded-lg bg-gray-50 p-3">
-                <div className="flex items-center gap-2 text-sm">
-                  <span className="material-symbols-outlined text-utec-blue">schedule</span>
-                  <span className="font-semibold">Horario:</span>
-                </div>
-                <p className="mt-1 text-sm text-utec-muted ml-7">
-                  {daysOfWeek.find(d => d.key === selectedEventDetail.day)?.label} - {formatEventRange(selectedEventDetail.start, selectedEventDetail.end)}
-                </p>
-              </div>
-
-              <div className="rounded-lg bg-gray-50 p-3">
-                <div className="flex items-center gap-2 text-sm">
-                  <span className="material-symbols-outlined text-utec-blue">location_on</span>
-                  <span className="font-semibold">Ubicación:</span>
-                </div>
-                <p className="mt-1 text-sm text-utec-muted ml-7">{selectedEventDetail.location}</p>
-              </div>
-
-              {selectedEventDetail.docente && (
-                <div className="rounded-lg bg-gray-50 p-3">
-                  <div className="flex items-center gap-2 text-sm">
-                    <span className="material-symbols-outlined text-utec-blue">person</span>
-                    <span className="font-semibold">Docente:</span>
-                  </div>
-                  <p className="mt-1 text-sm text-utec-muted ml-7">{selectedEventDetail.docente}</p>
-                </div>
-              )}
-
-              {selectedEventDetail.sectionName && (
-                <div className="rounded-lg bg-gray-50 p-3">
-                  <div className="flex items-center gap-2 text-sm">
-                    <span className="material-symbols-outlined text-utec-blue">group</span>
-                    <span className="font-semibold">Sección:</span>
-                  </div>
-                  <p className="mt-1 text-sm text-utec-muted ml-7">{selectedEventDetail.sectionName}</p>
-                </div>
-              )}
-
-              {selectedEventDetail.grade !== null && (
-                <div className="rounded-lg bg-emerald-50 p-3">
-                  <div className="flex items-center gap-2 text-sm">
-                    <span className="material-symbols-outlined text-emerald-600">grade</span>
-                    <span className="font-semibold text-emerald-700">Nota estimada (individual):</span>
-                  </div>
-                  <p className="mt-1 text-lg font-bold text-emerald-700 ml-7">
-                    {formatGrade(selectedEventDetail.grade)}/20
-                  </p>
-                </div>
-              )}
-
-              {matriculaPredictions[selectedEventDetail.code] && (
-                <div className="rounded-lg bg-purple-50 p-3 border-2 border-purple-200">
-                  <div className="flex items-center gap-2 text-sm mb-1">
-                    <span className="material-symbols-outlined text-purple-600">psychology</span>
-                    <span className="font-semibold text-purple-700">Nota predicha (con matrícula):</span>
-                  </div>
-                  <p className="text-lg font-bold text-purple-700 ml-7">
-                    {formatGrade(matriculaPredictions[selectedEventDetail.code])}/20
-                  </p>
-                  <p className="text-xs text-purple-600 mt-2 ml-7">
-                    {loadingMatriculaPredictions ? (
-                      <span className="flex items-center gap-1">
-                        <span className="inline-block h-3 w-3 animate-spin rounded-full border-2 border-solid border-purple-600 border-r-transparent"></span>
-                        Actualizando...
+            <div className="flex flex-wrap items-center gap-2 border-b border-utec-border/60 pb-3">
+              {scheduleTabs.map((tab) => {
+                const isActive = activeTabMeta?.id === tab.id;
+                const baseClasses =
+                  'flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold transition';
+                const className = isActive
+                  ? `${baseClasses} bg-utec-blue text-white shadow`
+                  : `${baseClasses} bg-gray-100 text-utec-muted hover:text-utec-text`;
+                return (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    onClick={() => handleScheduleTabClick(tab)}
+                    className={className}
+                  >
+                    <span>{tab.label}</span>
+                    {tab.type === 'recommendation' && (
+                      <span className="rounded-full bg-white/20 px-2 py-[1px] text-[10px] uppercase tracking-wide">
+                        IA
                       </span>
-                    ) : (
-                      'Considera todos los cursos seleccionados'
                     )}
-                  </p>
-                </div>
-              )}
+                  </button>
+                );
+              })}
             </div>
 
-            <button
-              onClick={() => setSelectedEventDetail(null)}
-              className="mt-6 w-full rounded-lg bg-utec-blue px-4 py-2 text-white font-semibold hover:bg-blue-700 transition"
-            >
-              Cerrar
-            </button>
+            <ScheduleCalendar
+              events={displayedCalendarEvents}
+              onEventClick={setSelectedEventDetail}
+              matriculaPredictions={matriculaPredictions}
+              loadingPredictions={loadingMatriculaPredictions}
+            />
           </div>
-        </div>
-      )}
+        </section>
 
-      {/* Modal de conflicto de horarios */}
-      {conflictModal && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
-          onClick={() => setConflictModal(null)}
-        >
-          <div
-            className="w-full max-w-lg rounded-2xl border border-red-200 bg-white p-6 shadow-[0_20px_60px_rgba(220,38,38,0.3)]"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="mb-4 flex items-start gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-red-100">
-                <span className="material-symbols-outlined text-2xl text-red-600">warning</span>
-              </div>
-              <div className="flex-1">
-                <h3 className="text-xl font-bold text-red-600">Conflicto de Horario</h3>
-                <p className="text-sm text-utec-muted mt-1">
-                  El curso <span className="font-semibold">{conflictModal.course.code} - {conflictModal.course.name}</span> tiene horarios que se solapan con:
-                </p>
-              </div>
-            </div>
+        <EventDetailModal
+          event={selectedEventDetail}
+          onClose={() => setSelectedEventDetail(null)}
+          matriculaPredictions={matriculaPredictions}
+          loadingPredictions={loadingMatriculaPredictions}
+        />
 
-            <div className="mb-6 space-y-2 rounded-lg bg-red-50 p-4">
-              {conflictModal.conflicts.map((conflict, idx) => (
-                <div key={idx} className="flex items-start gap-2">
-                  <span className="material-symbols-outlined text-base text-red-600 mt-0.5">schedule</span>
-                  <div className="text-sm">
-                    <p className="font-semibold text-utec-text">
-                      {conflict.course.code} - {conflict.course.name}
-                    </p>
-                    <p className="text-utec-muted">
-                      {conflict.day} • {conflict.time}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
+        <ConflictModal
+          conflictData={conflictModal}
+          onClose={() => setConflictModal(null)}
+          onConfirm={handleConfirmConflict}
+        />
 
-            <div className="flex gap-3">
-              <button
-                onClick={() => setConflictModal(null)}
-                className="flex-1 rounded-lg border border-utec-border px-4 py-2 font-semibold text-utec-text hover:bg-gray-50 transition"
-              >
-                Cancelar
-              </button>
-              <button
-                onClick={handleConfirmConflict}
-                className="flex-1 rounded-lg bg-red-600 px-4 py-2 font-semibold text-white hover:bg-red-700 transition"
-              >
-                Agregar de todos modos
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+        <EnrollmentConfirmModal
+          isOpen={enrollmentConfirmModal}
+          onClose={() => setEnrollmentConfirmModal(false)}
+          courses={selectedCourses}
+          totalCredits={totalCredits}
+          onConfirm={confirmEnrollment}
+          isEnrolling={enrolling}
+        />
 
-      {/* Modal de confirmación de matrícula */}
-      {enrollmentConfirmModal && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
-          onClick={() => setEnrollmentConfirmModal(false)}
-        >
-          <div
-            className="w-full max-w-md rounded-2xl border border-utec-border bg-white p-6 shadow-[0_20px_60px_rgba(37,99,235,0.3)]"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="mb-4 flex items-start gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-100">
-                <span className="material-symbols-outlined text-2xl text-utec-blue">assignment_turned_in</span>
-              </div>
-              <div className="flex-1">
-                <h3 className="text-xl font-bold text-utec-text">Confirmar Matrícula</h3>
-                <p className="text-sm text-utec-muted mt-1">
-                  ¿Deseas confirmar tu matrícula con los siguientes cursos?
-                </p>
-              </div>
-            </div>
-
-            <div className="mb-6 max-h-60 space-y-2 overflow-y-auto rounded-lg bg-gray-50 p-4">
-              {selectedCourses.map((course) => (
-                <div key={course.code} className="flex items-center justify-between rounded-lg bg-white p-3 shadow-sm">
-                  <div>
-                    <p className="font-semibold text-utec-text">{course.code}</p>
-                    <p className="text-xs text-utec-muted">{course.name}</p>
-                  </div>
-                  <span className="rounded-full bg-utec-blue/10 px-2 py-1 text-xs font-semibold text-utec-blue">
-                    {course.credits} créditos
-                  </span>
-                </div>
-              ))}
-            </div>
-
-            <div className="mb-4 rounded-lg bg-blue-50 p-3">
-              <div className="flex items-center justify-between">
-                <span className="font-semibold text-utec-text">Total de créditos:</span>
-                <span className="text-lg font-bold text-utec-blue">{totalCredits}</span>
-              </div>
-            </div>
-
-            <div className="flex gap-3">
-              <button
-                onClick={() => setEnrollmentConfirmModal(false)}
-                className="flex-1 rounded-lg border border-utec-border px-4 py-2 font-semibold text-utec-text hover:bg-gray-50 transition"
-              >
-                Cancelar
-              </button>
-              <button
-                onClick={confirmEnrollment}
-                disabled={enrolling}
-                className="flex-1 rounded-lg bg-utec-blue px-4 py-2 font-semibold text-white hover:bg-blue-700 transition disabled:bg-gray-400"
-              >
-                {enrolling ? 'Procesando...' : 'Confirmar'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Modal de éxito de matrícula */}
-      {enrollmentSuccessModal && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
-          onClick={() => setEnrollmentSuccessModal(false)}
-        >
-          <div
-            className="w-full max-w-md rounded-2xl border border-green-200 bg-white p-6 shadow-[0_20px_60px_rgba(22,163,74,0.3)]"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="mb-6 text-center">
-              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
-                <span className="material-symbols-outlined text-4xl text-green-600">check_circle</span>
-              </div>
-              <h3 className="text-2xl font-bold text-green-600">¡Matrícula Exitosa!</h3>
-              <p className="mt-2 text-sm text-utec-muted">
-                Has sido matriculado en <span className="font-semibold">{selectedCourses.length}</span> curso(s) con un total de <span className="font-semibold">{totalCredits}</span> créditos.
-              </p>
-            </div>
-
-            <div className="mb-6 rounded-lg bg-blue-50 p-4">
-              <div className="flex items-start gap-2">
-                <span className="material-symbols-outlined text-utec-blue">info</span>
-                <p className="text-sm text-utec-text">
-                  Puedes ver los recursos recomendados para tus cursos en la sección <span className="font-semibold">"Recursos Académicos"</span>.
-                </p>
-              </div>
-            </div>
-
-            <button
-              onClick={() => setEnrollmentSuccessModal(false)}
-              className="w-full rounded-lg bg-green-600 px-4 py-2 font-semibold text-white hover:bg-green-700 transition"
-            >
-              Entendido
-            </button>
-          </div>
-        </div>
-      )}
+        <EnrollmentSuccessModal
+          isOpen={enrollmentSuccessModal}
+          onClose={() => setEnrollmentSuccessModal(false)}
+          coursesCount={selectedCourses.length}
+          totalCredits={totalCredits}
+        />
+      </div>
     </div>
-    </div>
-    
-    
   );
 }
