@@ -88,9 +88,16 @@ const getCachedScheduleRecommendations = (codPersona) => {
     codPersona,
   );
   const cached = readJSONFromStorage(key);
+
+  // Migration: If allScores is array of numbers, convert to objects
+  let allScores = cached?.allScores || [];
+  if (Array.isArray(allScores) && allScores.length > 0 && typeof allScores[0] === 'number') {
+    allScores = allScores.map(s => ({ id: null, score: s }));
+  }
+
   return {
     schedules: cached?.schedules || null,
-    allScores: cached?.allScores || []
+    allScores: allScores
   };
 };
 
@@ -141,6 +148,19 @@ const parseHorario = (horarioStr) => {
     console.error('Error parseando horario:', horarioStr, error);
     return null;
   }
+};
+
+// Helper to generate unique ID for a schedule based on selected courses and sections
+const generateScheduleId = (courses) => {
+  return courses
+    .map(c => {
+      const sectionIndex = c.selectedSectionIndex || 0;
+      const section = c.allSections?.[sectionIndex];
+      const sectionId = section?.sectionId || '0';
+      return `${c.code}-${sectionId}`;
+    })
+    .sort()
+    .join('|');
 };
 
 export default function EnrollmentPage() {
@@ -514,7 +534,17 @@ export default function EnrollmentPage() {
 
         if (result && result.success) {
           setCurrentScore(result.score);
-          setAllScores(prev => [...prev, result.score]);
+
+          // Deduplication logic
+          const currentId = generateScheduleId(selectedCourses);
+          setAllScores(prev => {
+            // Check if this ID already exists
+            const exists = prev.some(item => item.id === currentId);
+            if (!exists) {
+              return [...prev, { id: currentId, score: result.score }];
+            }
+            return prev;
+          });
         }
       } catch (error) {
         console.error('Error al calcular score:', error);
@@ -686,19 +716,26 @@ export default function EnrollmentPage() {
       if (resultado) {
         const topSchedules = resultado.todos_los_resultados?.slice(0, 3) ?? [];
         setSavedSchedules(topSchedules);
-        saveCachedScheduleRecommendations(loginData.cod_persona, topSchedules);
+
+        let newAllScores = [...allScores];
+        if (resultado.all_scores && Array.isArray(resultado.all_scores)) {
+          // Backend scores don't have IDs, so we add them as anonymous
+          const backendScores = resultado.all_scores.map(s => ({ id: null, score: s }));
+          newAllScores = [...allScores, ...backendScores];
+          setAllScores(newAllScores);
+        }
+
+        saveCachedScheduleRecommendations(loginData.cod_persona, topSchedules, newAllScores);
         setRecommendationModal(resultado);
       } else {
-        const fallbackSchedules =
-          getCachedScheduleRecommendations(loginData.cod_persona) || [];
-        setSavedSchedules(fallbackSchedules);
+        const fallbackData = getCachedScheduleRecommendations(loginData.cod_persona);
+        setSavedSchedules(fallbackData?.schedules || []);
         alert('Error al obtener recomendacion. Intenta de nuevo.');
       }
     } catch (error) {
       console.error('Error al obtener recomendacion:', error);
-      const fallbackSchedules =
-        getCachedScheduleRecommendations(loginData.cod_persona) || [];
-      setSavedSchedules(fallbackSchedules);
+      const fallbackData = getCachedScheduleRecommendations(loginData.cod_persona);
+      setSavedSchedules(fallbackData?.schedules || []);
       alert('Error al procesar la recomendacion. Verifica tu conexion.');
     } finally {
       setLoadingRecommendation(false);
@@ -844,15 +881,14 @@ export default function EnrollmentPage() {
     }
 
     // Incluimos el score actual en la comparación para calcular el percentil
-    const scoresToCompare = [...allScores, currentScoreValue].sort((a, b) => a - b);
+    // Extract scores from objects
+    const scoresValues = allScores.map(s => s.score);
+    const scoresToCompare = [...scoresValues, currentScoreValue].sort((a, b) => a - b);
     const rank = scoresToCompare.findIndex(s => s >= currentScoreValue);
     const percentile = (rank / scoresToCompare.length) * 100;
-    console.log(percentile)
-    console.log(allScores)
-    console.log(currentScoreValue)
-    console.log(scoresToCompare)
-    console.log(rank)
-    console.log("=============")
+
+    console.log(scoresValues);
+
     if (percentile >= 75) {
       return { label: 'Muy Recomendado', color: 'bg-emerald-100 text-emerald-700' };
     } else if (percentile >= 50) {
