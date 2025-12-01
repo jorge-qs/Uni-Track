@@ -1,5 +1,6 @@
 import { useMemo, useState, useEffect } from 'react';
-import { getStoredLogin, predecirNota, predecirNotasPorMatricula, recomendarMejorHorario } from '../api/api';
+import { getStoredLogin, predecirNota, predecirNotasPorMatricula, recomendarMejorHorario, getRecomendacionIA } from '../api/api';
+import HorarioModal from './AiPage';
 
 const HOUR_HEIGHT = 60;
 const START_HOUR = 7;
@@ -215,6 +216,48 @@ export default function EnrollmentPage() {
   const [savedSchedules, setSavedSchedules] = useState([]);
   const [customPlanSelections, setCustomPlanSelections] = useState([]);
   const [activeScheduleTab, setActiveScheduleTab] = useState('custom');
+  const [showExplanation, setShowExplanation] = useState(false);
+  const [analisisData, setAnalisisData] = useState(null);
+  const [loadingAnalisisData, setLoadingAnalisisData] = useState(false);
+
+  const cargarAnalisis = async () => {
+    // Validación simple
+    if (selectedCourses.length === 0) {
+      alert("Por favor selecciona al menos un curso para analizar.");
+      return;
+    }
+
+    setLoading(true); // Activa el spinner del botón
+
+    // 1. Preparamos los datos limpios para enviar al backend
+    // Extraemos solo lo necesario: código, nombre, créditos y los horarios de la sección seleccionada
+    const payload = selectedCourses.map(course => {
+      const sectionIndex = course.selectedSectionIndex || 0;
+      const section = course.allSections[sectionIndex];
+      
+      return {
+        code: course.code,
+        name: course.name,
+        credits: course.credits,
+        sessions: section ? section.sessions.map(s => ({
+          day: s.day,
+          start: s.start,
+          end: s.end,
+          location: s.location
+        })) : []
+      };
+    });
+
+    // 2. Llamamos a la API pasando el payload
+    const data = await getRecomendacionIA(payload);
+    
+    if (data) {
+      setAnalisisData(data);
+      setShowExplanation(true);
+    }
+    
+    setLoading(false); // Apaga el spinner
+  };
 
   const selectedCodes = useMemo(
     () => new Set(selectedCourses.map((course) => course.code)),
@@ -1179,9 +1222,8 @@ export default function EnrollmentPage() {
         style={{ width: '100%', maxWidth: 'min(90vw, 1800px)', margin: '24px auto 0' }}
       >
         <div
-          data-tour="ai-predictor"
           className="flex w-full flex-col rounded-2xl border border-utec-border bg-white shadow-[0_10px_40px_rgba(0,0,0,0.15)] overflow-hidden lg:flex-[0.35]"
-          style={{ height: 'calc(100vh - 150px)' }}
+          style={{ height: 'calc(100vh - 220px)' }}
         >
           <div className="flex items-center justify-between p-6 pb-4">
             <div>
@@ -1339,7 +1381,6 @@ export default function EnrollmentPage() {
         </div>
 
         <div
-          data-tour="schedule-recommender"
           className="space-y-4 overflow-y-auto rounded-2xl border border-utec-border bg-white p-6 shadow-[0_10px_40px_rgba(0,0,0,0.15)] w-full lg:flex-[0.65]"
           style={{ maxHeight: 'calc(100vh - 120px)' }}
         >
@@ -1348,6 +1389,59 @@ export default function EnrollmentPage() {
               <h2 className="text-lg font-semibold text-utec-text">Calendario tentativo</h2>
               <span className="text-sm text-utec-muted">Formato semanal - 7am a 10pm</span>
             </div>
+            <div className="flex items-center justify-between p-4 rounded-lg bg-white gap-6">
+              {/* Sección Izquierda */}
+                <div className="flex flex-col items-start gap-2">
+                  <span className="text-sm font-medium text-gray-600">
+                    Nivel de recomendación
+                  </span>
+                  <span className="rounded-full px-3 py-1 text-xs font-semibold bg-emerald-100 text-emerald-700">
+                    Muy Recomendado
+                  </span>
+                </div>
+
+                {/* Círculo con el estilo solicitado (Fondo azul, texto blanco) */}
+                <button
+                  // 1. Aquí conectas la función que creamos antes
+                  onClick={cargarAnalisis}
+                  
+                  // 2. Deshabilitamos el botón mientras carga para evitar doble click
+                  disabled={loading} 
+                  
+                  className="group flex flex-col items-center gap-1 disabled:opacity-70 disabled:cursor-not-allowed"
+                > 
+                  {/* Texto inferior: Cambia si está cargando */}
+                  <span className={`text-[10px] font-medium text-utec-blue transition-opacity duration-200 
+                    ${loading ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
+                    {loading ? 'Analizando...' : '¿Por qué?'}
+                  </span>
+
+                  {/* Icono: Círculo azul */}
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-utec-blue text-white shadow transition-all duration-200 group-hover:scale-110 group-hover:shadow-md">
+                    
+                    {/* 3. Lógica visual: Si carga muestra spinner, si no muestra "?" */}
+                    {loading ? (
+                      // Icono de carga (Spinner simple con Tailwind)
+                      <span className="material-symbols-outlined animate-spin text-sm">
+                        sync
+                      </span>
+                    ) : (
+                      // Tu icono original
+                      <span className="font-bold text-sm">?</span>
+                    )}
+                    
+                  </div>
+                  
+                </button>
+              
+              <HorarioModal 
+                showExplanation={showExplanation} 
+                setShowExplanation={setShowExplanation}
+                data={analisisData} 
+              />
+
+            </div>
+
             <button
               onClick={handleRecommendBestSchedule}
               disabled={loadingRecommendation || courseCatalog.length === 0}
@@ -1712,22 +1806,31 @@ export default function EnrollmentPage() {
             className="w-full max-w-md rounded-2xl border border-green-200 bg-white p-6 shadow-[0_20px_60px_rgba(22,163,74,0.3)]"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="text-center">
+            <div className="mb-6 text-center">
               <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
                 <span className="material-symbols-outlined text-4xl text-green-600">check_circle</span>
               </div>
               <h3 className="text-2xl font-bold text-green-600">¡Matrícula Exitosa!</h3>
-              <p className="mt-2 mb-6 text-sm text-utec-muted">
+              <p className="mt-2 text-sm text-utec-muted">
                 Has sido matriculado en <span className="font-semibold">{selectedCourses.length}</span> curso(s) con un total de <span className="font-semibold">{totalCredits}</span> créditos.
               </p>
-
-              <button
-                onClick={() => setEnrollmentSuccessModal(false)}
-                className="w-full rounded-lg bg-green-600 px-4 py-2 font-semibold text-white hover:bg-green-700 transition"
-              >
-                Entendido
-              </button>
             </div>
+
+            <div className="mb-6 rounded-lg bg-blue-50 p-4">
+              <div className="flex items-start gap-2">
+                <span className="material-symbols-outlined text-utec-blue">info</span>
+                <p className="text-sm text-utec-text">
+                  Puedes ver los recursos recomendados para tus cursos en la sección <span className="font-semibold">"Recursos Académicos"</span>.
+                </p>
+              </div>
+            </div>
+
+            <button
+              onClick={() => setEnrollmentSuccessModal(false)}
+              className="w-full rounded-lg bg-green-600 px-4 py-2 font-semibold text-white hover:bg-green-700 transition"
+            >
+              Entendido
+            </button>
           </div>
         </div>
       )}

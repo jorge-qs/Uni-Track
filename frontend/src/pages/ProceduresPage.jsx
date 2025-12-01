@@ -57,7 +57,7 @@ export default function ProceduresPage() {
   };
 
   return (
-    <div data-tour="procedures-form" className="space-y-8">
+    <div className="space-y-8">
       <header className="space-y-2">
         <h1 className="text-3xl font-bold text-utec-text">Procedures</h1>
         <p className="text-sm text-utec-muted">

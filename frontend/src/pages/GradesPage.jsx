@@ -65,7 +65,7 @@ export default function GradesPage() {
       </p>
       </header>
 
-      <section data-tour="grades-chart" className="rounded-2xl border border-utec-border bg-white p-6 shadow-[0_8px_25px_rgba(0,0,0,0.12)]">
+      <section className="rounded-2xl border border-utec-border bg-white p-6 shadow-[0_8px_25px_rgba(0,0,0,0.12)]">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
         <h2 className="text-lg font-semibold text-utec-text">

@@ -400,3 +400,36 @@ export async function recomendarMejorHorario(
     return null;
   }
 }
+
+
+
+
+
+export interface RecomendacionIA {
+  message: string;
+}
+
+
+
+export async function getRecomendacionIA(cursosSeleccionados: any[]): Promise<RecomendacionIA | null> {
+  try {
+    // CAMBIO IMPORTANTE: Ahora es POST y enviamos body
+    const response = await fetch(`${API_BASE_URL}/recomendacion/ia`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(cursosSeleccionados),
+    });
+
+    if (!response.ok) {
+      console.error('Error al obtener la recomendación de IA');
+      return null;
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error al obtener la recomendación de IA:', error);
+    return null;
+  }
+}

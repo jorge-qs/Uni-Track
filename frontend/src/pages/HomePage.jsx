@@ -91,7 +91,7 @@ export default function HomePage() {
         </p>
       </header>
 
-      <section data-tour="metrics" className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {metricCards.map((metric) => (
           <div
             key={metric.label}
@@ -108,7 +108,7 @@ export default function HomePage() {
       </section>
 
       <section className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        <div data-tour="recent-activity" className="rounded-2xl border border-utec-border bg-white p-6 shadow-[0_8px_25px_rgba(0,0,0,0.12)] lg:col-span-2">
+        <div className="rounded-2xl border border-utec-border bg-white p-6 shadow-[0_8px_25px_rgba(0,0,0,0.12)] lg:col-span-2">
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-semibold text-utec-text">
               Recent activity &amp; announcements
@@ -145,7 +145,7 @@ export default function HomePage() {
             ))}
           </div>
         </div>
-        <div data-tour="insights" className="rounded-2xl border border-utec-border bg-white p-6 shadow-[0_8px_25px_rgba(0,0,0,0.12)]">
+        <div className="rounded-2xl border border-utec-border bg-white p-6 shadow-[0_8px_25px_rgba(0,0,0,0.12)]">
           <h2 className="text-lg font-semibold text-utec-text">
             Performance insights
           </h2>
@@ -166,7 +166,7 @@ export default function HomePage() {
         <h2 className="mb-4 text-lg font-semibold text-utec-text">
           Quick access
         </h2>
-        <div data-tour="quick-access" className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
           {quickAccess.map((item) => (
             <Link
               key={item.title}

@@ -4,13 +4,14 @@ Endpoints para el sistema de recomendación de matrícula
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from pydantic import BaseModel
-from typing import Optional, List, Dict
+from pydantic import BaseModel, Field
+from typing import Optional, List, Dict, Literal
 import sys
 from itertools import combinations, count
 from pathlib import Path
 import heapq
 import time
+import json
 
 from app.db.database import get_db
 from app.models.alumno import Alumno
@@ -18,6 +19,16 @@ from app.models.curso import Curso
 from app.models.seccion import Seccion
 
 from app.utils.utils import str_to_dict, str_to_list, str_to_list_simple
+from google import genai
+
+# dotenv
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+GOOGLE_API_KEY = os.getenv("GEMINI_API_KEY", "default_key")
+
 
 try:
     from app.ml_models.recomendador_matricula import ranking_cursos, calcular_score_bundle
@@ -442,6 +453,199 @@ async def recomendar_mejor_horario(
         todos_los_resultados=top_horarios,
         mensaje=mensaje
     )
+
+
+
+
+class SesionInput(BaseModel):
+    day: str
+    start: str
+    end: str
+    location: Optional[str] = None
+
+class CursoInput(BaseModel):
+    code: str
+    name: str
+    credits: int
+    sessions: List[SesionInput] # Lista de horarios de ese curso
+
+
+
+
+
+# --- DICCIONARIO PARA TRADUCIR DÍAS Y ORDENAR ---
+days_map = {
+    "monday": "Lunes",
+    "tuesday": "Martes",
+    "wednesday": "Miércoles",
+    "thursday": "Jueves",
+    "friday": "Viernes",
+    "saturday": "Sábado",
+    "sunday": "Domingo"
+}
+
+days_order = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+
+
+
+
+
+
+
+
+
+
+
+# --- MODELOS DE SALIDA (STRUCTURED OUTPUT) ---
+# Estos modelos definen la estructura EXACTA del JSON que la IA debe generar.
+
+class BalanceSection(BaseModel):
+    title: str = Field(description="Título corto sobre el balance (Ej: ⚖️ Carga Moderada)")
+    content: str = Field(description="Análisis de la dificultad técnica vs humanística y cantidad de cursos.")
+    note: str = Field(description="Nota breve o consejo accionable.")
+
+class HighlightDaySection(BaseModel):
+    title: str = Field(description="Título sobre un día específico (Ej: 🚀 Lunes Intenso)")
+    content: str = Field(description="Comentario sobre el día más difícil o el más ligero de la semana.")
+    style: Literal["info", "warning"] = Field(description="Estilo visual de la tarjeta: 'info' (azul) para cosas positivas, 'warning' (rojo) para días peligrosos.")
+
+class GapsSection(BaseModel):
+    title: str = Field(description="Título sobre los huecos (Ej: ⏳ Ventanas de Estudio)")
+    mainText: str = Field(description="Descripción general de los tiempos libres.")
+    reasonTitle: str = Field(description="Encabezado de la justificación (Ej: Por qué es bueno:)")
+    reasonText: str = Field(description="Explicación estratégica de cómo usar esos huecos.")
+
+class SectionsContainer(BaseModel):
+    balance: BalanceSection
+    highlightDay: HighlightDaySection
+    gaps: GapsSection
+
+class TipItem(BaseModel):
+    icon: str = Field(description="Nombre de icono Material Symbols válido (ej: lunch_dining, bedtime, priority_high, school, commute, theater_comedy)")
+    color: Literal["text-red-500", "text-orange-500", "text-purple-500", "text-blue-500", "text-emerald-500"] = Field(description="Clase TailwindCSS para el color del icono.")
+    boldText: str = Field(description="Frase inicial en negrita del consejo.")
+    text: str = Field(description="El contenido principal del consejo.")
+
+class TipsSection(BaseModel):
+    title: str = Field(description="Título de la sección de recomendaciones (Ej: RECOMENDACIONES CLAVE)")
+    items: List[TipItem]
+
+# Modelo Principal que engloba todo
+class AnalysisResponse(BaseModel):
+    title: str = Field(description="Título general y CORTO del análisis (Ej: ANÁLISIS DE HORARIO CON IA), (máx 5 palabras)")
+    sections: SectionsContainer
+    tips: TipsSection
+
+
+# --- CONFIGURACIÓN DEL MODELO ---
+client = genai.Client(api_key=GOOGLE_API_KEY)
+
+prompt = """
+Eres un asesor académico experto de la universidad UTEC. 
+Tu trabajo es analizar horarios universitarios para estudiantes de ingeniería y dar recomendaciones tácticas.
+
+CRITERIOS DE ANÁLISIS:
+1. Carga Cognitiva: Detecta si hay mezcla de cursos pesados (Matemáticas, Cs Computación) vs blandos.
+2. Huecos (Gaps): Detecta ventanas de 3+ horas (Deep Work) o huecos muertos de 1 hora (Pérdida de tiempo).
+3. Salud: Detecta si falta hora de almuerzo (12pm-2pm) o si hay pocas horas de sueño entre días (clase termina tarde y siguiente empieza temprano).
+4. Estrategia: Recomienda uso de biblioteca, trabajos grupales o cuidado con cursos filtro.
+5. Respeta los maximos de palabras indicados en cada sección. Una vez alcanzado el límite, no agregues más información ni emogis, en lugar de esto, coloca comillas y pasa a la siguiente seccion.
+Sé conciso, directo y empático.
+6. No uses emogis en ningun campo.
+
+A continuacion tienes la informacion del horario a analizar. Usa esta información para generar el análisis solicitado:
+"""
+
+# --- UTILS ---
+days_map = {
+    "monday": "Lunes", "tuesday": "Martes", "wednesday": "Miércoles",
+    "thursday": "Jueves", "friday": "Viernes", "saturday": "Sábado", "sunday": "Domingo"
+}
+days_order = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+
+@router.post("/ia")
+async def recommend_ai(cursos: List[CursoInput]):
+    print("called")
+    # 1. Cálculos previo
+    num_cursos = len(cursos)
+    total_creditos = sum(c.credits for c in cursos)
+    
+    # 2. Construcción del Prompt
+    prompt_lines = []
+    prompt_lines.append(f"DATOS DE MATRÍCULA: {num_cursos} cursos, {total_creditos} créditos totales.")
+    
+    prompt_lines.append("\nVISTA POR CURSO:")
+    for curso in cursos:
+        prompt_lines.append(f"- {curso.code} {curso.name} ({curso.credits} cr)")
+        for sesion in curso.sessions:
+            dia_es = days_map.get(sesion.day.lower(), sesion.day)
+            prompt_lines.append(f"    * {dia_es}: {sesion.start}-{sesion.end}")
+    
+    prompt_lines.append("\nVISTA CRONOLÓGICA:")
+    all_sessions = []
+    for curso in cursos:
+        for sesion in curso.sessions:
+            all_sessions.append({
+                "day_key": sesion.day.lower(),
+                "start": sesion.start,
+                "end": sesion.end,
+                "info": f"{curso.code}"
+            })
+    
+    # Ordenar por día y hora
+    all_sessions.sort(key=lambda x: (days_order.index(x["day_key"]) if x["day_key"] in days_order else 99, x["start"]))
+    
+    current_day = ""
+    for s in all_sessions:
+        dia_es = days_map.get(s["day_key"], s["day_key"]).upper()
+        if dia_es != current_day:
+            prompt_lines.append(f"[{dia_es}]")
+            current_day = dia_es
+        prompt_lines.append(f"  {s['start']}-{s['end']} : {s['info']}")
+
+    final_prompt = "\n".join(prompt_lines)
+    print(f"Analizando {num_cursos} cursos...")
+    print(final_prompt)
+    # 3. LLAMADA A GEMINI
+    try:
+        # Asegúrate de que 'model' está definido antes de este punto
+        response = client.models.generate_content(
+            model = "gemini-2.5-flash",
+            contents=prompt+"\n\n"+final_prompt,
+            config={
+                "response_mime_type": "application/json",
+                "response_schema": AnalysisResponse,
+                "max_output_tokens": 8000,
+                "temperature": 0.2
+            },
+        )
+
+        print("Respuesta de Gemini recibida.")
+        print(response)
+        print(response.text)
+        
+        # Parseo de respuesta
+        return json.loads(response.text)
+
+    except Exception as e:
+        print(f"Error en Gemini: {e}, KEY = {GOOGLE_API_KEY}")
+        return {
+            "title": "NO SE PUDO ANALIZAR",
+            "sections": {
+                "balance": {
+                    "title": "Error de IA",
+                    "content": "Hubo un problema conectando con el servicio de análisis.",
+                    "note": "Por favor intenta más tarde."
+                },
+                "highlightDay": { "title": "-", "content": "-", "style": "warning" },
+                "gaps": { "title": "-", "mainText": "-", "reasonTitle": "-", "reasonText": "-" }
+            },
+            "tips": { "title": "", "items": [] }
+        }
+
+
+
+
 
 
 @router.get("/debug")

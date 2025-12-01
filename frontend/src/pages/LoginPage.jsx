@@ -48,7 +48,7 @@ export default function LoginPage() {
             />
             <div className="space-y-3">
               <h1 className="text-3xl font-bold text-utec-text">
-                Uni-track
+                Edu-Track
               </h1>
               <p className="text-base text-utec-muted">
                 Gestiona tu experiencia académica desde un solo lugar.

@@ -15,6 +15,7 @@ class Settings(BaseSettings):
     PROJECT_NAME: str = "UniTrack API"
     VERSION: str = "1.0.0"
     API_V1_STR: str = "/api/v1"
+    GEMINI_API_KEY: str = "default_key"
 
     # Base de datos
     DATABASE_URL: str = "postgresql+psycopg2://user:password@localhost:5432/unitrackdb"
