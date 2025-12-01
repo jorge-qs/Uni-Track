@@ -140,130 +140,124 @@ export default function CurriculumPage() {
   return (
     <div className="space-y-8">
       <header className="flex flex-wrap items-start justify-between gap-4">
-      <div>
-        <h1 className="text-3xl font-bold text-utec-text">Curriculum</h1>
-        <p className="mt-1 text-sm text-utec-muted">
-        Consulta tu avance academico y los cursos pendientes por ciclo.
-        </p>
-      </div>
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-        <div className="rounded-2xl border border-utec-border bg-white p-4 shadow-[0_4px_15px_rgba(0,0,0,0.08)]">
-        <p className="text-xs font-semibold uppercase text-utec-muted">
-          Progreso General
-        </p>
-        <p className="mt-2 text-2xl font-bold text-utec-text">{progress}%</p>
-        <p className="text-xs text-utec-muted">
-          {approvedCredits} creditos aprobados de 200.
-        </p>
+        <div>
+          <h1 className="text-3xl font-bold text-utec-text">Curriculum</h1>
         </div>
-        <div className="rounded-2xl border border-utec-border bg-white p-4 shadow-[0_4px_15px_rgba(0,0,0,0.08)]">
-        <p className="text-xs font-semibold uppercase text-utec-muted">
-          Aprobado / Total
-        </p>
-        <p className="mt-2 text-2xl font-bold text-utec-text">
-          {totalCoursesApproved} / {" "}
-          {normalizedCourses.length}
-        </p>
-        <p className="text-xs text-utec-muted">
-          Cursos completados vs por completar.
-        </p>
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <div className="rounded-2xl border border-utec-border bg-white p-4 shadow-[0_4px_15px_rgba(0,0,0,0.08)]">
+            <p className="text-xs font-semibold uppercase text-utec-muted">
+              Progreso General
+            </p>
+            <p className="mt-2 text-2xl font-bold text-utec-text">{progress}%</p>
+            <p className="text-xs text-utec-muted">
+              {approvedCredits} creditos aprobados de 200.
+            </p>
+          </div>
+          <div className="rounded-2xl border border-utec-border bg-white p-4 shadow-[0_4px_15px_rgba(0,0,0,0.08)]">
+            <p className="text-xs font-semibold uppercase text-utec-muted">
+              Aprobado / Total
+            </p>
+            <p className="mt-2 text-2xl font-bold text-utec-text">
+              {totalCoursesApproved} / {" "}
+              {normalizedCourses.length}
+            </p>
+            <p className="text-xs text-utec-muted">
+              Cursos completados vs por completar.
+            </p>
+          </div>
         </div>
-      </div>
       </header>
 
       <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-utec-border bg-white p-5 shadow-[0_8px_25px_rgba(0,0,0,0.12)]">
-      <div>
-        <p className="text-sm font-medium text-utec-text">
-        Vista del plan de estudios
-        </p>
-        <p className="text-sm text-utec-muted">
-        Cambia la visualizacion para analizar por ciclo o estado.
-        </p>
-      </div>
-      <div className="flex gap-3">
-        <button
-        type="button"
-        onClick={() => setViewMode("cycle")}
-        className={`rounded-lg px-4 py-2 text-sm font-semibold transition ${
-          viewMode === "cycle"
-          ? "bg-utec-blue text-white"
-          : "border border-utec-border bg-white text-utec-muted hover:bg-gray-50"
-        }`}
-        >
-        Por ciclo
-        </button>
-        <button
-        type="button"
-        onClick={() => setViewMode("status")}
-        className={`rounded-lg px-4 py-2 text-sm font-semibold transition ${
-          viewMode === "status"
-          ? "bg-utec-blue text-white"
-          : "border border-utec-border bg-white text-utec-muted hover:bg-gray-50"
-        }`}
-        >
-        Por estado
-        </button>
-      </div>
+        <div>
+          <p className="text-sm font-medium text-utec-text">
+            Vista del plan de estudios
+          </p>
+          <p className="text-sm text-utec-muted">
+            Cambia la visualizacion para analizar por ciclo o estado.
+          </p>
+        </div>
+        <div className="flex gap-3">
+          <button
+            type="button"
+            onClick={() => setViewMode("cycle")}
+            className={`rounded-lg px-4 py-2 text-sm font-semibold transition ${viewMode === "cycle"
+              ? "bg-utec-blue text-white"
+              : "border border-utec-border bg-white text-utec-muted hover:bg-gray-50"
+              }`}
+          >
+            Por ciclo
+          </button>
+          <button
+            type="button"
+            onClick={() => setViewMode("status")}
+            className={`rounded-lg px-4 py-2 text-sm font-semibold transition ${viewMode === "status"
+              ? "bg-utec-blue text-white"
+              : "border border-utec-border bg-white text-utec-muted hover:bg-gray-50"
+              }`}
+          >
+            Por estado
+          </button>
+        </div>
       </div>
 
       <div className="space-y-6">
-      {filteredCourses.map((group) => (
-        <div key={group.cycle} className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-utec-text">{group.cycle}</h2>
-          <span className="text-sm font-medium text-utec-muted">
-          {group.courses.length} cursos
-          </span>
-        </div>
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {group.courses.map((course) => (
-          <div
-            key={`${group.cycle}-${course.code}`}
-            className="flex flex-col gap-3 rounded-2xl border border-utec-border bg-white p-5 shadow-[0_4px_15px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_25px_rgba(0,0,0,0.12)] transition"
-          >
+        {filteredCourses.map((group) => (
+          <div key={group.cycle} className="space-y-4">
             <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-semibold text-utec-text">{course.code}</p>
+              <h2 className="text-lg font-semibold text-utec-text">{group.cycle}</h2>
+              <span className="text-sm font-medium text-utec-muted">
+                {group.courses.length} cursos
+              </span>
             </div>
-            <span
-              className={`rounded-full px-3 py-1 text-xs font-semibold ${
-              statusLabels[course.status]?.color ?? "bg-gray-100 text-gray-700"
-              }`}
-            >
-              {statusLabels[course.status]?.text ?? course.status}
-            </span>
-            </div>
-            <p className="text-base font-semibold text-utec-text">
-            {course.name}
-            </p>
-            <div className="flex flex-wrap gap-3 text-sm text-utec-muted">
-            <span>Creditos: {course.credits}</span>
-            <span>Horas: {course.hours ?? "N/D"}</span>
-            <span>{course.typeLabel}</span>
-            </div>
-            {course.description ? (
-            <p className="text-sm text-utec-muted">{course.description}</p>
-            ) : null}
-            <div className="text-xs text-utec-muted">
-            <p className="font-semibold text-utec-secondary">Prerequisitos</p>
-            {course.prerequisites.length > 0 ? (
-              <ul className="mt-1 list-none pl-0">
-              {course.prerequisites.map((prereq) => (
-                <li key={`${course.code}-${prereq}`} className="mt-1">
-                {prereq}
-                </li>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+              {group.courses.map((course) => (
+                <div
+                  key={`${group.cycle}-${course.code}`}
+                  className="flex flex-col gap-3 rounded-2xl border border-utec-border bg-white p-5 shadow-[0_4px_15px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_25px_rgba(0,0,0,0.12)] transition"
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-semibold text-utec-text">{course.code}</p>
+                    </div>
+                    <span
+                      className={`rounded-full px-3 py-1 text-xs font-semibold ${statusLabels[course.status]?.color ?? "bg-gray-100 text-gray-700"
+                        }`}
+                    >
+                      {statusLabels[course.status]?.text ?? course.status}
+                    </span>
+                  </div>
+                  <p className="text-base font-semibold text-utec-text">
+                    {course.name}
+                  </p>
+                  <div className="flex flex-wrap gap-3 text-sm text-utec-muted">
+                    <span>Creditos: {course.credits}</span>
+                    <span>Horas: {course.hours ?? "N/D"}</span>
+                    <span>{course.typeLabel}</span>
+                  </div>
+                  {course.description ? (
+                    <p className="text-sm text-utec-muted">{course.description}</p>
+                  ) : null}
+                  <div className="text-xs text-utec-muted">
+                    <p className="font-semibold text-utec-secondary">Prerequisitos</p>
+                    {course.prerequisites.length > 0 ? (
+                      <ul className="mt-1 list-none pl-0">
+                        {course.prerequisites.map((prereq) => (
+                          <li key={`${course.code}-${prereq}`} className="mt-1">
+                            {prereq}
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="mt-1">Sin prerequisitos</p>
+                    )}
+                  </div>
+                </div>
               ))}
-              </ul>
-            ) : (
-              <p className="mt-1">Sin prerequisitos</p>
-            )}
             </div>
           </div>
-          ))}
-        </div>
-        </div>
-      ))}
+        ))}
       </div>
     </div>
-    );
+  );
 }

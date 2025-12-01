@@ -33,7 +33,7 @@ export default function CourseCatalog({
     return (
         <div
             className="flex w-full flex-col rounded-2xl border border-utec-border bg-white shadow-[0_10px_40px_rgba(0,0,0,0.15)] overflow-hidden lg:flex-[0.35]"
-            style={{ height: 'calc(100vh - 220px)' }}
+            style={{ height: 'calc(100vh - 140px)' }}
         >
             <div className="flex items-center justify-between p-6 pb-4">
                 <div>
@@ -76,8 +76,8 @@ export default function CourseCatalog({
                                     </span>
                                     {course.riskCategory && (
                                         <span className={`rounded-full px-3 py-1 text-xs font-semibold ${course.riskCategory === 'Riesgo' ? 'bg-red-100 text-red-700' :
-                                                course.riskCategory === 'Factible' ? 'bg-emerald-100 text-emerald-700' :
-                                                    'bg-amber-100 text-amber-700'
+                                            course.riskCategory === 'Factible' ? 'bg-emerald-100 text-emerald-700' :
+                                                'bg-amber-100 text-amber-700'
                                             }`}>
                                             {course.riskCategory}
                                         </span>
@@ -146,8 +146,8 @@ export default function CourseCatalog({
                                     type="button"
                                     onClick={() => onToggleCourse(course)}
                                     className={`text-sm font-semibold transition ${isSelected
-                                            ? 'text-utec-red hover:underline'
-                                            : 'text-utec-blue hover:underline'
+                                        ? 'text-utec-red hover:underline'
+                                        : 'text-utec-blue hover:underline'
                                         }`}
                                 >
                                     {isSelected ? 'Quitar del plan' : 'Añadir al plan'}
@@ -166,8 +166,8 @@ export default function CourseCatalog({
                         onClick={onEnroll}
                         disabled={isEnrolling}
                         className={`w-full rounded-lg px-6 py-3 text-center font-semibold text-white transition ${isEnrolling
-                                ? 'bg-gray-400 cursor-not-allowed'
-                                : 'bg-utec-blue hover:bg-blue-700'
+                            ? 'bg-gray-400 cursor-not-allowed'
+                            : 'bg-utec-blue hover:bg-blue-700'
                             }`}
                     >
                         {isEnrolling ? (

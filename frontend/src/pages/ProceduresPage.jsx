@@ -59,12 +59,7 @@ export default function ProceduresPage() {
   return (
     <div className="space-y-8">
       <header className="space-y-2">
-        <h1 className="text-3xl font-bold text-utec-text">Procedures</h1>
-        <p className="text-sm text-utec-muted">
-          Gestiona tus trámites académicos y administrativos desde un único
-          formulario. Adjunta la documentación necesaria y realiza seguimiento en
-          tiempo real.
-        </p>
+        <h1 className="text-3xl font-bold text-utec-text">Trámites</h1>
       </header>
 
       <section className="grid grid-cols-1 gap-6 lg:grid-cols-3">

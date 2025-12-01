@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import clsx from 'clsx';
 import { getStoredLogin } from '../api/api';
@@ -27,18 +27,27 @@ const clearStudentPlanningCache = (codPersona) => {
 export default function AppLayout() {
   const navigate = useNavigate();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
+  const [showUserInfo, setShowUserInfo] = useState(!sidebarCollapsed);
   const storedLogin = getStoredLogin();
-  
-  const cod_persona = storedLogin?.cod_persona; 
+
+  const cod_persona = storedLogin?.cod_persona;
   const [isModalOpen, setIsModalOpen] = useState(() => {
     if (!cod_persona) {
-      // Si no hay un ID de usuario, no mostramos el modal (no podríamos guardarlo).
       return false;
     }
-    // ya ha visto el modal. Si no lo ha visto, devuelve 'true'.
     return localStorage.getItem(`modalVisto_${cod_persona}`) !== 'true';
   });
-  // --- FIN DE LA MODIFICACIÓN ---
+
+  useEffect(() => {
+    if (sidebarCollapsed) {
+      setShowUserInfo(false);
+    } else {
+      const timer = setTimeout(() => {
+        setShowUserInfo(true);
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [sidebarCollapsed]);
 
   const alumnoInfo = storedLogin?.alumno_info ?? {};
   const fullName = [alumnoInfo.nombre, alumnoInfo.apellido]
@@ -50,7 +59,7 @@ export default function AppLayout() {
     <div className="flex h-screen text-utec-text">
       <aside
         className={clsx(
-          'flex-shrink-0 border-r border-utec-border bg-utec-surface py-8 transition-all duration-300',
+          'flex-shrink-0 border-r border-utec-border bg-utec-surface py-8 transition-all duration-300 overflow-hidden',
           sidebarCollapsed ? 'w-20 px-3' : 'w-72 px-6'
         )}
       >
@@ -75,7 +84,12 @@ export default function AppLayout() {
                 />
               </button>
               {!sidebarCollapsed && (
-                <div>
+                <div
+                  className={clsx(
+                    'whitespace-nowrap transition-opacity duration-10',
+                    showUserInfo ? 'opacity-100' : 'opacity-0'
+                  )}
+                >
                   <p className="text-base font-semibold">{fullName}</p>
                   <p className="text-sm text-utec-muted">{carrera}</p>
                 </div>
@@ -153,11 +167,8 @@ export default function AppLayout() {
         </div>
       </main>
 
-      {/* --- BLOQUE POP UP TEMPORAL --- */}
       {isModalOpen && (
-        // Overlay: fondo oscuro que cubre toda la pantalla
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-          {/* Contenedor del Modal: centrado y con estilos */}
           <div className="mx-4 w-full max-w-md rounded-2xl bg-white p-8 shadow-2xl">
             <h2 className="mb-4 text-2xl font-semibold text-gray-900">
               Mensaje Importante
@@ -170,15 +181,11 @@ export default function AppLayout() {
               <button
                 type="button"
                 onClick={() => {
-                  // --- INICIO DE LA MODIFICACIÓN ---
-                  // 1. Guardar en localStorage que *este usuario* ya vio el modal.
                   if (cod_persona) {
                     localStorage.setItem(`modalVisto_${cod_persona}`, 'true');
                   }
-                  // 2. Cerrar el modal.
                   setIsModalOpen(false);
-                  // --- FIN DE LA MODIFICACIÓN ---
-                }} // Cierra el modal al hacer clic
+                }}
                 className="rounded-lg bg-utec-blue px-6 py-2 text-sm font-medium text-white transition-colors hover:bg-utec-blue/80 focus:outline-none focus:ring-2 focus:ring-utec-blue/50"
               >
                 Omitir
@@ -187,7 +194,6 @@ export default function AppLayout() {
           </div>
         </div>
       )}
-      {/* --- BLOQUE POP UP TEMPORAL --- */}
     </div>
   );
 }

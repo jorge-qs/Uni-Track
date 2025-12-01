@@ -990,10 +990,6 @@ export default function EnrollmentPage() {
       <div className="space-y-8">
         <header className="space-y-2">
           <h1 className="text-3xl font-bold text-utec-text">Matricula IA</h1>
-          <p className="text-sm text-utec-muted">
-            Selecciona los cursos disponibles segun tus prerequisitos aprobados y organiza
-            tus horarios de manera eficiente.
-          </p>
         </header>
         <div className="rounded-xl border border-utec-border bg-white p-8 text-center">
           <p className="text-utec-muted">No tienes cursos disponibles en este momento.</p>
@@ -1018,10 +1014,6 @@ export default function EnrollmentPage() {
       <div className="space-y-8">
         <header className="space-y-2">
           <h1 className="text-3xl font-bold text-utec-text">Matricula IA</h1>
-          <p className="text-sm text-utec-muted">
-            Selecciona los cursos disponibles segun tus prerequisitos aprobados y organiza
-            tus horarios de manera eficiente.
-          </p>
         </header>
 
         <section
@@ -1042,7 +1034,7 @@ export default function EnrollmentPage() {
 
           <div
             className="space-y-4 overflow-y-auto rounded-2xl border border-utec-border bg-white p-6 shadow-[0_10px_40px_rgba(0,0,0,0.15)] w-full lg:flex-[0.65]"
-            style={{ maxHeight: 'calc(100vh - 120px)' }}
+            style={{ maxHeight: 'calc(100vh - 140px)' }}
           >
             <div className="flex items-center justify-between">
               <div>

@@ -41,10 +41,10 @@ const performanceInsights = [
 ];
 
 const quickAccess = [
-          { title: 'Curriculum', icon: 'auto_stories', path: '/curriculum' },
-          { title: 'Mis Notas', icon: 'monitoring', path: '/grades' },
-          { title: 'Procedures', icon: 'description', path: '/procedures' },
-          { title: 'Recursos Académicos', icon: 'library_books', path: '/resources' },
+  { title: 'Curriculum', icon: 'auto_stories', path: '/curriculum' },
+  { title: 'Mis Notas', icon: 'monitoring', path: '/grades' },
+  { title: 'Procedures', icon: 'description', path: '/procedures' },
+  { title: 'Recursos Académicos', icon: 'library_books', path: '/resources' },
 ];
 
 export default function HomePage() {
@@ -83,12 +83,8 @@ export default function HomePage() {
     <div className="space-y-8">
       <header className="space-y-2">
         <h1 className="text-3xl font-bold text-utec-text">
-          {`Welcome back, ${fullName}`}
+          {`Bienvenido, ${fullName}`}
         </h1>
-        <p className="text-base text-utec-muted">
-          Resumen académico del ciclo en curso. Mantente al día con tus
-          actividades y métricas clave.
-        </p>
       </header>
 
       <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -111,7 +107,7 @@ export default function HomePage() {
         <div className="rounded-2xl border border-utec-border bg-white p-6 shadow-[0_8px_25px_rgba(0,0,0,0.12)] lg:col-span-2">
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-semibold text-utec-text">
-              Recent activity &amp; announcements
+              Actividades recientes &amp; anuncios
             </h2>
             <button
               type="button"
@@ -164,7 +160,7 @@ export default function HomePage() {
 
       <section>
         <h2 className="mb-4 text-lg font-semibold text-utec-text">
-          Quick access
+          Accesos rápidos
         </h2>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
           {quickAccess.map((item) => (

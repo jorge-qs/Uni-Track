@@ -80,10 +80,6 @@ export default function ResourcesPage() {
           <h1 className="text-3xl font-bold text-utec-text">
             Recursos Académicos
           </h1>
-          <p className="text-sm text-utec-muted">
-            Accede a material de apoyo organizado por curso. Guarda tus favoritos y
-            mantén a mano los documentos clave de cada asignatura.
-          </p>
         </header>
 
         <div className="rounded-2xl border border-utec-border bg-yellow-50/60 p-8 text-center">
@@ -105,10 +101,6 @@ export default function ResourcesPage() {
         <h1 className="text-3xl font-bold text-utec-text">
           Recursos Académicos
         </h1>
-        <p className="text-sm text-utec-muted">
-          Accede a material de apoyo organizado por curso. Guarda tus favoritos y
-          mantén a mano los documentos clave de cada asignatura.
-        </p>
       </header>
 
       <section className="grid grid-cols-1 gap-6 lg:grid-cols-2">
