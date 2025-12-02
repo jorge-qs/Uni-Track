@@ -98,12 +98,12 @@ export default function TutorialOverlay() {
                 className="absolute flex flex-col gap-3 rounded-xl bg-white p-6 shadow-2xl transition-all duration-300 ease-in-out"
                 style={{
                     ...(targetRect
-                        ? getTooltipPosition(targetRect, currentStep.placement)
+                        ? getTooltipPosition(targetRect, currentStep.placement, currentStep.width)
                         : {
                             top: '50%',
                             left: '50%',
                             transform: 'translate(-50%, -50%)',
-                            maxWidth: '400px',
+                            maxWidth: currentStep.width ? `${currentStep.width}px` : '400px',
                             width: '90%',
                         }),
                 }}
@@ -137,9 +137,9 @@ export default function TutorialOverlay() {
     );
 }
 
-function getTooltipPosition(rect, placement) {
+function getTooltipPosition(rect, placement, customWidth) {
     const gap = 16;
-    const width = 320; // Estimated width
+    const width = customWidth || 320; // Default width
 
     switch (placement) {
         case 'right':

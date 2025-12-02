@@ -30,7 +30,7 @@ export const TutorialProvider = ({ children }) => {
         },
         {
             id: 'go-enrollment',
-            targetId: 'tutorial-sidebar',
+            targetId: 'nav-item-enrollment',
             title: 'Matrícula IA',
             content: 'Vamos a la sección de Matrícula IA, donde puedes elegir a que cursos matricularte el próximo ciclo.',
             placement: 'right',
@@ -42,6 +42,14 @@ export const TutorialProvider = ({ children }) => {
             title: 'Cursos Disponibles',
             content: 'Aquí puedes ver todos los cursos disponibles para tu matrícula. Aquí puedes elegir tu seccion, evaluar la factibilidad y añadirlo a tu plan.',
             placement: 'right',
+        },
+        {
+            id: 'risk-category',
+            targetId: 'tutorial-risk-category',
+            title: 'Prediccion de Desempeño por Curso',
+            content: 'Cada curso muestra una categoría de riesgo (Factible, Normal, Riesgo) para ayudarte a tomar mejores decisiones.',
+            placement: 'right',
+            width: 500,
         },
         {
             id: 'calendar',

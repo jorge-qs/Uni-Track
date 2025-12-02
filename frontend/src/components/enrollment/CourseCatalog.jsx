@@ -54,7 +54,7 @@ export default function CourseCatalog({
                 </div>
             )}
             <div className="flex-1 overflow-y-auto px-6 pb-6 space-y-4" style={{ maxHeight: 'calc(100vh - 280px)' }}>
-                {courses.map((course) => {
+                {courses.map((course, index) => {
                     const isSelected = selectedCodes.has(course.code);
                     return (
                         <div
@@ -76,10 +76,12 @@ export default function CourseCatalog({
                                         {course.credits} creditos
                                     </span>
                                     {course.riskCategory && (
-                                        <span className={`rounded-full px-3 py-1 text-xs font-semibold ${course.riskCategory === 'Riesgo' ? 'bg-red-100 text-red-700' :
-                                            course.riskCategory === 'Factible' ? 'bg-emerald-100 text-emerald-700' :
-                                                'bg-amber-100 text-amber-700'
-                                            }`}>
+                                        <span
+                                            id={index === 0 ? 'tutorial-risk-category' : undefined}
+                                            className={`rounded-full px-3 py-1 text-xs font-semibold ${course.riskCategory === 'Riesgo' ? 'bg-red-100 text-red-700' :
+                                                course.riskCategory === 'Factible' ? 'bg-emerald-100 text-emerald-700' :
+                                                    'bg-amber-100 text-amber-700'
+                                                }`}>
                                             {course.riskCategory}
                                         </span>
                                     )}

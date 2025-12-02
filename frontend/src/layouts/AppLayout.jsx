@@ -102,6 +102,7 @@ export default function AppLayout() {
                 {primaryNav.map((item) => (
                   <NavLink
                     key={item.path}
+                    id={`nav-item-${item.path.replace('/', '')}`}
                     to={item.path}
                     className={({ isActive }) =>
                       clsx(
