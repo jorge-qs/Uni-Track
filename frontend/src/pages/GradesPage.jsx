@@ -10,6 +10,7 @@ import {
   YAxis,
 } from "recharts";
 import { getStoredLogin } from "../api/api";
+import { formatCourseName } from "../utils/courseNameFormatter";
 
 const formatNumber = (value, digits = 2) =>
   typeof value === "number" ? value.toFixed(digits) : "--";
@@ -213,7 +214,7 @@ export default function GradesPage() {
                             </td>
                             <td className="px-4 py-3">
                               <div className="font-medium">
-                                {course.curso ?? "Curso sin nombre"}
+                                {formatCourseName(course.curso) ?? "Curso sin nombre"}
                               </div>
                             </td>
                             <td

@@ -1,4 +1,5 @@
 import React from 'react';
+import { formatCourseName } from '../../utils/courseNameFormatter';
 
 const daysOfWeek = [
     { key: 'monday', label: 'Lunes', shortLabel: 'Lun' },
@@ -68,7 +69,7 @@ export default function CourseCatalog({
                                         {course.code}
                                     </p>
                                     <p className="text-base font-semibold text-utec-text">
-                                        {course.name}
+                                        {formatCourseName(course.name)}
                                     </p>
                                 </div>
                                 <div className="flex flex-col items-end gap-2">

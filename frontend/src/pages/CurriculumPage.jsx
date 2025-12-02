@@ -1,6 +1,7 @@
 ﻿
 import { useMemo, useState } from "react";
 import { getStoredLogin } from "../api/api";
+import { formatCourseName } from "../utils/courseNameFormatter";
 
 const statusLabels = {
   approved: { text: "Aprobado", color: "bg-green-100 text-green-700" },
@@ -64,7 +65,7 @@ export default function CurriculumPage() {
 
       return {
         code: course?.cod_curso ?? "SIN-COD",
-        name: course?.curso ?? "Curso sin nombre",
+        name: formatCourseName(course?.curso) ?? "Curso sin nombre",
         credits: course?.creditos ?? 0,
         family: course?.familia ?? "N/D",
         type: course?.tipo ?? "O",

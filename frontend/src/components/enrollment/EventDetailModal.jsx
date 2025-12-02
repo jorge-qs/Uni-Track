@@ -1,4 +1,5 @@
 import React from 'react';
+import { formatCourseName } from '../../utils/courseNameFormatter';
 
 const daysOfWeek = [
     { key: 'monday', label: 'Lunes', shortLabel: 'Lun' },
@@ -46,7 +47,7 @@ export default function EventDetailModal({
                         <h3 className="text-xl font-bold text-utec-text">
                             {event.code}
                         </h3>
-                        <p className="text-sm text-utec-muted">{event.name}</p>
+                        <p className="text-sm text-utec-muted">{formatCourseName(event.name)}</p>
                     </div>
                     <button
                         onClick={onClose}

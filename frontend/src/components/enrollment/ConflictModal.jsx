@@ -1,4 +1,5 @@
 import React from 'react';
+import { formatCourseName } from '../../utils/courseNameFormatter';
 
 export default function ConflictModal({
     conflictData,
@@ -23,7 +24,7 @@ export default function ConflictModal({
                     <div className="flex-1">
                         <h3 className="text-xl font-bold text-red-600">Conflicto de Horario</h3>
                         <p className="text-sm text-utec-muted mt-1">
-                            El curso <span className="font-semibold">{conflictData.course.code} - {conflictData.course.name}</span> tiene horarios que se solapan con:
+                            El curso <span className="font-semibold">{conflictData.course.code} - {formatCourseName(conflictData.course.name)}</span> tiene horarios que se solapan con:
                         </p>
                     </div>
                 </div>
@@ -34,7 +35,7 @@ export default function ConflictModal({
                             <span className="material-symbols-outlined text-base text-red-600 mt-0.5">schedule</span>
                             <div className="text-sm">
                                 <p className="font-semibold text-utec-text">
-                                    {conflict.course.code} - {conflict.course.name}
+                                    {conflict.course.code} - {formatCourseName(conflict.course.name)}
                                 </p>
                                 <p className="text-utec-muted">
                                     {conflict.day} • {conflict.time}

@@ -1,4 +1,5 @@
 import React from 'react';
+import { formatCourseName } from '../../utils/courseNameFormatter';
 
 export default function EnrollmentConfirmModal({
     isOpen,
@@ -36,7 +37,7 @@ export default function EnrollmentConfirmModal({
                         <div key={course.code} className="flex items-center justify-between rounded-lg bg-white p-3 shadow-sm">
                             <div>
                                 <p className="font-semibold text-utec-text">{course.code}</p>
-                                <p className="text-xs text-utec-muted">{course.name}</p>
+                                <p className="text-xs text-utec-muted">{formatCourseName(course.name)}</p>
                             </div>
                             <span className="rounded-full bg-utec-blue/10 px-2 py-1 text-xs font-semibold text-utec-blue">
                                 {course.credits} créditos

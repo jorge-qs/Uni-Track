@@ -1,4 +1,5 @@
 import React from 'react';
+import { formatCourseName } from '../../utils/courseNameFormatter';
 
 const scheduleDaysOrder = ['Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab', 'Dom'];
 
@@ -172,7 +173,8 @@ export default function RecommendationModal({
                                 <div className="flex flex-wrap gap-2">
                                     {bestRecommendedSchedule.cursos.length > 0 ? (
                                         bestRecommendedSchedule.cursos.map((codigo, idx) => {
-                                            const courseName = courseCatalog.find(c => c.code === codigo)?.name || codigo;
+                                            const rawName = courseCatalog.find(c => c.code === codigo)?.name || codigo;
+                                            const courseName = formatCourseName(rawName);
                                             return (
                                                 <span
                                                     key={`${codigo}-${idx}`}
@@ -239,7 +241,8 @@ export default function RecommendationModal({
                                     {plan.cursos.length > 0 ? (
                                         <div className="flex flex-wrap gap-2">
                                             {plan.cursos.map((codigo) => {
-                                                const courseName = courseCatalog.find(c => c.code === codigo)?.name || codigo;
+                                                const rawName = courseCatalog.find(c => c.code === codigo)?.name || codigo;
+                                                const courseName = formatCourseName(rawName);
                                                 return (
                                                     <span
                                                         key={`${plan.id}-${codigo}`}
