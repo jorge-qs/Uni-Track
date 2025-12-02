@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { getRecursosMatriculados } from '../api/api';
+import { formatCourseName } from '../utils/courseNameFormatter';
 
 export default function ResourcesPage() {
   const [resourceGroups, setResourceGroups] = useState([]);
@@ -31,7 +32,7 @@ export default function ResourcesPage() {
         if (response && response.success) {
           // Transformar la respuesta a formato esperado
           const groups = enrollment.courses.map(course => ({
-            course: `${course.code} - ${course.name}`,
+            course: `${course.code} - ${formatCourseName(course.name)}`,
             courseCode: course.code,
             description: response.cursos[course.code]?.descripcion || 'Sin descripción disponible',
             resources: response.cursos[course.code]?.recursos || [],
