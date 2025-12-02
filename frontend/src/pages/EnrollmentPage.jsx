@@ -1033,6 +1033,7 @@ export default function EnrollmentPage() {
           />
 
           <div
+            id="tutorial-calendar"
             className="space-y-4 overflow-y-auto rounded-2xl border border-utec-border bg-white p-6 shadow-[0_10px_40px_rgba(0,0,0,0.15)] w-full lg:flex-[0.65]"
             style={{ maxHeight: 'calc(100vh - 140px)' }}
           >
@@ -1058,6 +1059,7 @@ export default function EnrollmentPage() {
                 </div>
 
                 <button
+                  id="tutorial-why-btn"
                   onClick={cargarAnalisis}
                   disabled={loading}
                   className="group flex flex-col items-center gap-1 disabled:opacity-70 disabled:cursor-not-allowed"
@@ -1086,6 +1088,7 @@ export default function EnrollmentPage() {
               </div>
 
               <button
+                id="tutorial-recommend-btn"
                 onClick={handleRecommendBestSchedule}
                 disabled={loadingRecommendation || courseCatalog.length === 0}
                 className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition ${loadingRecommendation || courseCatalog.length === 0

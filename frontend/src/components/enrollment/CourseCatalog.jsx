@@ -32,6 +32,7 @@ export default function CourseCatalog({
 }) {
     return (
         <div
+            id="tutorial-course-catalog"
             className="flex w-full flex-col rounded-2xl border border-utec-border bg-white shadow-[0_10px_40px_rgba(0,0,0,0.15)] overflow-hidden lg:flex-[0.35]"
             style={{ height: 'calc(100vh - 140px)' }}
         >
