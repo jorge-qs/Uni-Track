@@ -1,4 +1,5 @@
 import { useMemo, useState, useEffect } from 'react';
+import { useTutorial } from '../context/TutorialContext';
 import { getStoredLogin, predecirNota, predecirNotasPorMatricula, recomendarMejorHorario, getRecomendacionIA, calculateScore } from '../api/api';
 import HorarioModal from './AiPage';
 import CourseCatalog from '../components/enrollment/CourseCatalog';
@@ -185,6 +186,18 @@ export default function EnrollmentPage() {
   const [loadingAnalisisData, setLoadingAnalisisData] = useState(false);
   const [allScores, setAllScores] = useState([]);
   const [currentScore, setCurrentScore] = useState(null);
+
+  const { isActive, currentStep } = useTutorial();
+
+  // Auto-select first course during tutorial to show "Why?" section
+  useEffect(() => {
+    if (isActive && (currentStep?.id === 'calendar' || currentStep?.id === 'recommend' || currentStep?.id === 'why')) {
+      if (selectedCourses.length === 0 && courseCatalog.length > 0) {
+        const firstCourse = courseCatalog[0];
+        handleToggleCourse(firstCourse);
+      }
+    }
+  }, [isActive, currentStep, courseCatalog, selectedCourses]);
 
   const cargarAnalisis = async () => {
     // Validación simple
@@ -1042,50 +1055,53 @@ export default function EnrollmentPage() {
                 <h2 className="text-lg font-semibold text-utec-text">Calendario tentativo</h2>
                 <span className="text-sm text-utec-muted">Formato semanal - 7am a 10pm</span>
               </div>
-              <div className="flex items-center justify-between p-4 rounded-lg bg-white gap-6">
-                <div className="flex flex-col items-start gap-2">
-                  <span className="text-sm font-medium text-gray-600">
-                    Nivel de recomendación
-                  </span>
-                  {recommendationLevel ? (
-                    <span className={`rounded-full px-3 py-1 text-xs font-semibold ${recommendationLevel.color}`}>
-                      {recommendationLevel.label}
-                    </span>
-                  ) : (
-                    <span className="text-xs text-gray-400 italic">
-                      (Selecciona un horario)
-                    </span>
-                  )}
-                </div>
 
-                <button
-                  id="tutorial-why-btn"
-                  onClick={cargarAnalisis}
-                  disabled={loading}
-                  className="group flex flex-col items-center gap-1 disabled:opacity-70 disabled:cursor-not-allowed"
-                >
-                  <span className={`text-[10px] font-medium text-utec-blue transition-opacity duration-200 
-                    ${loading ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
-                    {loading ? 'Analizando...' : '¿Por qué?'}
-                  </span>
-
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-utec-blue text-white shadow transition-all duration-200 group-hover:scale-110 group-hover:shadow-md">
-                    {loading ? (
-                      <span className="material-symbols-outlined animate-spin text-sm">
-                        sync
+              {selectedCourses.length > 0 && (
+                <div className="flex items-center justify-between p-4 rounded-lg bg-white gap-6">
+                  <div className="flex flex-col items-start gap-2">
+                    <span className="text-sm font-medium text-gray-600">
+                      Nivel de recomendación
+                    </span>
+                    {recommendationLevel ? (
+                      <span className={`rounded-full px-3 py-1 text-xs font-semibold ${recommendationLevel.color}`}>
+                        {recommendationLevel.label}
                       </span>
                     ) : (
-                      <span className="font-bold text-sm">?</span>
+                      <span className="text-xs text-gray-400 italic">
+                        (Selecciona un horario)
+                      </span>
                     )}
                   </div>
-                </button>
 
-                <HorarioModal
-                  showExplanation={showExplanation}
-                  setShowExplanation={setShowExplanation}
-                  data={analisisData}
-                />
-              </div>
+                  <button
+                    id="tutorial-why-btn"
+                    onClick={cargarAnalisis}
+                    disabled={loading}
+                    className="group flex flex-col items-center gap-1 disabled:opacity-70 disabled:cursor-not-allowed"
+                  >
+                    <span className={`text-[10px] font-medium text-utec-blue transition-opacity duration-200 
+                        ${loading ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
+                      {loading ? 'Analizando...' : '¿Por qué?'}
+                    </span>
+
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-utec-blue text-white shadow transition-all duration-200 group-hover:scale-110 group-hover:shadow-md">
+                      {loading ? (
+                        <span className="material-symbols-outlined animate-spin text-sm">
+                          sync
+                        </span>
+                      ) : (
+                        <span className="font-bold text-sm">?</span>
+                      )}
+                    </div>
+                  </button>
+
+                  <HorarioModal
+                    showExplanation={showExplanation}
+                    setShowExplanation={setShowExplanation}
+                    data={analisisData}
+                  />
+                </div>
+              )}
 
               <button
                 id="tutorial-recommend-btn"
