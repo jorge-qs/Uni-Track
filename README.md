@@ -1144,17 +1144,6 @@ railway run alembic upgrade head
 
 ---
 
-## 🗺️ Roadmap
-
-### Versión Actual (v1.0) ✅
-- Sistema de autenticación básico
-- Predicción de riesgo académico
-- Recomendación de matrícula
-- Visualización de currículo y notas
-- Simulador de horarios
-- Recursos académicos
-
----
 
 ## 👥 Autores
 
