@@ -471,14 +471,6 @@ Experimentos completos de entrenamiento y evaluación de modelos:
 - Matrices de confusión y curvas ROC
 - Análisis de falsos positivos/negativos
 
-<!-- Placeholder para imagen de feature importance -->
-> **📸 Imagen:** Agrega aquí el gráfico de feature importance
-> Ruta sugerida: `docs/ml_images/feature_importance.png`
-
-<!-- Placeholder para imagen de matriz de confusión -->
-> **📸 Imagen:** Agrega aquí la matriz de confusión del mejor modelo
-> Ruta sugerida: `docs/ml_images/confusion_matrix.png`
-
 ### 📊 Resumen del Pipeline de Datos
 
 ```
