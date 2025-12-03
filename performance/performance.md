@@ -1,69 +1,66 @@
-# Análisis de Escalabilidad y Rendimiento - Uni-Track
+# Guía de Pruebas de Rendimiento y Métricas
 
-Este documento detalla el análisis de la arquitectura actual del proyecto Uni-Track, identificando puntos críticos para la escalabilidad y proponiendo mejoras de rendimiento.
+Este documento describe los escenarios de prueba implementados y cómo interpretar las gráficas generadas por el sistema de benchmarking.
 
-## 1. Arquitectura General
+## 1. Escenarios de Prueba (Tests)
 
-El proyecto sigue una arquitectura monolítica modularizada, contenerizada con Docker.
+El archivo `locustfile.py` define el comportamiento de los usuarios simulados. Se han configurado dos tareas principales con diferentes pesos (frecuencia de ejecución):
 
-*   **Backend:** FastAPI (Python) con Uvicorn.
-*   **Frontend:** React (Vite) servido como SPA.
-*   **Base de Datos:** PostgreSQL 15.
-*   **ML/Data:** Modelos de Scikit-learn/LightGBM y procesamiento con Pandas integrados directamente en el backend.
+### A. `view_dashboard` (Peso: 1)
+*   **Acción:** Realiza una petición GET a la raíz (`/`).
+*   **Objetivo:** Simular la carga base del sistema cuando los usuarios navegan por la interfaz principal.
+*   **Representa:** Operaciones ligeras de lectura, carga de estáticos o consultas simples a la base de datos.
+*   **Impacto Esperado:** Bajo consumo de CPU y memoria. Debería tener tiempos de respuesta muy rápidos (< 50ms).
 
-## 2. Puntos Críticos de Rendimiento (Bottlenecks)
+### B. `predict_dropout_risk` (Peso: 3)
+*   **Acción:** Realiza una petición POST a `/api/v1/prediccion/predecir` con datos aleatorios de estudiantes y cursos reales.
+*   **Objetivo:** Estresar el componente de Machine Learning (modelo LightGBM/XGBoost).
+*   **Representa:** La funcionalidad core del negocio. Cada petición requiere:
+    1.  Recibir el JSON.
+    2.  Preprocesar los datos (codificación, validación).
+    3.  Ejecutar la inferencia del modelo (CPU intensivo).
+    4.  Devolver la probabilidad de deserción.
+*   **Impacto Esperado:** Alto consumo de CPU. Es el principal cuello de botella. Si el servidor se satura, la latencia de esta tarea aumentará drásticamente.
 
-### 2.1. Inferencia de Machine Learning (Crítico)
-El análisis del archivo `backend/app/ml_models/predictor_nota.py` revela problemas significativos de escalabilidad:
+---
 
-*   **Carga de Datos en Memoria:** La clase `PredictorNota` carga un archivo CSV de ~80MB (`predictor_nota_data.csv`) en memoria usando Pandas al iniciar.
-    *   *Impacto:* Con múltiples workers de Uvicorn (e.g., 4 workers), el consumo de RAM se multiplica (4 x 80MB + overhead), lo que puede saturar servidores pequeños.
-*   **Ejecución Síncrona y Bloqueante:** El método `predecir_nota` realiza filtrado de DataFrames (`self.df_features[...]`) de manera síncrona.
-    *   *Impacto:* Pandas libera el GIL para algunas operaciones, pero muchas manipulaciones son intensivas en CPU. Al ejecutarse en el hilo principal de FastAPI, esto **bloquea el Event Loop**, impidiendo que el servidor procese otras solicitudes concurrentes mientras realiza una predicción.
-*   **Singleton:** El uso de un Singleton (`get_predictor`) mitiga la recarga del modelo por petición, pero no resuelve el problema de memoria por proceso worker.
+## 2. Interpretación de las Gráficas
 
-### 2.2. Base de Datos
-*   **Consultas:** El uso de ORM (SQLAlchemy) es conveniente, pero se debe vigilar el problema de "N+1 queries" al acceder a relaciones (e.g., obtener un alumno y sus matrículas).
-*   **Índices:** Tablas críticas como `matricula` o las tablas subyacentes a las features del modelo ML necesitarán índices compuestos (e.g., `cod_persona` + `cod_curso`) para búsquedas rápidas si se migran a SQL.
+El script `generate_graphs.py` genera visualizaciones clave para entender la salud del sistema.
 
-### 2.3. Frontend
-*   **Build:** Actualmente se ejecuta en modo desarrollo (`vite`) dentro del contenedor. Para producción, se debe generar el build estático (`npm run build`) y servirlo con un servidor web ligero (Nginx) o CDN, eliminando la carga de Node.js para servir estáticos.
+### 1. Requests per Second (RPS) - `rps_graph.png`
+*   **Qué es:** Número de peticiones que el servidor completa exitosamente por segundo.
+*   **Interpretación:**
+    *   **Curva Ascendente:** El sistema está escalando bien y aceptando más carga.
+    *   **Meseta (Línea Plana):** Se ha alcanzado el límite de capacidad del servidor (Saturation Point). Aunque lleguen más usuarios, el servidor no puede procesar más rápido.
+    *   **Caída:** El servidor está fallando o rechazando conexiones (Timeouts/Errores 500).
 
-## 3. Estrategia de Escalabilidad
+### 2. Response Time (Mediana y p95) - `response_time_graph.png`
+*   **Qué es:** Cuánto tiempo tarda el servidor en responder (en milisegundos).
+    *   **Mediana (50%):** El tiempo que experimenta el usuario "promedio".
+    *   **p95 (95th Percentile):** El tiempo que experimentan los usuarios más lentos (el 5% peor). Es crítico para garantizar calidad de servicio (SLA).
+*   **Interpretación:**
+    *   **Estable:** El sistema maneja la carga cómodamente.
+    *   **Picos:** Bloqueos momentáneos (e.g., Garbage Collection, bloqueo de base de datos).
+    *   **Crecimiento Exponencial:** El sistema está saturado (cola de peticiones llena).
+    *   **Valores Ideales:** < 200ms para APIs web, < 500ms para inferencia ML compleja.
 
-### 3.1. Corto Plazo (Optimizaciones Inmediatas)
+### 3. Latencia de Inferencia - `inference_latency_graph.png`
+*   **Qué es:** Tiempo específico que toma el endpoint de predicción (`predict_dropout_risk`). Aísla el rendimiento del modelo de ML del resto del sistema.
+*   **Interpretación:**
+    *   Si esta gráfica sube pero el uso de CPU es bajo, puede haber bloqueos de I/O (lectura de disco/BD).
+    *   Si sigue la misma forma que el uso de CPU, el modelo está limitado por la capacidad de procesamiento.
 
-1.  **Mover Datos a Base de Datos:**
-    *   Migrar `predictor_nota_data.csv` a una tabla en PostgreSQL.
-    *   Reemplazar el filtrado de Pandas en memoria por una consulta SQL eficiente (`SELECT ... WHERE cod_persona = X AND cod_curso = Y`).
-    *   Esto reduce el uso de RAM drásticamente y aprovecha la indexación de la BD.
+### 4. Uso de CPU - `cpu_usage_graph.png`
+*   **Qué es:** Porcentaje de CPU utilizado por el proceso del servidor (`uvicorn`).
+*   **Interpretación:**
+    *   **Bajo (< 20%):** El sistema está subutilizado o limitado por I/O (esperando base de datos).
+    *   **Alto (> 80%):** El sistema está CPU-bound (típico en ML). Es señal de que se necesitan más cores o réplicas.
+    *   **100%:** Saturación total. La latencia aumentará inmediatamente.
 
-2.  **Ejecución Asíncrona:**
-    *   Si se mantiene Pandas, ejecutar la predicción en un *Thread Pool* para no bloquear el loop de FastAPI:
-        ```python
-        from fastapi.concurrency import run_in_threadpool
-        prediction = await run_in_threadpool(predictor.predecir_nota, ...)
-        ```
-
-3.  **Caching:**
-    *   Implementar **Redis** para cachear predicciones frecuentes. Si un alumno consulta su riesgo en el mismo curso varias veces, no se debe recalcular.
-
-### 3.2. Largo Plazo (Escalabilidad Horizontal)
-
-1.  **Separación de Servicios (Microservicios):**
-    *   Extraer la lógica de ML a un servicio dedicado (e.g., "ML Worker" o "Prediction Service").
-    *   Comunicación vía cola de mensajes (Celery/RabbitMQ) o HTTP interno.
-    *   Permite escalar el API (I/O bound) independientemente del ML (CPU bound).
-
-2.  **Infraestructura:**
-    *   Implementar un Load Balancer (Nginx/Traefik) frente a múltiples réplicas del contenedor Backend.
-    *   Usar una instancia gestionada de PostgreSQL (e.g., AWS RDS) con Read Replicas para reportes.
-
-## 4. Resumen de Recomendaciones
-
-| Prioridad | Acción | Beneficio |
-| :--- | :--- | :--- |
-| **Alta** | Migrar CSV de features a PostgreSQL | Reducción drástica de RAM (-80MB/worker) y latencia estable. |
-| **Alta** | Ejecutar predicción en ThreadPool | Evitar bloqueo del servidor ante múltiples usuarios. |
-| **Media** | Implementar Caching (Redis) | Respuesta instantánea para consultas repetidas. |
-| **Media** | Build de Frontend para Producción | Mejor carga inicial y menor consumo de recursos. |
+### 5. RAM Footprint - `ram_usage_graph.png`
+*   **Qué es:** Memoria RAM consumida por el proceso (RSS - Resident Set Size).
+*   **Interpretación:**
+    *   **Crecimiento Constante (Memory Leak):** Si la línea sube y nunca baja, el código tiene una fuga de memoria. El servidor eventualmente crasheará (OOM Kill).
+    *   **Salto Inicial:** Carga de modelos y librerías (Pandas/Scikit-learn).
+    *   **Estable:** Comportamiento saludable.
