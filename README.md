@@ -1,4 +1,4 @@
-# 🎓 UniTrack - Plataforma Integral de Apoyo Académico Universitario
+# 🎓 EDUTRACK - Plataforma Integral de Apoyo Académico Universitario
 
 <div align="center">
 
