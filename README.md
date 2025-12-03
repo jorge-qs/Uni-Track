@@ -1154,38 +1154,6 @@ railway run alembic upgrade head
 - Simulador de horarios
 - Recursos académicos
 
-### Próximas Mejoras (v2.0) 🔄
-
-#### Funcionalidades
-- [ ] Autenticación con JWT y refresh tokens
-- [ ] Sistema de notificaciones push
-- [ ] Integración con calendario personal (Google Calendar)
-- [ ] Foro de discusión por curso
-- [ ] Sistema de tutoría peer-to-peer
-- [ ] Exportación de reportes académicos (PDF)
-
-#### Machine Learning
-- [ ] Reentrenamiento automático de modelos
-- [ ] Modelo de predicción de tiempo de graduación
-- [ ] Detección de patrones de abandono académico
-- [ ] Recomendador de electivos basado en intereses
-- [ ] Sistema de early warning para riesgo académico
-
-#### UX/UI
-- [ ] Modo oscuro
-- [ ] Aplicación móvil (React Native)
-- [ ] Onboarding interactivo
-- [ ] Dashboard personalizable
-- [ ] Accesibilidad WCAG 2.1 AA
-
-#### Infraestructura
-- [ ] Migración a microservicios
-- [ ] Cache con Redis
-- [ ] CDN para recursos estáticos
-- [ ] Monitoreo con Prometheus + Grafana
-- [ ] CI/CD con GitHub Actions
-- [ ] Tests automatizados (unit, integration, e2e)
-
 ---
 
 ## 👥 Autores
