@@ -274,9 +274,6 @@ Análisis exhaustivo del dataset académico que incluye:
 - Patrones temporales de rendimiento estudiantil
 - Análisis de tasas de aprobación por tipo de curso
 
-<!-- Placeholder para imagen de distribución de notas -->
-> **📸 Imagen:** Agrega aquí un gráfico de distribución de notas del EDA
-> Ruta sugerida: `docs/ml_images/eda_distribucion_notas.png`
 
 ### 🧹 Pipeline de Limpieza de Datos
 
@@ -302,9 +299,6 @@ Implementa **6 funciones críticas** de limpieza de datos para garantizar la cal
   - Filtra ciclos anómalos que indican posible abandono o error de registro
 - **Visualización:** Histograma de distribución de promedios ponderados
 
-<!-- Placeholder para imagen de promedios extremos -->
-> **📸 Imagen:** Agrega aquí el histograma de distribución de promedios
-> Ruta sugerida: `docs/ml_images/cleaning_promedios_extremos.png`
 
 #### 3. Eliminación de Notas Bajas
 **Función:** `delete_notas_bajas(df, limit=2.5)`
@@ -324,9 +318,6 @@ Implementa **6 funciones críticas** de limpieza de datos para garantizar la cal
   SHOCK = PROMEDIO_CICLO_ACTUAL - PROMEDIO_HISTORICO_PREVIO
   ```
 
-<!-- Placeholder para imagen de eventos de shock -->
-> **📸 Imagen:** Agrega aquí un gráfico de detección de shocks académicos
-> Ruta sugerida: `docs/ml_images/cleaning_eventos_shock.png`
 
 #### 5. Limpieza de Ciclos de Baja Carga Académica
 **Función:** `limpiar_ciclos_baja_carga(df, limit_creditos=6)`
@@ -366,14 +357,6 @@ Implementa **6 funciones críticas** de limpieza de datos para garantizar la cal
 - **Output:** Diccionario `{CURSO: CLUSTER_DIFICULTAD}`
 
 **Resultado:** 8 clusters de dificultad identificados
-
-<!-- Placeholder para imagen de clustering -->
-> **📸 Imagen:** Agrega aquí el gráfico de Silhouette Score vs K clusters
-> Ruta sugerida: `docs/ml_images/clustering_silhouette.png`
-
-<!-- Placeholder para imagen de clusters -->
-> **📸 Imagen:** Agrega aquí la visualización de los 8 clusters de dificultad
-> Ruta sugerida: `docs/ml_images/clustering_cursos_dificultad.png`
 
 #### 2. Features de Inasistencia
 
