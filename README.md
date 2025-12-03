@@ -16,6 +16,7 @@
 - [Tecnologías Utilizadas](#-tecnologías-utilizadas)
 - [Arquitectura del Sistema](#-arquitectura-del-sistema)
 - [Modelos de Machine Learning](#-modelos-de-machine-learning)
+- [Feature Engineering y Tratamiento de Datos](#-feature-engineering-y-tratamiento-de-datos)
 - [Estructura del Proyecto](#-estructura-del-proyecto)
 - [Instalación y Configuración](#-instalación-y-configuración)
 - [Guía de Uso](#-guía-de-uso)
@@ -258,6 +259,296 @@ UniTrack integra **tres modelos principales** de Machine Learning para proporcio
 
 ---
 
+## 🧪 Feature Engineering y Tratamiento de Datos
+
+El proceso de preparación de datos es **fundamental** para el éxito de los modelos de Machine Learning. En UniTrack, implementamos un pipeline completo de limpieza, transformación y generación de features ubicado en la carpeta [`ML_P3/`](ML_P3/).
+
+### 📊 Análisis Exploratorio de Datos (EDA)
+
+**Notebook:** [`ML_P3/EDA.ipynb`](ML_P3/EDA.ipynb)
+
+Análisis exhaustivo del dataset académico que incluye:
+- Distribución de notas por curso, familia y nivel
+- Análisis de correlaciones entre variables
+- Identificación de valores atípicos y outliers
+- Patrones temporales de rendimiento estudiantil
+- Análisis de tasas de aprobación por tipo de curso
+
+<!-- Placeholder para imagen de distribución de notas -->
+> **📸 Imagen:** Agrega aquí un gráfico de distribución de notas del EDA
+> Ruta sugerida: `docs/ml_images/eda_distribucion_notas.png`
+
+### 🧹 Pipeline de Limpieza de Datos
+
+**Módulo:** [`ML_P3/feature_engineering/data_cleaning.py`](ML_P3/feature_engineering/data_cleaning.py)
+
+Implementa **6 funciones críticas** de limpieza de datos para garantizar la calidad del dataset:
+
+#### 1. Eliminación de Estudiantes sin Historial
+**Función:** `eliminar_estudiantes_sin_historial(df)`
+
+- **Propósito:** Elimina estudiantes con un solo registro de matrícula (sin historial académico)
+- **Justificación:** Los modelos predictivos requieren información temporal para ser efectivos
+- **Impacto:** Mejora la calidad de las predicciones al trabajar solo con datos históricos significativos
+
+#### 2. Limpieza de Promedios Extremos
+**Funciones:**
+- `limpiar_promedios_extremos_finales(df, limit=2.5)` - Solo ciclo final
+- `limpiar_promedios_extremos(df, limit=2.5)` - Todos los ciclos
+
+- **Propósito:** Identificar y eliminar registros con promedios ponderados extremadamente bajos (< 2.5)
+- **Estrategia:**
+  - Calcula el promedio ponderado por estudiante y ciclo
+  - Filtra ciclos anómalos que indican posible abandono o error de registro
+- **Visualización:** Histograma de distribución de promedios ponderados
+
+<!-- Placeholder para imagen de promedios extremos -->
+> **📸 Imagen:** Agrega aquí el histograma de distribución de promedios
+> Ruta sugerida: `docs/ml_images/cleaning_promedios_extremos.png`
+
+#### 3. Eliminación de Notas Bajas
+**Función:** `delete_notas_bajas(df, limit=2.5)`
+
+- **Propósito:** Filtrar registros con notas individuales < 2.5
+- **Razón:** Estas notas suelen indicar retiros no oficiales o datos inconsistentes
+- **Resultado:** Dataset más confiable para entrenamiento
+
+#### 4. Detección de Eventos de Shock Académico
+**Función:** `limpiar_eventos_shock(df, umbral_rendimiento_previo=13.0, umbral_shock_negativo=-8.0)`
+
+- **Propósito:** Identificar y eliminar "eventos de shock" (caídas abruptas de rendimiento)
+- **Definición de Shock:** Caída > 8 puntos en promedio vs. historial cuando el estudiante tenía buen rendimiento (>13)
+- **Justificación:** Estos eventos suelen ser causados por situaciones extraordinarias (accidentes, emergencias familiares) no predecibles por el modelo
+- **Cálculo:**
+  ```python
+  SHOCK = PROMEDIO_CICLO_ACTUAL - PROMEDIO_HISTORICO_PREVIO
+  ```
+
+<!-- Placeholder para imagen de eventos de shock -->
+> **📸 Imagen:** Agrega aquí un gráfico de detección de shocks académicos
+> Ruta sugerida: `docs/ml_images/cleaning_eventos_shock.png`
+
+#### 5. Limpieza de Ciclos de Baja Carga Académica
+**Función:** `limpiar_ciclos_baja_carga(df, limit_creditos=6)`
+
+- **Propósito:** Eliminar ciclos con menos de 6 créditos (< 2 cursos aproximadamente)
+- **Razón:** Estos ciclos no representan el comportamiento académico típico del estudiante
+- **Casos comunes:** Ciclos de verano con 1 solo curso, retiros parciales
+
+#### 6. Normalización del Dataset
+**Función:** `normalizar_dataset(df_original)`
+
+- **Propósito:** Separar el dataset en 3 tablas normalizadas (Estudiante, Curso, Matrícula)
+- **Validación:** Verificación de consistencia funcional entre llaves y atributos
+- **Output:**
+  - `df_estudiante` - Información estática del estudiante
+  - `df_curso` - Catálogo de cursos
+  - `df_matricula` - Tabla de hechos (transaccional)
+
+### 🎨 Generación de Features
+
+**Módulo:** [`ML_P3/feature_engineering/new_variables.py`](ML_P3/feature_engineering/new_variables.py)
+
+#### 1. Clustering de Dificultad de Cursos
+**Función:** `generate_map_cluster(df_clean)`
+
+- **Técnica:** KMeans con selección automática de k óptimo usando Silhouette Score
+- **Features de Clustering:**
+  - Promedio de nota del curso
+  - Porcentaje de aprobación
+  - Créditos del curso
+  - Nivel del curso
+- **Proceso:**
+  1. Normalización con StandardScaler
+  2. Evaluación de k de 2 a 100
+  3. Selección del mejor k según Silhouette Score
+  4. Asignación de cluster de dificultad a cada curso
+- **Output:** Diccionario `{CURSO: CLUSTER_DIFICULTAD}`
+
+**Resultado:** 8 clusters de dificultad identificados
+
+<!-- Placeholder para imagen de clustering -->
+> **📸 Imagen:** Agrega aquí el gráfico de Silhouette Score vs K clusters
+> Ruta sugerida: `docs/ml_images/clustering_silhouette.png`
+
+<!-- Placeholder para imagen de clusters -->
+> **📸 Imagen:** Agrega aquí la visualización de los 8 clusters de dificultad
+> Ruta sugerida: `docs/ml_images/clustering_cursos_dificultad.png`
+
+#### 2. Features de Inasistencia
+
+**a) Porcentaje de Inasistencia Histórico (NG)**
+**Función:** `generate_prctj_inasistencia_historico(df)`
+
+- **Cálculo:** Acumulado de horas de inasistencia / total de horas cursadas (hasta el ciclo anterior)
+- **Imputación:** Para el primer ciclo, se usa la media histórica de novatos
+- **Fórmula:**
+  ```python
+  PRCTJ_INASISTENCIA_HISTORICO = (CUM_HRS_INASISTENCIA / CUM_HRS_CURSO) * 100
+  ```
+
+**b) Porcentaje de Inasistencia del Ciclo Pasado (PC)**
+**Función:** `generate_prctj_inasistencia_ciclo_pasado(df)`
+
+- **Estrategia:** Búsqueda retrospectiva para encontrar el último ciclo cursado
+- **Manejo de Ciclos Sabáticos:** Retrocede hasta encontrar el último ciclo con datos
+- **Fórmula:**
+  ```python
+  PRCTJ_INASISTENCIA_CICLO_PASADO = (HRS_INASISTENCIA_t-1 / HRS_CURSO_t-1) * 100
+  ```
+
+**c) Shock de Inasistencia**
+**Función:** `generate_inasistencia_shock(df)`
+
+- **Definición:** Diferencia entre inasistencia reciente vs. histórica
+- **Interpretación:** Valores positivos altos indican empeoramiento reciente
+- **Fórmula:**
+  ```python
+  DIF_INASISTENCIA_SHOCK = PRCTJ_INASISTENCIA_PC - PRCTJ_INASISTENCIA_NG
+  ```
+
+#### 3. Features de Desempeño Académico
+
+**Módulo:** [`ML_P3/feature_engineering/agg_matricula_X.py`](ML_P3/feature_engineering/agg_matricula_X.py)
+
+**Función:** `generar_estadisticas_temporales(df, colum)`
+
+Genera estadísticas históricas agrupadas por:
+- **Curso específico:** Rendimiento histórico del curso
+- **Familia de cursos:** Rendimiento en la familia (ej: Matemáticas, Programación)
+- **Cluster de dificultad:** Rendimiento en cursos del mismo nivel de dificultad
+
+**Features generadas (para cada agrupación):**
+
+**Históricas (NG - Not yet Graded):**
+- `AVG_{X}_NG` - Promedio de nota histórico
+- `QUARTIL_25/50/75_{X}_NG` - Cuartiles de distribución
+- `PRCTJE_S_{X}_NG` - Porcentaje de aprobación histórico
+- `MAX/MIN_{X}_NG` - Valores extremos
+- `DIF_Q75_Q25_{X}_NG` - Rango intercuartílico (dispersión)
+- `DIF_MAX_MIN_{X}_NG` - Rango total
+
+**Del Ciclo Pasado (PC - Past Cycle):**
+- `AVG_{X}_PC` - Promedio del último ciclo
+- `QUARTIL_50_{X}_PC` - Mediana del último ciclo
+- `PRCTJE_S_{X}_PC` - Porcentaje de aprobación del último ciclo
+
+**Búsqueda Retrospectiva:**
+Si el estudiante tiene ciclos sabáticos, la función busca hacia atrás hasta encontrar datos del último ciclo cursado.
+
+#### 4. Features de Ciclo Académico
+
+**Módulo:** [`ML_P3/feature_engineering/crear_ciclo.py`](ML_P3/feature_engineering/crear_ciclo.py)
+
+**Función:** `crear_features_acumuladas(df_original)`
+
+Genera métricas acumuladas **hasta el ciclo anterior** (evita data leakage):
+
+- `PROM_ACUMULADO` - Promedio ponderado acumulado del estudiante
+- `PCT_CREDITOS_APROBADOS` - % de créditos aprobados vs. total de carrera (279)
+- `PCT_CURSOS_APROBADOS` - % de cursos aprobados vs. total de carrera (71)
+- `PCT_CREDITOS_LLEVADOS` - % de créditos cursados
+- `PCT_CURSOS_LLEVADOS` - % de cursos cursados
+- `SEM_CURSADOS` - Número de semestres cursados
+
+**Temporal Safety:**
+Todas las features usan `.shift(1)` para evitar fuga de información (data leakage).
+
+### 🔄 Pipeline de Integración Final
+
+**Función:** `merge_global(...)`
+
+Consolida todas las features generadas en un único DataFrame final:
+
+```python
+df_final = merge_global(
+    df_matricula_train,
+    df_estudiante_train,
+    df_curso_train,
+    df_ciclo,
+    df_desempeño_curso,
+    df_desempeño_familia,
+    df_desempeño_cluster_dificultad,
+    df_desempeño_personal_familia,
+    df_desempeño_personal_cluster_dificultad
+)
+```
+
+**Validación:** Se realizan merges con validación `m:1` para garantizar integridad.
+
+### 📈 Experimentación de Modelos
+
+**Notebook:** [`ML_P3/ExperimentoModelo1.5.ipynb`](ML_P3/ExperimentoModelo1.5.ipynb)
+
+Experimentos completos de entrenamiento y evaluación de modelos:
+- Comparación de algoritmos (LightGBM, XGBoost, RandomForest)
+- Optimización de hiperparámetros
+- Validación cruzada estratificada
+- Análisis de feature importance
+- Matrices de confusión y curvas ROC
+- Análisis de falsos positivos/negativos
+
+<!-- Placeholder para imagen de feature importance -->
+> **📸 Imagen:** Agrega aquí el gráfico de feature importance
+> Ruta sugerida: `docs/ml_images/feature_importance.png`
+
+<!-- Placeholder para imagen de matriz de confusión -->
+> **📸 Imagen:** Agrega aquí la matriz de confusión del mejor modelo
+> Ruta sugerida: `docs/ml_images/confusion_matrix.png`
+
+### 📊 Resumen del Pipeline de Datos
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    DATOS CRUDOS                             │
+│            (Matrícula, Estudiantes, Cursos)                 │
+└────────────────────┬────────────────────────────────────────┘
+                     │
+                     ▼
+┌─────────────────────────────────────────────────────────────┐
+│               LIMPIEZA DE DATOS                             │
+│  • Eliminar estudiantes sin historial                       │
+│  • Limpiar promedios extremos                              │
+│  • Eliminar notas bajas                                    │
+│  • Detectar eventos de shock                               │
+│  • Limpiar ciclos de baja carga                            │
+└────────────────────┬────────────────────────────────────────┘
+                     │
+                     ▼
+┌─────────────────────────────────────────────────────────────┐
+│            FEATURE ENGINEERING                              │
+│  • Clustering de dificultad de cursos (8 clusters)          │
+│  • Features de inasistencia (NG, PC, Shock)                │
+│  • Estadísticas de desempeño por curso/familia/cluster     │
+│  • Features acumuladas de ciclo (shift para evitar leak)   │
+└────────────────────┬────────────────────────────────────────┘
+                     │
+                     ▼
+┌─────────────────────────────────────────────────────────────┐
+│              NORMALIZACIÓN Y MERGE                          │
+│  • Separar en Estudiante, Curso, Matrícula                 │
+│  • Merge con validación m:1                                │
+│  • Verificación de consistencia funcional                  │
+└────────────────────┬────────────────────────────────────────┘
+                     │
+                     ▼
+┌─────────────────────────────────────────────────────────────┐
+│          DATASET FINAL PARA ENTRENAMIENTO                   │
+│         (Listo para modelos de ML)                          │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### 🎯 Calidad Final del Dataset
+
+Después del pipeline completo:
+- ✅ **Sin data leakage** - Todas las features usan información hasta t-1
+- ✅ **Datos temporalmente consistentes** - Búsqueda retrospectiva para ciclos sabáticos
+- ✅ **Alta calidad** - Eliminación de outliers y casos anómalos
+- ✅ **Features informativas** - Clustering, agregaciones, tendencias temporales
+- ✅ **Escalabilidad** - Pipeline modular y reutilizable
+
+---
+
 ## 📁 Estructura del Proyecto
 
 ```
@@ -363,6 +654,17 @@ Uni-Track/
 │   ├── predictor_nota.py             # Script entrenamiento clasificador
 │   ├── clasificador_futuro.py        # Clasificador experimental
 │   └── readme.md
+│
+├── ML_P3/                            # Feature Engineering y Análisis ML
+│   ├── feature_engineering/          # Módulos de procesamiento
+│   │   ├── data_cleaning.py          # Pipeline de limpieza
+│   │   ├── initial_pack.py           # Normalización de datos
+│   │   ├── new_variables.py          # Generación de features
+│   │   ├── agg_matricula_X.py        # Estadísticas temporales
+│   │   └── crear_ciclo.py            # Features de ciclo académico
+│   ├── EDA.ipynb                     # Análisis Exploratorio
+│   ├── ExperimentoModelo1.5.ipynb    # Experimentación de modelos
+│   └── falsos_positivos_riesgo_analisis.csv  # Análisis de errores
 │
 ├── docker-compose.yml                # Orquestación Docker
 └── README.md                         # Este archivo
