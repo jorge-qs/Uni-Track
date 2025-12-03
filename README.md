@@ -120,6 +120,7 @@ UniTrack centraliza la información académica y utiliza **modelos de Machine Le
 
 ---
 
+
 ## 🏗️ Arquitectura del Sistema
 
 ```
@@ -356,7 +357,7 @@ Implementa **6 funciones críticas** de limpieza de datos para garantizar la cal
   4. Asignación de cluster de dificultad a cada curso
 - **Output:** Diccionario `{CURSO: CLUSTER_DIFICULTAD}`
 
-**Resultado:** 8 clusters de dificultad identificados
+**Resultado:** 17 clusters de dificultad identificados
 
 #### 2. Features de Inasistencia
 
